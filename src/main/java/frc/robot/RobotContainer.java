@@ -4,10 +4,21 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer {
+
+  // CONTROLLERS (eg. joystick, streamdeck, etc...)
+  public static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_PORT);
+  public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_PORT);
+
+  // SUBSYSTEMS
+  public static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+
+
   public RobotContainer() {
     configureBindings();
   }
