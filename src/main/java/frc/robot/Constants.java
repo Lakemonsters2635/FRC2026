@@ -74,5 +74,20 @@ public class Constants {
   public static final int HAT_POV_180 = 180; // Left hat down
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
-  }
+  
 
+   //Tipping Constants
+  public static final double TIPPING_ANGLE_THRESHOLD = 5;
+  public static final int WINDOW_SIZE = 10;
+  public static final double SMOOTHING_FACTOR = 0.9;
+  public static final double GRAVITY_ACCEL = 1; 
+  public static final double GRAVITY_ACCEL_SQUARED = GRAVITY_ACCEL * GRAVITY_ACCEL;
+  public static final double PITCH_NOSE_DOWN_PROPORTION_CONSTANT = 0.03; //TODO: tune this value these are percentages
+  public static final double PITCH_NOSE_UP_PROPORTION_CONSTANT = 0.03; //TODO: tune this value
+
+  public static final double ROLL_LEFT_PROPORTION_CONSTANT = 0.05; //TODO: tune this value
+  public static final double ROLL_RIGHT_PROPORTION_CONSTANT = 0.05; //TODO: tune this value
+
+  public static final int NOSE_DOWN_PITCH = 1;
+  public static final int RIGHT_ROLL = 1;
+}
