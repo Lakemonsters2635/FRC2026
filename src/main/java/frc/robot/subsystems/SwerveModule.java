@@ -154,7 +154,7 @@ public class SwerveModule extends SubsystemBase {
             1.0 // max +100%
             ));
     m_turningMotor.set(turnOutput);
-  }
+  
 }
   @Override
   public void periodic() {
