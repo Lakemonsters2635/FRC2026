@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * are decoupled from translations, users can specify a custom heading that the drivetrain should
  * point toward. This heading reference is profiled for smoothness.
  */
-public class HolonomicDriveController2635 extends HolonomicDriveController{
+public class HolonomicDriveController2635 extends HolonomicDriveController {
   /**
    * Constructs a holonomic drive controller.
    *
@@ -56,7 +56,9 @@ public class HolonomicDriveController2635 extends HolonomicDriveController{
       Pose2d trajectoryPose,
       double desiredLinearVelocityMetersPerSecond,
       Rotation2d desiredHeading) {
-    ChassisSpeeds returnVal = super.calculate(currentPose, trajectoryPose, desiredLinearVelocityMetersPerSecond, desiredHeading);
+    ChassisSpeeds returnVal =
+        super.calculate(
+            currentPose, trajectoryPose, desiredLinearVelocityMetersPerSecond, desiredHeading);
     // If this is the first run, then we need to reset the theta controller to the current pose's
     // heading.
 
@@ -70,25 +72,31 @@ public class HolonomicDriveController2635 extends HolonomicDriveController{
     // }
 
     // Calculate feedforward velocities (field-relative).
-    double xFF = desiredLinearVelocityMetersPerSecond * trajectoryPose.getRotation().getCos() * 0.95; // Fudge factor of 3/4 to adjust the speed
-    double yFF = desiredLinearVelocityMetersPerSecond * trajectoryPose.getRotation().getSin() * 0.95;
+    double xFF =
+        desiredLinearVelocityMetersPerSecond
+            * trajectoryPose.getRotation().getCos()
+            * 0.95; // Fudge factor of 3/4 to adjust the speed
+    double yFF =
+        desiredLinearVelocityMetersPerSecond * trajectoryPose.getRotation().getSin() * 0.95;
     double thetaFF =
         thetaController.calculate(
             currentPose.getRotation().getRadians(), desiredHeading.getRadians());
 
-    // Pose2d poseMeters = new Pose2d(currentPose.getTranslation().div(39.37), currentPose.getRotation());
+    // Pose2d poseMeters = new Pose2d(currentPose.getTranslation().div(39.37),
+    // currentPose.getRotation());
     Pose2d poseError = trajectoryPose.relativeTo(currentPose);
     Rotation2d rotationError = desiredHeading.minus(currentPose.getRotation());
 
     // This is only used when we disable the feedback controller
     // if (!m_enabled) {
-    //     return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, thetaFF, currentPose.getRotation());
+    //     return ChassisSpeeds.fromFieldRelativeSpeeds(xFF, yFF, thetaFF,
+    // currentPose.getRotation());
     // }
 
     // Calculate feedback velocities (based on position error).
     double xFeedback = xController.calculate(currentPose.getX(), trajectoryPose.getX());
     double yFeedback = yController.calculate(currentPose.getY(), trajectoryPose.getY());
-        
+
     // Return next output.
     SmartDashboard.putNumber("holo xFF", xFF);
     SmartDashboard.putNumber("holo yFF", yFF);
@@ -114,8 +122,9 @@ public class HolonomicDriveController2635 extends HolonomicDriveController{
         xFF + xFeedback, yFF + yFeedback, thetaFF, currentPose.getRotation());
 
     // return returnVal;
-    
-    //ChassisSpeeds.fromFieldRelativeSpeeds(xFF + xFeedback, yFF + yFeedback, thetaFF, currentPose.getRotation());
+
+    // ChassisSpeeds.fromFieldRelativeSpeeds(xFF + xFeedback, yFF + yFeedback, thetaFF,
+    // currentPose.getRotation());
   }
 
   @Override

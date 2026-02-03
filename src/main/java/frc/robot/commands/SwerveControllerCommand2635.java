@@ -17,7 +17,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -198,8 +197,15 @@ public class SwerveControllerCommand2635 extends SwerveControllerCommand {
       Supplier<Rotation2d> desiredRotation,
       Consumer<SwerveModuleState[]> outputModuleStates,
       Subsystem... requirements) {
-        
-    super(trajectory, pose, kinematics, controller, desiredRotation, outputModuleStates, requirements);
+
+    super(
+        trajectory,
+        pose,
+        kinematics,
+        controller,
+        desiredRotation,
+        outputModuleStates,
+        requirements);
 
     m_trajectory = requireNonNullParam(trajectory, "trajectory", "SwerveControllerCommand");
     m_pose = requireNonNullParam(pose, "pose", "SwerveControllerCommand");

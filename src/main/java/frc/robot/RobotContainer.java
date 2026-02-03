@@ -13,7 +13,7 @@ public class RobotContainer {
   // Joysticks
   public static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
   public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
-  
+
   public RobotContainer() {
     configureBindings();
   }

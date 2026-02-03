@@ -33,16 +33,19 @@ public class SwerveModule {
   private double turningMotorOffset;
 
   private final PIDController m_drivePIDController = new PIDController(0.002, 0, 0.00);
-  private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
+  private final PIDController m_turningPIDController =
+      new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
   public NetworkTableEntry t_turningEncoder;
 
   private double m_driveMotorGain;
+
   /**
    * Constructs a SwerveModule.
-   * 
-   * TODO: drive PID not used.  the PID constants are all zero.  should document why.
-   * TODO: update note in setDesiredState() for drive Output regarding PID constants for drive if they are updated.
+   *
+   * <p>TODO: drive PID not used. the PID constants are all zero. should document why. TODO: update
+   * note in setDesiredState() for drive Output regarding PID constants for drive if they are
+   * updated.
    *
    * @param driveMotorChannel ID for the drive motor.
    * @param turningMotorChannel ID for the turning motor.
@@ -56,7 +59,7 @@ public class SwerveModule {
       ) {
 
     m_driveMotor = new TalonFX(driveMotorChannel, new CANBus("CANivore"));
-    m_turningMotor = new TalonFX(turningMotorChannel,  new CANBus("CANivore"));
+    m_turningMotor = new TalonFX(turningMotorChannel, new CANBus("CANivore"));
 
     m_driveMotor.setNeutralMode(NeutralModeValue.Brake);
     m_turningMotor.setNeutralMode(NeutralModeValue.Brake);
@@ -66,14 +69,11 @@ public class SwerveModule {
     m_driveMotorGain = driveMotorGain;
 
     /**
-     * Parameters can be set by calling the appropriate Set method on the CANSparkMax object
-     * whose properties you want to change
-     * 
-     * Set methods will return one of three REVLibError values which will let you know if the 
-     * parameter was successfully set:
-     *  REVLibError.kOk
-     *  REVLibError.kError
-     *  REVLibError.kTimeout
+     * Parameters can be set by calling the appropriate Set method on the CANSparkMax object whose
+     * properties you want to change
+     *
+     * <p>Set methods will return one of three REVLibError values which will let you know if the
+     * parameter was successfully set: REVLibError.kOk REVLibError.kError REVLibError.kTimeout
      * https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Get%20and%20Set%20Parameters/src/main/java/frc/robot/Robot.java
      */
     // if(m_driveMotorConfig.setIdleMode(IdleMode.kBrake) != REVLibError.kOk){
@@ -89,14 +89,14 @@ public class SwerveModule {
 
     // System.out.println(m_driveMotor.getPosition().getValueAsDouble());
     // System.out.println(m_turningEncoder.get());
-    
-    // SmartDashboard.putNumber("m_driveEncoder.get", m_driveMotor.getPosition().getValueAsDouble());
+
+    // SmartDashboard.putNumber("m_driveEncoder.get",
+    // m_driveMotor.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("m_turningEncoder.get", m_turningEncoder.get());
-    
+
     // Deprecated
     // m_driveEncoder.setPositionConversionFactor(Constants.kDriveEncoderDistancePerPulse);
     // m_driveEncoder.setVelocityConversionFactor(Constants.kDriveEncoderDistancePerPulse/60.0);
-
 
     // Set whether drive encoder should be reversed or not
     // m_driveEncoder.setReverseDirection(driveEncoderReversed);
@@ -118,14 +118,20 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(m_driveMotor.getPosition().getValueAsDouble() * Constants.kDriveEncoderDistancePerPulse, new Rotation2d(getTurningEncoderRadians()));
+    return new SwerveModulePosition(
+        m_driveMotor.getPosition().getValueAsDouble() * Constants.kDriveEncoderDistancePerPulse,
+        new Rotation2d(getTurningEncoderRadians()));
   }
 
-  public double getTurningEncoderRadians(){
-    double angle = (1.0 - (m_turningEncoderInput.getVoltage()/RobotController.getVoltage5V())) * 2.0 * Math.PI + turningMotorOffset;
+  public double getTurningEncoderRadians() {
+    double angle =
+        (1.0 - (m_turningEncoderInput.getVoltage() / RobotController.getVoltage5V()))
+                * 2.0
+                * Math.PI
+            + turningMotorOffset;
     angle %= 2.0 * Math.PI;
     if (angle < 0.0) {
-        angle += 2.0 * Math.PI;
+      angle += 2.0 * Math.PI;
     }
 
     return angle;
@@ -141,19 +147,21 @@ public class SwerveModule {
    * @return The current state of the module.
    */
   public SwerveModuleState getState() {
-    return new SwerveModuleState(m_driveMotor.getVelocity().getValueAsDouble(), new Rotation2d(getTurningEncoderRadians()));
+    return new SwerveModuleState(
+        m_driveMotor.getVelocity().getValueAsDouble(), new Rotation2d(getTurningEncoderRadians()));
   }
 
   public double getVelocity() {
     return m_driveMotor.getVelocity().getValueAsDouble();
   }
 
-  public void stop(){
+  public void stop() {
     m_driveMotor.set(0);
     m_turningMotor.set(0);
   }
-  
+
   private static int loopCtr = 0;
+
   /**
    * Sets the desired state for the module.
    *
@@ -167,19 +175,20 @@ public class SwerveModule {
     //     SwerveModuleState.optimize(desiredState, new Rotation2d(getTurningEncoderRadians()));
 
     SwerveModuleState state = desiredState;
-    
+
     state.optimize(new Rotation2d(getTurningEncoderRadians()));
 
     // Calculate the drive output from the drive PID controller.
     // Note: due to the drive PID constants being zero currently, this driveOutput will
     //       always be zero.
-    final double driveOutput = //state.speedMetersPerSecond;
-      m_drivePIDController.calculate(m_driveMotor.getVelocity().getValueAsDouble(), state.speedMetersPerSecond);
+    final double driveOutput = // state.speedMetersPerSecond;
+        m_drivePIDController.calculate(
+            m_driveMotor.getVelocity().getValueAsDouble(), state.speedMetersPerSecond);
 
     // This computes the velocity error regardless of direction of travel
     // such that >0 means too fast and <0 means too slow
-   // double velocityError = Math.copySign(state.speedMetersPerSecond - m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
-
+    // double velocityError = Math.copySign(state.speedMetersPerSecond -
+    // m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
 
     // String str = String.format("setDesiredState/Verror%d", m_driveMotor.getDeviceId());
     // SmartDashboard.putNumber(str, velocityError);
@@ -193,29 +202,22 @@ public class SwerveModule {
     loopCtr++;
     // if ((loopCtr % 50 == 0) && (m_driveMotor.getDeviceId() == 8))
     // {
-      
-      // System.out.println(
-      //   "Spd: " + Math.round(state.speedMetersPerSecond * 100.) / 100. + 
-      //   "  getV(): " + Math.round(m_driveEncoder.getVelocity() * 100.) / 100. + 
-      //   "  DO: "+ Math.round(driveOutput * 100.) / 100.
-      // );
+
+    // System.out.println(
+    //   "Spd: " + Math.round(state.speedMetersPerSecond * 100.) / 100. +
+    //   "  getV(): " + Math.round(m_driveEncoder.getVelocity() * 100.) / 100. +
+    //   "  DO: "+ Math.round(driveOutput * 100.) / 100.
+    // );
     // }
 
-    //String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
+    // String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
     // SmartDashboard.putNumber(str1, driveOutput);
-    //String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
+    // String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
     // SmartDashboard.putNumber(str2, driveFeedForward);
 
     // Calculate the turning motor output from the turning PID controller.
     m_driveMotor.set(
-      Math.max(
-        -1.0, 
-        Math.min(
-          (driveOutput + driveFeedForward) * m_driveMotorGain, 
-          1.0
-        )
-      )
-    );
+        Math.max(-1.0, Math.min((driveOutput + driveFeedForward) * m_driveMotorGain, 1.0)));
     m_turningMotor.set(turnOutput);
   }
 }
