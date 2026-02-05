@@ -26,8 +26,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON_NUMBER);
-    Trigger intakeOutward = new JoystickButton(leftJoystick,Constants.INTAKE_OUT_BUTTON_NUMBER);
+    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
+    Trigger intakeOutward = new JoystickButton(leftJoystick,Constants.INTAKE_OUT_BUTTON);
     intakeInward.whileTrue(m_intakeCommand);
     intakeOutward.whileTrue(m_intakeOutCommand);
   }

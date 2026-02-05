@@ -17,15 +17,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeIn(){
-    intakeMotor.setVoltage(Constants.IN_VOLTAGE_ID);
+    intakeMotor.setVoltage(Constants.IN_VOLTAGE);
   }
 
   public void intakeOut(){
-    intakeMotor.setVoltage(Constants.OUT_VOLTAGE_ID);
+    intakeMotor.setVoltage(Constants.OUT_VOLTAGE);
   }
 
   public void intakeStop(){
-    intakeMotor.setVoltage(Constants.INTAKE_STOP_ID);
+    intakeMotor.setVoltage(Constants.MOTOR_STOP);
   }
   
   @Override
