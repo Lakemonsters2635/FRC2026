@@ -41,7 +41,9 @@ public class Constants {
   public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 1; //TODO: check ids, may be wrong
   public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 2; //TODO: check ids, may be wrong
   public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 3;//TODO: check ids, may be wrong
-
+  public static final int SHOOTER_MOTOR_ID = 8; //TODO: Check id later
+  public static final int SHOOT = 4; //TODO: Adjust later
+  public static final int MOTOR_STOP = 0;
   
   // SWERVE MODULE STATES
   public static final int FRONT_LEFT_MODULE_STATE_INDEX = 0;
