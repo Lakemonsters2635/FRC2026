@@ -31,9 +31,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.SwerveControllerCommand2635;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -346,8 +346,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // on the theta controller from 0 to 360.  Does this create problems if we try to input -45 deg
     // as a target heading?
 
-    SwerveControllerCommand2635 swerveControllerCommand =
-        new SwerveControllerCommand2635(
+    SwerveControllerCommand swerveControllerCommand =
+        new SwerveControllerCommand(
             trajectory,
             this::getPose,
             m_kinematics,
