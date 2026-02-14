@@ -591,7 +591,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       this.drive(
           xPowerCommanded * DrivetrainSubsystem.kMaxSpeed * -1,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
-          MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2),
+          MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
           true);
     }
     // }

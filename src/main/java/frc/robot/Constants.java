@@ -23,15 +23,15 @@ public class Constants {
   public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 12 * Math.PI;
 
   public static final double DRIVETRAIN_WHEELBASE_WIDTH =
-      Units.inchesToMeters(22); // TODO； check for correct measurements
+      Units.inchesToMeters(19.5); // TODO； check for correct measurements
   public static final double DRIVETRAIN_WHEELBASE_LENGTH =
-      Units.inchesToMeters(26); // TODO: check for correct measurements
+      Units.inchesToMeters(24.75); // TODO: check for correct measurements
 
   // SWERVE MODULE STATES
-  public static final int FRONT_LEFT_MODULE_STATE_INDEX = 0;
-  public static final int FRONT_RIGHT_MODULE_STATE_INDEX = 1;
-  public static final int BACK_LEFT_MODULE_STATE_INDEX = 2;
-  public static final int BACK_RIGHT_MODULE_STATE_INDEX = 3;
+  public static final int FRONT_LEFT_MODULE_STATE_INDEX = 1;
+  public static final int FRONT_RIGHT_MODULE_STATE_INDEX = 0;
+  public static final int BACK_LEFT_MODULE_STATE_INDEX = 3;
+  public static final int BACK_RIGHT_MODULE_STATE_INDEX = 2;
 
   // CANBUS
   public static final String CAN_BUS_NAME = "CANivore";
