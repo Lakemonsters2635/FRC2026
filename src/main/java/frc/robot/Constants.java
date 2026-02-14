@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-  public static final double kPModuleTurningController = 0.5; // 0.5
+  public static final double kPModuleTurningController = 0.1; // 0.5
   public static final double kPModuleDriveController = 0; // added random value for test
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
@@ -35,36 +35,30 @@ public class Constants {
 
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180); // TODO: set correct values
-  public static final double FRONT_RIGHT_ANGLE_OFFSET = Math.toRadians(-53 + 90 - 229 + 45);
-  public static final double BACK_LEFT_ANGLE_OFFSET = Math.toRadians(-14 + 90 - 40 + 45 + 180);
-  public static final double BACK_RIGHT_ANGLE_OFFSET = Math.toRadians(75 - 90 + 3 + 180);
+      Math.toRadians(-13 - 90 - 2.5 + 180 -15 - 90 + 90 + 180);
+  public static final double FRONT_RIGHT_ANGLE_OFFSET = Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90);
+  public static final double BACK_LEFT_ANGLE_OFFSET = Math.toRadians(-14 + 90 - 40 + 45 + 180-120 -4 + 90 + 90);
+  public static final double BACK_RIGHT_ANGLE_OFFSET = Math.toRadians(75 - 90 + 3 + 180 - 54+7 + 90 + 180);
 
   // FRONT LEFT
-  public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 7; // 1
-  public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER = 0; // 1
-  public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 6; // 2
-  public static final double FRONT_LEFT_ANGLE_OFFSET_COMPETITION =
-      Math.toRadians(-100 + 180); // 3.0346
+  public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
+  public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER = 1; // 1
+  public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 2; // 2
 
   // FRONT RIGHT
-  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 1; // 7
-  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 2; // 0
-  public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 0; // 8
-  public static final double FRONT_RIGHT_ANGLE_OFFSET_COMPETITION =
-      Math.toRadians(146 + 180); // 2.9835
+  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 9; // 7
+  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 0; // 0
+  public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 10; // 8
 
   // BACK LEFT
-  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 5; // 3
-  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 1; // 3
+  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 3; // 3
+  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 3; // 3
   public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 4; // 10
-  public static final double BACK_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(-13.2); // 3.0775
 
   // BACK RIGHT
-  public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 3; // 5
-  public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 3; // 2
-  public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 2; // 6
-  public static final double BACK_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(-95.3); // 3.01
+  public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 8; // 5
+  public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 2; // 2
+  public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 7; // 6
 
   // HAT CONSTANTS
   public static final double HAT_POWER_MOVE = 0.1;

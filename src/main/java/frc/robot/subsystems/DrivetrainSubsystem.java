@@ -90,28 +90,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR,
           Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR,
           Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER,
-          Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION,
+          Constants.FRONT_LEFT_ANGLE_OFFSET,
           1.0);
   public final SwerveModule m_frontRight =
       new SwerveModule(
           Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR,
           Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR,
           Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER,
-          Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION,
+          Constants.FRONT_RIGHT_ANGLE_OFFSET,
           1.0);
   public final SwerveModule m_backLeft =
       new SwerveModule(
           Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER,
-          Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION,
+          Constants.BACK_LEFT_ANGLE_OFFSET,
           1.0);
   public final SwerveModule m_backRight =
       new SwerveModule(
           Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR,
           Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR,
           Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER,
-          Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION,
+          Constants.BACK_RIGHT_ANGLE_OFFSET,
           1.0);
 
   public final AHRS m_gyro =
@@ -154,34 +154,34 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
-    AutoBuilder.configure(
-        // this::getPosePathPlanner, // Robot pose supplier
-        this::getPose,
-        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
-        // pose)
-        this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        (speeds, feedforwards) ->
-            setDesiredStates(
-                speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in
-            // your Constants class
-            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-        config, // Default path replanning config. See the API for the options here
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-          return false;
-          // var alliance = DriverStation.getAlliance();
-          // if (alliance.isPresent()) {
-          //   return alliance.get() == DriverStation.Alliance.Red;
-          // }
-          // return false;
-        },
-        this // Reference to this subsystem to set requirements
-        );
+    // AutoBuilder.configure(
+    //     // this::getPosePathPlanner, // Robot pose supplier
+    //     this::getPose,
+    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
+    //     // pose)
+    //     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     (speeds, feedforwards) ->
+    //         setDesiredStates(
+    //             speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    //     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in
+    //         // your Constants class
+    //         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+    //         new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+    //         ),
+    //     config, // Default path replanning config. See the API for the options here
+    //     () -> {
+    //       // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //       // This will flip the path being followed to the red side of the field.
+    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //       return false;
+    //       // var alliance = DriverStation.getAlliance();
+    //       // if (alliance.isPresent()) {
+    //       //   return alliance.get() == DriverStation.Alliance.Red;
+    //       // }
+    //       // return false;
+    //     },
+    //     this // Reference to this subsystem to set requirements
+    //     );
   }
 
   public void stopMotors() { // Zero motorPower
@@ -546,6 +546,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     yPowerCommanded = 0;
     rotCommanded = 0;
 
+    followJoystics = true; // TODO: Remove this line after debugging
+
     if (followJoystics) {
       if (rightJoystick.getPOV() == Constants.HAT_POV_MOVE_FORWARD) {
         yPowerCommanded = Constants.HAT_POWER_MOVE;
@@ -587,7 +589,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
       this.drive(
-          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
+          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed * -1,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2),
           true);

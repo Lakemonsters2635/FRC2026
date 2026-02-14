@@ -32,7 +32,7 @@ public class SwerveModule {
 
   private double turningMotorOffset;
 
-  private final PIDController m_drivePIDController = new PIDController(0.002, 0, 0.00);
+  private final PIDController m_drivePIDController = new PIDController(0.00, 0, 0.00);
   private final PIDController m_turningPIDController =
       new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
@@ -57,6 +57,8 @@ public class SwerveModule {
       double turningMotorOffset,
       double driveMotorGain // tuning motor module
       ) {
+
+    System.out.println("!!!!!!!!!!!!!!!!!!!!SWERVE MODULE INITIALIZE!!!!!!!!!!!!!!!!!!!!");
 
     m_driveMotor = new TalonFX(driveMotorChannel, new CANBus("CANivore"));
     m_turningMotor = new TalonFX(turningMotorChannel, new CANBus("CANivore"));
@@ -198,7 +200,7 @@ public class SwerveModule {
     // Calculate the turning motor output from the turning PID controller.
     final var turnOutput =
         m_turningPIDController.calculate(getTurningEncoderRadians(), state.angle.getRadians());
-
+    
     loopCtr++;
     // if ((loopCtr % 50 == 0) && (m_driveMotor.getDeviceId() == 8))
     // {
