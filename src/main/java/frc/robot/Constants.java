@@ -33,12 +33,14 @@ public class Constants {
   public static final int BACK_LEFT_MODULE_STATE_INDEX = 2;
   public static final int BACK_RIGHT_MODULE_STATE_INDEX = 3;
 
+  // CANBUS
+  public static final String CAN_BUS_NAME = "CANivore";
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 -15 - 90 + 90 + 180);
-  public static final double FRONT_RIGHT_ANGLE_OFFSET = Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90);
-  public static final double BACK_LEFT_ANGLE_OFFSET = Math.toRadians(-14 + 90 - 40 + 45 + 180-120 -4 + 90 + 90);
-  public static final double BACK_RIGHT_ANGLE_OFFSET = Math.toRadians(75 - 90 + 3 + 180 - 54+7 + 90 + 180);
+      Math.toRadians(-13 - 90 - 2.5 + 180 -15 - 90 + 90 - 90);
+  public static final double FRONT_RIGHT_ANGLE_OFFSET = Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90);
+  public static final double BACK_LEFT_ANGLE_OFFSET = Math.toRadians(-14 + 90 - 40 + 45 + 180-120 -4 + 90 + 90 -90);
+  public static final double BACK_RIGHT_ANGLE_OFFSET = Math.toRadians(75 - 90 + 3 + 180 - 54+7 + 90 - 90);
 
   // FRONT LEFT
   public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
