@@ -11,17 +11,21 @@ import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
-  TalonFX m_shooterMotor;
+  TalonFX m_shooterMotorLeft;
+  TalonFX m_shooterMotorRight;
   public ShooterSubsystem() {
-    m_shooterMotor = new TalonFX(Constants.SHOOTER_MOTOR_ID);
+    m_shooterMotorLeft = new TalonFX(Constants.SHOOTER_MOTOR_ID_LEFT);
+    m_shooterMotorRight = new TalonFX(Constants.SHOOTER_MOTOR_ID_RIGHT);
   }
 
   public void shoot(){
-    m_shooterMotor.setVoltage(Constants.SHOOT);
+    m_shooterMotorRight.setVoltage(Constants.SHOOT * -1);
+    m_shooterMotorLeft.setVoltage(Constants.SHOOT);
   }
 
   public void shooterStop(){
-    m_shooterMotor.setVoltage(Constants.MOTOR_STOP);
+    m_shooterMotorLeft.setVoltage(Constants.MOTOR_STOP);
+    m_shooterMotorRight.setVoltage(Constants.MOTOR_STOP);
   }
   @Override
   public void periodic() {

@@ -7,7 +7,10 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ShooterCommand;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
 
@@ -16,14 +19,17 @@ public class RobotContainer {
   public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_PORT);
 
   // SUBSYSTEMS
-  public static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-
+  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
 
   public RobotContainer() {
     configureBindings();
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    Trigger shootButton = new JoystickButton(leftJoystick, 1);
+    shootButton.whileTrue(m_shooterCommand);
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
