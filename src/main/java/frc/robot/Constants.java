@@ -69,6 +69,9 @@ public class Constants {
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
   
+  //Climber Constants
+  public static final int CLIMBER_MOTOR_ID = 0; //TODO: find actual number
+  public static final int HOOK_MOTOR_ID = 0; //TODO: find actual number
 
     public static final Matrix<N3, N1> VISION_STD = VecBuilder.fill(0.002, 0.002, 0.007); // N3 and N1 matrix dimensions
 
