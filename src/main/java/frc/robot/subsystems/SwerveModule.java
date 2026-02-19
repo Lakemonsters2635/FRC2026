@@ -155,7 +155,7 @@ public class SwerveModule extends SubsystemBase {
             ));
     m_turningMotor.set(turnOutput);
   }
-}
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
