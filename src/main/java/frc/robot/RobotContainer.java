@@ -16,8 +16,18 @@ import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.AgitateCommand;
+import frc.robot.commands.TransportCommand;
+import frc.robot.commands.UptakeCommand;
+import frc.robot.subsystems.TransportSubsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 public class RobotContainer {
+  public RobotContainer() {
+    configureBindings();
+  }
 
   // CONTROLLERS (eg. joystick, streamdeck, etc...)
   public static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_PORT);
@@ -26,11 +36,15 @@ public class RobotContainer {
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+   public static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
+  
+   //Cmmands
+  public static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
+  public static AgitateCommand m_agitateCommand = new AgitateCommand(m_transportSubsystem);
+  public static UptakeCommand m_uptakeCommand = new UptakeCommand(m_transportSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
 
-  public RobotContainer() {
-    configureBindings();
-  }
+ 
 
   private void configureBindings() {
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
@@ -51,3 +65,4 @@ public class RobotContainer {
     return Commands.print("No autonomous command configured");
   }
 }
+
