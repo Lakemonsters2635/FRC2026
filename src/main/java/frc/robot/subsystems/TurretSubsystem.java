@@ -18,7 +18,7 @@ public class TurretSubsystem extends SubsystemBase {
   /** Creates a new TurretSubsystem. */
   private final SparkMax m_turretSparkMax;
   public TurretSubsystem() {
-     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR, MotorType.kBrushless); 
+     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless); 
      m_turretSparkMax.getEncoder().setPosition(0);
   }
 
