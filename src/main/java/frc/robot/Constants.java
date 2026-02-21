@@ -69,6 +69,10 @@ public class Constants {
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
   
+  //Turret Constants
+  public static final int TURRET_MOTOR_ID = 0; //TODO: find id
+  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; //3 x 10 gear ratios
+  public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
 
     public static final Matrix<N3, N1> VISION_STD = VecBuilder.fill(0.002, 0.002, 0.007); // N3 and N1 matrix dimensions
 
@@ -110,5 +114,6 @@ public class Constants {
      // JOYSTICKS
   public static final int LEFT_JOYSTICK_PORT = 0;
   public static final int RIGHT_JOYSTICK_PORT = 1;
+  
   };
 
