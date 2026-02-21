@@ -40,11 +40,10 @@ public class MoveTurretToPoseCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-      if (Math.abs(m_turretSubystem.elevatorHeight() - targetPose) < Constants.TURRET_ANGLE_RANGE ) {
-        return true;
-      }
-
-      return false;
+    if (Math.abs(m_turretSubystem.getDegrees() - targetPose) < Constants.TURRET_ANGLE_RANGE ) {
+      return true;
     }
+    return false;
   }
 }
+
