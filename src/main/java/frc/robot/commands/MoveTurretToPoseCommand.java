@@ -22,10 +22,10 @@ public class MoveTurretToPoseCommand extends Command {
   @Override
   public void initialize() {
     if(m_turretSubystem.getDegrees() > targetPose){
-        m_turretSubystem.turretPower(Constants.TURRET_POWER);
+      m_turretSubystem.turretPower(Constants.TURRET_POWER);
     }
     else{
-
+      m_turretSubystem.turretPower(Constants.TURRET_POWER * -1);
     }
   }
 
