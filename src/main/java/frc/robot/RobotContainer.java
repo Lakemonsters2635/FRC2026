@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.ShooterCommand;
@@ -21,6 +23,9 @@ import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.UptakeCommand;
 import frc.robot.subsystems.TransportSubsystem;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import frc.robot.subsystems.TurretSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 
@@ -36,30 +41,50 @@ public class RobotContainer {
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
-   public static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
+  private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
+  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
   
    //Cmmands
-  public static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
-  public static AgitateCommand m_agitateCommand = new AgitateCommand(m_transportSubsystem);
-  public static UptakeCommand m_uptakeCommand = new UptakeCommand(m_transportSubsystem);
+  private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
+  private static AgitateCommand m_agitateCommand = new AgitateCommand(m_transportSubsystem);
+  private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_transportSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
 
  
 
   private void configureBindings() {
-    Trigger shootButton = new JoystickButton(leftJoystick, 1);
 
+    //left joystick buttons
+    Trigger shootButton = new JoystickButton(leftJoystick, 1);
     Trigger setHighButton = new JoystickButton(leftJoystick, 2);
     Trigger setLowButton = new JoystickButton(leftJoystick, 3);
     Trigger throttleControl = new JoystickButton(leftJoystick, 4);
 
+    shootButton.whileTrue(m_shooterCommand);
+
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
     setLowButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, .3));
-    shootButton.whileTrue(m_shooterCommand);
     throttleControl.whileTrue(new InstantCommand(() ->
     CommandScheduler.getInstance().schedule(
     new SetLinearPoseCommand(m_actuatorSubsystem, MathUtil.clamp(Math.abs(leftJoystick.getThrottle()),.24,.8)
     ))));
+
+
+    
+    
+    //right joystick buttons
+    Trigger transportButton = new JoystickButton(rightJoystick, 1);
+    Trigger agitateButton = new JoystickButton(rightJoystick, 2);
+    Trigger uptakeButton = new JoystickButton(rightJoystick, 3);
+    Trigger turretButton = new JoystickButton(rightJoystick, 5);
+    Trigger oppositeTurretButton = new JoystickButton(rightJoystick, 6);
+
+    turretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(1)));
+    oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
+
+    transportButton.whileTrue(m_transportCommand);
+    agitateButton.whileTrue(m_agitateCommand);  
+    uptakeButton.whileTrue(m_uptakeCommand);
   }
     public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
