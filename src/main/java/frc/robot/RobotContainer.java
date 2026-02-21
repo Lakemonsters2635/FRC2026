@@ -42,7 +42,7 @@ public class RobotContainer {
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
-  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
+  // private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
   
    //Cmmands
   private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
@@ -79,8 +79,8 @@ public class RobotContainer {
     Trigger turretButton = new JoystickButton(rightJoystick, 5);
     Trigger oppositeTurretButton = new JoystickButton(rightJoystick, 6);
 
-    turretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(1)));
-    oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
+    // turretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(1)));
+    // oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
 
     transportButton.whileTrue(m_transportCommand);
     agitateButton.whileTrue(m_agitateCommand);  

@@ -29,7 +29,7 @@ public class TransportSubsystem extends SubsystemBase {
 
   public void uptake() {
     // not tested
-    uptakeMotor.setVoltage(0.5);
+    uptakeMotor.setVoltage(-3);
   }
 
   public void stopAgitate() {
