@@ -42,7 +42,7 @@ public class RobotContainer {
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
-  // private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
+  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
   
    //Cmmands
   private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
@@ -59,12 +59,13 @@ public class RobotContainer {
     Trigger setHighButton = new JoystickButton(leftJoystick, 2);
     Trigger setLowButton = new JoystickButton(leftJoystick, 3);
     Trigger throttleControl = new JoystickButton(leftJoystick, 4);
-
+    Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
+    Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     shootButton.whileTrue(m_shooterCommand);
 
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
     setLowButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, .3));
-    throttleControl.whileTrue(new InstantCommand(() ->
+    throttleControl.whileTrue(new InstantCommand(() -> 
     CommandScheduler.getInstance().schedule(
     new SetLinearPoseCommand(m_actuatorSubsystem, MathUtil.clamp(Math.abs(leftJoystick.getThrottle()),.24,.8)
     ))));
@@ -76,8 +77,6 @@ public class RobotContainer {
     Trigger transportButton = new JoystickButton(rightJoystick, 1);
     Trigger agitateButton = new JoystickButton(rightJoystick, 2);
     Trigger uptakeButton = new JoystickButton(rightJoystick, 3);
-    Trigger turretButton = new JoystickButton(rightJoystick, 5);
-    Trigger oppositeTurretButton = new JoystickButton(rightJoystick, 6);
 
     // turretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(1)));
     // oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
@@ -85,9 +84,11 @@ public class RobotContainer {
     transportButton.whileTrue(m_transportCommand);
     agitateButton.whileTrue(m_agitateCommand);  
     uptakeButton.whileTrue(m_uptakeCommand);
+    moveTurretLeft.onTrue(new InstantCommand(()->m_turretSubsystem.moveTurretLeft()));
+    moveTurretRight.onTrue(new InstantCommand(()->m_turretSubsystem.moveTurretRight()));
+
   }
     public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
 }
-

@@ -12,21 +12,14 @@ import frc.robot.subsystems.TurretSubsystem;
 public class MoveTurretToPoseCommand extends Command {
   /** Creates a new MoveTurretToPoseCommand. */
   TurretSubsystem m_turretSubystem;
-  int targetPose;
-  public MoveTurretToPoseCommand(TurretSubsystem turretSubsystem, int target) {
+  public MoveTurretToPoseCommand(TurretSubsystem turretSubsystem, double target) {
     m_turretSubystem = turretSubsystem;
-    targetPose = target;
+    m_turretSubystem.m_poseTarget = target;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_turretSubystem.getDegrees() > targetPose){
-      m_turretSubystem.turretPower(Constants.TURRET_POWER);
-    }
-    else{
-      m_turretSubystem.turretPower(Constants.TURRET_POWER * -1);
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +33,7 @@ public class MoveTurretToPoseCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(m_turretSubystem.getDegrees() - targetPose) < Constants.TURRET_ANGLE_RANGE ) {
+    if (Math.abs(m_turretSubystem.getDegrees() - m_turretSubystem.m_poseTarget) < Constants.TURRET_ANGLE_RANGE ) {
       return true;
     }
     return false;

@@ -26,7 +26,8 @@ public class Constants {
     public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
     public static final double TURRET_POWER = 2; // TODO: Chang
     public static final double TURRET_ANGLE_RANGE = 2; // This is the amount of error that the go to pose command has in degrees TODO: Change
-
+    public static final double TURRET_PID_CONSTANT = 0.6;
+    public static final double TURRET_ANGLE_MOVE = 1.0;
     //Actuator Constnats
     public static final int LEFT_ACTUATOR_ID = 1;
     public static final int RIGHT_ACTUATOR_ID = 0;
