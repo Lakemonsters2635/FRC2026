@@ -43,10 +43,6 @@ public class RobotContainer {
     configureBindings();
   }
 
-  // CONTROLLERS (eg. joystick, streamdeck, etc...)
-  public static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_PORT);
-  public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_PORT);
-
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
