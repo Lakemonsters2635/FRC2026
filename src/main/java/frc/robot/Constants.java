@@ -90,4 +90,15 @@ public class Constants {
 
   public static final int NOSE_DOWN_PITCH = 1;
   public static final int RIGHT_ROLL = 1;
+
+   // OBJECT TRACKER SUBSYSTEM
+  public static final double CAMERA_TILT = 30; // previous was 37, 30 is for testing post bunnybots
+  public static final double[] CAMERA_OFFSET = {3, 13}; // offset = [x, y], In inches
+
+  // VISION AUTO COMMAND
+  // TODO: VisionAutoData assumes only a single camera
+  public static final int CAM_X_OFFSET = 0;
+  public static final int CAM_Y_OFFSET = 0;
+  public static final int CAM_ANGLE_OFFSET = 0;
+
 }
