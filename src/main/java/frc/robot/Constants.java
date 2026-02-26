@@ -19,10 +19,13 @@ public class Constants {
     public static final int AGITATOR_MOTOR_TOP_ID = 21; //TODO: change to correct id
     public static final int AGITATOR_MOTOR_BOTTOM_ID = 22; //TODO: change to correct id
     public static final int UPTAKE_MOTOR_ID = 0; //TODO: change to correct id
+
     //Turret Constants
     public static final int TURRET_MOTOR_ID = 0; //TODO: find id
     public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; //3 x 10 gear ratios
     public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
+    public static final double TURRET_POWER = 2; // TODO: Chang
+    public static final double TURRET_ANGLE_RANGE = 2; // This is the amount of error that the go to pose command has in degrees TODO: Change
 
     //Actuator Constnats
     public static final int LEFT_ACTUATOR_ID = 1;
