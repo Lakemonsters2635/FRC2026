@@ -12,7 +12,9 @@ import frc.robot.subsystems.ActuatorSubsystem;
 public class SetLinearPoseCommand extends Command {
   /** Creates a new SetLinearPoseCommand. */
   ActuatorSubsystem m_actuatorSubsystem;
+
   double m_pose;
+
   public SetLinearPoseCommand(ActuatorSubsystem actuatorSubsystem, double pos) {
     SmartDashboard.putString("Command: ", "No Start");
     m_actuatorSubsystem = actuatorSubsystem;
@@ -38,8 +40,8 @@ public class SetLinearPoseCommand extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() { 
-    if(m_actuatorSubsystem.atTarget(m_pose)){
+  public boolean isFinished() {
+    if (m_actuatorSubsystem.atTarget(m_pose)) {
 
       SmartDashboard.putString("Command: ", "Done");
       return true;

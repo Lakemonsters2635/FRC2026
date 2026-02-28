@@ -11,6 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeOutCommand extends Command {
   /** Creates a new IntakeOutCommand. */
   IntakeSubsystem m_intakeSubsystem;
+
   public IntakeOutCommand(IntakeSubsystem m_intakeOutSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intakeSubsystem = m_intakeOutSubsystem;

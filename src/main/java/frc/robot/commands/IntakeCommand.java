@@ -11,19 +11,18 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   IntakeSubsystem m_intakeSubsystem;
+
   public IntakeCommand(IntakeSubsystem intakeSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     addRequirements(m_intakeSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_intakeSubsystem.intakeIn();
   }
-
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

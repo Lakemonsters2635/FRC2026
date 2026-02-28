@@ -20,7 +20,6 @@ public class Autos extends Command {
 
   DrivetrainSubsystem m_dts;
   ObjectTrackerSubsystem m_objectTrackerSubsystem;
-  
 
   /** Creates a new Autos. */
   public Autos(DrivetrainSubsystem dts, ObjectTrackerSubsystem objectTrackerSubsystem) {
@@ -62,5 +61,4 @@ public class Autos extends Command {
         new WaitCommand(0.3),
         new VisionAutoCommand(m_dts, m_objectTrackerSubsystem, 5, 6, -58.5 + 2, 0, -90, true));
   }
-
 }

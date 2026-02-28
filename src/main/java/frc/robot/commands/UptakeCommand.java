@@ -11,6 +11,7 @@ import frc.robot.subsystems.TransportSubsystem;
 public class UptakeCommand extends Command {
   /** Creates a new UptakeCommand. */
   TransportSubsystem m_transportSubsystem;
+
   public UptakeCommand(TransportSubsystem transportSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_transportSubsystem = transportSubsystem;
@@ -24,7 +25,6 @@ public class UptakeCommand extends Command {
   @Override
   public void execute() {
     m_transportSubsystem.uptake();
-
   }
 
   // Called once the command ends or is interrupted.
