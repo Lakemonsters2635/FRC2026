@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Joystick;
@@ -12,26 +13,21 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.AgitateCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.ShooterCommand;
-import frc.robot.subsystems.ActuatorSubsystem;
-import frc.robot.subsystems.ShooterSubsystem;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.UptakeCommand;
-import frc.robot.commands.VisionAutoCommand;
-import frc.robot.subsystems.TransportSubsystem;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.ObjectTrackerSubsystem;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.TransportSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 
 public class RobotContainer {
 
@@ -40,11 +36,16 @@ public class RobotContainer {
   public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
 
   DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-
+  IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
+  IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
+  IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
   public RobotContainer() {
     configureBindings();
   }
 
+ 
+  
+  
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
   private static ObjectTrackerSubsystem m_objectTrackerSubsystem = new ObjectTrackerSubsystem("front");
@@ -60,7 +61,10 @@ public class RobotContainer {
  
 
   private void configureBindings() {
-
+    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
+    Trigger intakeOutward = new JoystickButton(leftJoystick,Constants.INTAKE_OUT_BUTTON);
+    intakeInward.whileTrue(m_intakeCommand);
+    intakeOutward.whileTrue(m_intakeOutCommand);
     //left joystick buttons
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
     Trigger setHighButton = new JoystickButton(leftJoystick, 2);

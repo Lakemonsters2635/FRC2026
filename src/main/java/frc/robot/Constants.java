@@ -16,6 +16,14 @@ public class Constants {
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
   public static final double kMaxSpeedMetersPerSecond = 6.0; // TODO: Need to Test
+     public static final int INTAKE_MOTOR_ID = 1; // TODO: Fix when we know ID
+     public static final double IN_VOLTAGE = 2; // TODO: Fix later when we find voltage
+     public static final double OUT_VOLTAGE = -2; //TODO: Fix later when we find voltage
+     public static final int MOTOR_STOP = 0; // to stop the motors
+     public static final int LEFT_JOYSTICK_ID = 0; // TODO: Change if wrong index
+     public static final int RIGHT_JOYSTICK_ID = 1; // TODO: ^^^
+     public static final int INTAKE_IN_BUTTON = 4; // TODO: Adjust later
+     public static final int INTAKE_OUT_BUTTON = 8; // TODO: Adjust later
 
   // joystick channels
   public static final int RIGHT_JOYSTICK_CHANNEL = 1;
@@ -113,7 +121,6 @@ public class Constants {
   public static final int SHOOTER_MOTOR_ID_LEFT = 5; 
   public static final int SHOOTER_MOTOR_ID_RIGHT = 6; 
   public static final double SHOOT = 5; //Can go up to 10 volts
-  public static final double MOTOR_STOP = 0.0;
 
   // Transport Constants
   public static final int AGITATOR_MOTOR_TOP_ID = 21; //TODO: change to correct id
