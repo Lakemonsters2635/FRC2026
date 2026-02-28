@@ -83,6 +83,9 @@ public class Constants {
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
 
+  //Climber Constants
+  public static final int CLIMBER_MOTOR_ID = 0; //TODO: find actual number
+  public static final int HOOK_MOTOR_ID = 0; //TODO: find actual number
   // Tipping Constants
   public static final double TIPPING_ANGLE_THRESHOLD = 5;
   public static final int WINDOW_SIZE = 10;
