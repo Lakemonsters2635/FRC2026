@@ -4,30 +4,63 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Autos extends Command {
+
+  DrivetrainSubsystem m_dts;
+  ObjectTrackerSubsystem m_objectTrackerSubsystem;
+  
+
   /** Creates a new Autos. */
-  public Autos() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public Autos(DrivetrainSubsystem dts, ObjectTrackerSubsystem objectTrackerSubsystem) {
+    m_dts = dts;
+    m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+  public Command goStraight() {
+    return new SequentialCommandGroup(
+        new InstantCommand(() -> m_dts.stopMotors()).withTimeout(0.1),
+        new InstantCommand(() -> m_dts.setFollowJoystick(false)).withTimeout(0.1),
+        m_dts.createPath(
+            new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(-90))),
+            new Translation2d(0, 0.5),
+            new Pose2d(0, 1, new Rotation2d(Units.degreesToRadians(-90)))),
+        new InstantCommand(() -> m_dts.setFollowJoystick(true)).withTimeout(0.1),
+        new InstantCommand(() -> m_dts.stopMotors()),
+        new InstantCommand(() -> m_dts.resetAngle(180)),
+        new InstantCommand(() -> m_dts.zeroOdometry()));
   }
+
+  public Command straightScoreAuto() {
+    return new SequentialCommandGroup(
+        new VisionAutoCommand(m_dts, m_objectTrackerSubsystem, 10, 6, -58.5, 0, -90, true));
+  }
+
+  public Command leftScoreAuto() {
+    return new SequentialCommandGroup(
+        new PidAutoCommand(
+            m_dts, m_objectTrackerSubsystem, 0, -Units.inchesToMeters(148.375 - 11 - 12), 0),
+        new WaitCommand(0.3),
+        new VisionAutoCommand(m_dts, m_objectTrackerSubsystem, 2, 6, -58.5 + 2, 0, -90, true));
+  }
+
+  public Command rightScoreAuto() {
+    return new SequentialCommandGroup(
+        new PidAutoCommand(
+            m_dts, m_objectTrackerSubsystem, 0, Units.inchesToMeters(148.375 - 11 - 12), 0),
+        new WaitCommand(0.3),
+        new VisionAutoCommand(m_dts, m_objectTrackerSubsystem, 5, 6, -58.5 + 2, 0, -90, true));
+  }
+
 }
