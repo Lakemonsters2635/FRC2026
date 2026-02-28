@@ -23,10 +23,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.TransportCommand;
 import frc.robot.commands.UptakeCommand;
+import frc.robot.commands.VisionAutoCommand;
 import frc.robot.subsystems.TransportSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -45,16 +47,16 @@ public class RobotContainer {
 
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(); 
+  private static ObjectTrackerSubsystem m_objectTrackerSubsystem = new ObjectTrackerSubsystem("front");
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
-  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem();
+  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
   
    //Cmmands
   private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_transportSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_transportSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
-
  
 
   private void configureBindings() {

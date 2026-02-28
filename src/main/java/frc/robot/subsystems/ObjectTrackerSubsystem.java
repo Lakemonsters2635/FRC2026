@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
 import com.google.gson.Gson;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -261,18 +265,61 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return 0;
   }
 
-  public Detection getAprilTagDetections(int[] tagIds) {
-    Detection[] detections = new Detection[tagIds.length];
-    for (int i = 0; i < tagIds.length; i++) {
-      try {
-        detections[i] = getSpecificAprilTag(tagIds[i]);
-        return detections[i];
-      } catch (Exception e) {
-        detections[i] = null;
-      }
+  public Pose2d visionAutoData(double xPrime, double zPrime, double finalYa, int tagId) {
+  Detection detection = null;
+  for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
+    try {
+      detection = getSpecificAprilTag(tagId);
+      break;
+    } catch (Exception e) {
+      System.out.println("Failed vision attempt " + i);
     }
+  }
+  if (detection == null) {
+    SmartDashboard.putBoolean("ableToSeeAT", false);
     return null;
   }
+
+  SmartDashboard.putBoolean("ableToSeeAT", true);
+
+  // detection = m_ots.
+
+  double visionYa = -detection.ya;
+  double x_vt =
+      xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
+  double z_vt =
+      xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
+  // Should be offset variables and change based of camera location relative to the center of the
+  // robot
+  double deltaRobotX = -(detection.x + x_vt - Constants.CAM_X_OFFSET);
+  double deltaRobotY = -(detection.z + z_vt - Constants.CAM_Y_OFFSET);
+
+  // double deltaRobotX = -(detection.x + x_vt - Constants.VISION_TOTE_CAM_OFFSET[0]);
+  // double deltaRobotY = -(detection.z + z_vt - Constants.VISION_TOTE_CAM_OFFSET[1]);
+
+  double botRadians = 0; // Units.degreesToRadians(m_dts.getPose().getRotation().getDegrees());
+  double deltaFieldX = deltaRobotX * Math.cos(botRadians) - deltaRobotY * Math.sin(botRadians);
+  double deltaFieldY = deltaRobotX * Math.sin(botRadians) + deltaRobotY * Math.cos(botRadians);
+  double finalAngle = visionYa + finalYa + Units.radiansToDegrees(botRadians);
+
+  return new Pose2d(
+      Units.inchesToMeters(deltaFieldX),
+      Units.inchesToMeters(deltaFieldY),
+      new Rotation2d(Units.degreesToRadians(finalAngle)));
+}
+
+public Detection getAprilTagDetections(int[] tagIds) {
+  Detection[] detections = new Detection[tagIds.length];
+  for (int i = 0; i < tagIds.length; i++) {
+    try {
+      detections[i] = getSpecificAprilTag(tagIds[i]);
+      return detections[i];
+    } catch (Exception e) {
+      detections[i] = null;
+    }
+  }
+  return null;
+}
 
   public Detection[] getAllAprilTagDetections(int[] tagIds) {
     Detection[] detections = new Detection[tagIds.length];
