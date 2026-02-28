@@ -41,6 +41,7 @@ public class TurretSubsystem extends SubsystemBase {
     double angleToAP = m_objectTrackerSubsystem.getVisionYa(tag);
     //This is the angle between the april tags one to the bot and the one for the ideal offset vector
     double angleToAPOffset = 0;
+    double finalAngle = 0;
     Pose2d aprilTagVector = m_objectTrackerSubsystem.visionAutoData(m_objectTrackerSubsystem.getVisionX(tag), m_objectTrackerSubsystem.getVisionZ(tag), m_objectTrackerSubsystem.getVisionYa(tag), tag);
     double aprilTagVectorX = aprilTagVector.getX();
     double aprilTagVectorY = aprilTagVector.getY();
@@ -48,7 +49,10 @@ public class TurretSubsystem extends SubsystemBase {
     double aprilTagOffsetVectorAngle  = Math.toDegrees(Math.atan((aprilTagVectorY+Constants.APRIL_TAG_AIM_OFFSET)/aprilTagVectorX));
     angleToAPOffset = aprilTagOffsetVectorAngle-aprilTagVectorAngle;
     //We set the pose equal to the angle to the april tag combined with the angle to the ideal vector from the april tag plus the current angle
-    setTurretTarget((angleToAPOffset + angleToAP) + getDegrees());
+    finalAngle = (angleToAPOffset + angleToAP) + getDegrees();
+    if (finalAngle >= Constants.MIN_LIMIT_ROTATION && finalAngle <= Constants.MAX_LIMIT_ROTATION){
+      setTurretTarget(finalAngle);
+    }
   }
 
   public void turretPower(double power){

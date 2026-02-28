@@ -68,6 +68,8 @@ public class RobotContainer {
     Trigger throttleControl = new JoystickButton(leftJoystick, 4);
     Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
     Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
+    //Untested
+    Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     shootButton.whileTrue(m_shooterCommand);
 
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
@@ -93,7 +95,8 @@ public class RobotContainer {
     uptakeButton.whileTrue(m_uptakeCommand);
     moveTurretLeft.onTrue(new InstantCommand(()->m_turretSubsystem.moveTurretLeft()));
     moveTurretRight.onTrue(new InstantCommand(()->m_turretSubsystem.moveTurretRight()));
-
+    //Need to change this depending on the alliance, only for testing, be carefull
+    aimTurretAtAprilTag.onTrue(new InstantCommand(()->m_turretSubsystem.aimAtTarget(10)));
   }
     public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
