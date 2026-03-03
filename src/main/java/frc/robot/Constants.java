@@ -8,7 +8,7 @@ public class Constants {
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
   public static final double kMaxSpeedMetersPerSecond = 6.0; // TODO: Need to Test
-  public static final int INTAKE_MOTOR_ID = 1; // TODO: Fix when we know ID
+  public static final int INTAKE_MOTOR_ID = 22; // TODO: Fix when we know ID
   public static final double IN_VOLTAGE = 2; // TODO: Fix later when we find voltage
   public static final double OUT_VOLTAGE = -2; // TODO: Fix later when we find voltage
   public static final int MOTOR_STOP = 0; // to stop the motors
@@ -123,7 +123,7 @@ public class Constants {
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
 
   // Turret Constants
-  public static final int TURRET_MOTOR_ID = 0; // TODO: find id
+  public static final int TURRET_MOTOR_ID = 21; // TODO: find id
   public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
   public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
   public static final double TURRET_POWER = 2; // TODO: Chang
