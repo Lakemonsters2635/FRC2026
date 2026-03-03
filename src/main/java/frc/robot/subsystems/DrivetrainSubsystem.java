@@ -4,24 +4,24 @@
 
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.config.RobotConfig;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,34 +29,45 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    public static final double kMaxSpeed =
+
+  private LinkedList<Double> pitchValues = new LinkedList<>();
+  private LinkedList<Double> rollValues = new LinkedList<>();
+  BuiltInAccelerometer rioAccelerometer = new BuiltInAccelerometer();
+  Timer timer = new Timer();
+
+  double smoothedPitch = 0;
+  double smoothedRoll = 0;
+  double pitchOffset = 0;
+  double rollOffset = 0;
+  boolean tipCorrection = true;
+  boolean PENDING_STATE = false;
+
+  public boolean stopPureVisionAuto = false;
+
+  public static final double kMaxSpeed =
       3.63; // 3.63 meters per second  Max Speed for Front, Back, Left, Right
   public final double kMaxAngularSpeed =
       Math.PI; // 1/2 rotation per second   Max Speed for Rotation
   private SwerveModuleState[] swerveModuleStates;
-  //VisionLocalizationSubsystem m_vls = RobotContainer.m_visionLocalizationSubsystem;
+
   public static Joystick rightJoystick = RobotContainer.rightJoystick;
   public static Joystick leftJoystick = RobotContainer.leftJoystick;
 
-  public static Trigger customCenterControlButton = new JoystickButton(leftJoystick, 4);
+  // public static Trigger customCenterControlButton = new JoystickButton(leftJoystick, 4);
 
   public final double m_drivetrainWheelbaseWidth =
       Constants.DRIVETRAIN_WHEELBASE_WIDTH; // Calibrated for 2024 BunnyBots
   public final double m_drivetrainWheelbaseLength =
       Constants.DRIVETRAIN_WHEELBASE_LENGTH; // Calibrated for 2024 BunnyBots
+
+  private double m_angleCache = 180; // This is used to stash the angle before reset, in degrees
 
   // x is forward       robot is long in the x-direction, i.e. wheelbase length
   // y is to the left   robot is short in the y-direction, i.e. wheelbase width
@@ -102,31 +113,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public final AHRS m_gyro =
       new AHRS(AHRS.NavXComType.kMXP_SPI, 200); // new AHRS(SPI.Port.kMXP, (byte) 200);  //Nav X
-  private double m_cacheAngle = 180; // TODO
 
-  public final SwerveDriveKinematics m_kinematics =
+  private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
 
-  private boolean followJoysticks =
+  private boolean followJoystics =
       true; // When false does not use Joysticks for driving - When true uses Joysticks for driving
 
   // TODO: if we are going to use path planner, we will need to make the SwerveDriveOdometry()
   // object with the
   //       initialPose parameter.  Not urgent now, but someone should put this into an issue.
-  // public final SwerveDriveOdometry m_odometry =
-  //     new SwerveDriveOdometry(
-  //         m_kinematics,
-  //         m_gyro.getRotation2d(),
-  //         new SwerveModulePosition[] {
-  //           m_frontLeft.getPosition(),
-  //           m_frontRight.getPosition(),
-  //           m_backLeft.getPosition(),
-  //           m_backRight.getPosition()
-  //         });
-
-  public final SwerveDrivePoseEstimator m_odometry =
-      new SwerveDrivePoseEstimator(
+  public final SwerveDriveOdometry m_odometry =
+      new SwerveDriveOdometry(
           m_kinematics,
           m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
@@ -134,50 +133,54 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_frontRight.getPosition(),
             m_backLeft.getPosition(),
             m_backRight.getPosition()
-          },
-          new Pose2d(0, 0, new Rotation2d(0)));
+          });
 
   /** Creates a new DrivetrianSubsystem. */
   public DrivetrainSubsystem() {
-    m_odometry.setVisionMeasurementStdDevs(Constants.VISION_STD);
-    RobotConfig config = null;
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }    
-    AutoBuilder.configure(
-            // this::getPosePathPlanner, // Robot pose supplier
-            this::getPose,
-            this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> setDesiredStates(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-            new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            config, // Default path replanning config. See the API for the options here
-            () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-                return false;
-                // var alliance = DriverStation.getAlliance();
-                // if (alliance.isPresent()) {
-                //   return alliance.get() == DriverStation.Alliance.Red;
-                // }
-                // return false;
-            },
-            this // Reference to this subsystem to set requirements
-  );
-
     getPose();
 
     // resetAngle() should be called before zeroOdometry() because reseting odometry uses gyro
     // values to do the reset
     resetAngle();
     zeroOdometry();
+
+    RobotConfig config = null;
+    try {
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+    // AutoBuilder.configure(
+    //     // this::getPosePathPlanner, // Robot pose supplier
+    //     this::getPose,
+    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a
+    // starting
+    //     // pose)
+    //     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+    //     (speeds, feedforwards) ->
+    //         setDesiredStates(
+    //             speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+    //     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live
+    // in
+    //         // your Constants class
+    //         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+    //         new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+    //         ),
+    //     config, // Default path replanning config. See the API for the options here
+    //     () -> {
+    //       // Boolean supplier that controls when the path will be mirrored for the red alliance
+    //       // This will flip the path being followed to the red side of the field.
+    //       // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    //       return false;
+    //       // var alliance = DriverStation.getAlliance();
+    //       // if (alliance.isPresent()) {
+    //       //   return alliance.get() == DriverStation.Alliance.Red;
+    //       // }
+    //       // return false;
+    //     },
+    //     this // Reference to this subsystem to set requirements
+    //     );
   }
 
   public void stopMotors() { // Zero motorPower
@@ -187,18 +190,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRight.stop();
   }
 
-  public Rotation2d getGyroAngle() {
-    return new Rotation2d(
-        Math.toRadians(
-            m_gyro.getAngle())); // TODO: if m_gyro.getAngle degrees remove the conversion
+  public void stashAngle() {
+    // m_angleCache = getPose().getRotation().getDegrees();
+    m_angleCache = m_gyro.getAngle();
   }
 
-  public void stashAngle() {
-    m_cacheAngle = m_gyro.getAngle();
+  public void resetAngleAndOdometry() {
+    resetAngle();
+    zeroOdometry();
   }
 
   public void restoreAngle() {
-    resetAngle((m_cacheAngle + m_gyro.getAngle()) % 360);
+    // resetAngle(((m_angleCache + getPose().getRotation().getDegrees() + 180 ) % 360) - 180);
+    resetAngle((m_angleCache + m_gyro.getAngle()) % 360);
+    // resetOdometry(new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(((m_angleCache +
+    // getPose().getRotation().getDegrees() + 180 ) % 360) - 180))));
   }
 
   // We previously had this toRedHead() in here for converting heading for auto usage
@@ -281,7 +287,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 Constants.maxModuleLinearSpeed, // 3.5 m/s
                 Constants.maxModuleLinearAccelaration // 4 m/s^2
                 )
-            .setKinematics(m_kinematics);
+            .setKinematics(m_kinematics)
+            .setReversed(true);
 
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
@@ -291,7 +298,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         new TrapezoidProfile.Constraints(
             Constants.kMaxModuleAngularSpeedRadiansPerSecond,
             Constants.kMaxModuleAngularAccelerationRadiansPerSecondSquared);
-
     // This x, y, and theta controllers are the controllers which are used for feedback inside
     // the holonomic drive controller created by the SwerveControllerCommand.  These controllers
     // close the loop around m_poseError and m_rotationError.  These caluclations are performed in
@@ -317,8 +323,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     //   super.execute()
     //   // instrumentation for shuffleboard logging goes here.
     // }
-    PIDController xController = new PIDController(3.2, 3, 2);
-    PIDController yController = new PIDController(3.2, 3, 2);
+    PIDController xController = new PIDController(6, 6, 1);
+    PIDController yController = new PIDController(6, 6, 1);
     // kp = 0.4, ki = 3.3, kd = 1 integral overshot
     // Note: We reduced Kp to 2 so that rottion control loop doesn't saturate the module motor speed
     // during autos
@@ -338,10 +344,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // controllers and inside HolonomicDriveController constructor, enables the continuous input
     // on the theta controller from 0 to 360.  Does this create problems if we try to input -45 deg
     // as a target heading?
+
     SwerveControllerCommand swerveControllerCommand =
         new SwerveControllerCommand(
             trajectory,
-            this::getPoseMeters,
+            this::getPose,
             m_kinematics,
             xController,
             yController,
@@ -353,37 +360,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     return swerveControllerCommand;
   }
-  
-    public Command goToAprilTag(int id) {
-      // Pose2d currentPose = new Pose2d(
-      //     getPose().getX(),
-      //     getPose().getY(),
-      //     new Rotation2d (getPose().getRotation().getRadians())
-      // );
-
-      Pose2d tagPose = Constants.APRIL_TAG_POSITIONS[id];
-      Transform2d offset = new Transform2d(
-       0.0,        // X offset (left/right of tag)
-       -13,    // Y offset (forward/back from tag)
-      Rotation2d.kZero
-        );
-
-      Pose2d targetPose = tagPose.transformBy(offset);
-
-      PathConstraints constraints = new PathConstraints(
-        3.0,   // max velocity (m/s)
-        3.0,   // max acceleration (m/s^2)
-        2 * Math.PI, // max angular velocity (rad/s)
-        2 * Math.PI  // max angular acceleration (rad/s^2)
-    );
-
-    return AutoBuilder.pathfindToPose(
-        targetPose,
-        constraints
-    );
-     
-  }
-
 
   public void resetAngle() {
     // Setting the angle adjustment changes where forward is when you push the controls forward
@@ -399,8 +375,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_gyro.setAngleAdjustment(degree);
   }
 
-  public void setFollowJoystick(boolean followJoysticks) {
-    this.followJoysticks = followJoysticks;
+  public void setFollowJoystick(boolean followJoystics) {
+    this.followJoystics = followJoystics;
+  }
+
+  public void setStopVisionAutoCommand(boolean pureVisionAutoState) {
+    stopPureVisionAuto = pureVisionAutoState;
+  }
+
+  public boolean getStopVisionAutoCommand() {
+    return stopPureVisionAuto;
   }
 
   private static double xPowerCommanded = 0;
@@ -423,13 +407,147 @@ public class DrivetrainSubsystem extends SubsystemBase {
     rotCommanded = rot;
   }
 
+  private void addPitchValue(double newValue) {
+    if (pitchValues.size() >= Constants.WINDOW_SIZE) {
+      pitchValues.removeFirst();
+    }
+    pitchValues.add(newValue);
+  }
+
+  private void addRollValue(double newValue) {
+    if (rollValues.size() >= Constants.WINDOW_SIZE) {
+      rollValues.removeFirst();
+    }
+    pitchValues.add(newValue);
+  }
+
+  public void setDriveSpeed(double time) {
+    timer.start();
+    setFollowJoystick(false);
+    while (timer.get() < time) {
+      drive(2.5, 0, 0, true);
+    }
+    setFollowJoystick(true);
+    timer.stop();
+    timer.reset();
+  }
+
+  public double getYawGyroValue() {
+    return m_gyro.getRawGyroZ();
+  }
+
+  private double calculateSmoothedValue(LinkedList<Double> values) {
+    double smoothedValue = 0.0;
+    double weight = 1.0;
+    double totalWeight = 0.0;
+
+    for (double value : values) {
+      smoothedValue += value * weight;
+      totalWeight += weight;
+      weight *= Constants.SMOOTHING_FACTOR;
+    }
+
+    return smoothedValue / totalWeight;
+  }
+
+  public void setAntiTipOffsets() {
+    pitchOffset = m_gyro.getPitch();
+    rollOffset = m_gyro.getRoll();
+  }
+
+  public void setTriggerAntiTip(boolean pending) {
+    PENDING_STATE = pending;
+  }
+
+  public void setEnableAntiTip() {
+    tipCorrection = PENDING_STATE;
+  }
+
+  public void setAntiTip(boolean bool) {
+    tipCorrection = bool;
+  }
+
+  public ChassisSpeeds getAntiTipCorrections() {
+    if (tipCorrection && isTipping()) {
+      double pitch = m_gyro.getPitch() - pitchOffset;
+      double roll = m_gyro.getRoll() - rollOffset;
+      double pitchCorrection = 0;
+      double rollCorrection = 0;
+      // Multiplying by NOSE_DOWN_PITCH and RIGHT_ROLL to capture directionality gyro coordinates
+      // versus robot coordinates
+      if (pitch == Math.abs(pitch) * Constants.NOSE_DOWN_PITCH) {
+        pitchCorrection =
+            pitch
+                * Constants.NOSE_DOWN_PITCH
+                * Constants.PITCH_NOSE_DOWN_PROPORTION_CONSTANT
+                * kMaxSpeed;
+      } else {
+        pitchCorrection =
+            pitch
+                * Constants.NOSE_DOWN_PITCH
+                * Constants.PITCH_NOSE_UP_PROPORTION_CONSTANT
+                * kMaxSpeed;
+      }
+
+      if (roll == Math.abs(roll) * Constants.RIGHT_ROLL) {
+        rollCorrection =
+            roll * Constants.RIGHT_ROLL * Constants.ROLL_RIGHT_PROPORTION_CONSTANT * kMaxSpeed;
+      } else {
+        rollCorrection =
+            roll * Constants.RIGHT_ROLL * Constants.ROLL_LEFT_PROPORTION_CONSTANT * kMaxSpeed;
+      }
+      SmartDashboard.putNumber("pitchCorrection", pitchCorrection);
+      SmartDashboard.putNumber("rollCorrection", rollCorrection);
+      return new ChassisSpeeds(rollCorrection, pitchCorrection, 0);
+    }
+    return new ChassisSpeeds(0, 0, 0);
+  }
+
+  public boolean isTipping() {
+    double pitch = m_gyro.getPitch() - pitchOffset;
+    double roll = m_gyro.getRoll() - rollOffset;
+
+    SmartDashboard.putNumber("pitchWithOffset", pitch);
+    SmartDashboard.putNumber("rollWithOffset", roll);
+
+    // addRollValue(roll);
+    // addPitchValue(pitch);
+
+    // smoothedPitch = calculateSmoothedValue(pitchValues);
+    // smoothedRoll = calculateSmoothedValue(rollValues);
+
+    return Math.abs(pitch) > Constants.TIPPING_ANGLE_THRESHOLD
+        || Math.abs(roll) > Constants.TIPPING_ANGLE_THRESHOLD;
+  }
+
   @Override
   public void periodic() {
+
     // Hat Power Overides for Trimming Position and Rotation
     // System.out.println("X: "+getPose().getX()+"\tY: "+getPose().getY()+"\tRot:
     // "+getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("gyro.pitch()", m_gyro.getPitch());
+    SmartDashboard.putNumber("gyro.roll()", m_gyro.getRoll());
+    SmartDashboard.putBoolean("isTipping", isTipping());
 
-    if (followJoysticks) {
+    SmartDashboard.putNumber("stashAngle", m_angleCache);
+    SmartDashboard.putNumber("BackRight turn", m_backRight.getTurningEncoderRadians());
+    SmartDashboard.putNumber("BackLeft turn", m_backLeft.getTurningEncoderRadians());
+    SmartDashboard.putNumber("FrontRight turn", m_frontRight.getTurningEncoderRadians());
+    SmartDashboard.putNumber("FrontLeft turn", m_frontLeft.getTurningEncoderRadians());
+
+    SmartDashboard.putNumber("BackRight pos", m_backRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("BackLeft pos", m_backLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FrontRight pos", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FrontLeft pos", m_frontLeft.getPosition().distanceMeters);
+    // To stop the wheels from moving when there is no input from the joysticks
+    xPowerCommanded = 0;
+    yPowerCommanded = 0;
+    rotCommanded = 0;
+
+    followJoystics = true; // TODO: Remove this line after debugging
+
+    if (followJoystics) {
       if (rightJoystick.getPOV() == Constants.HAT_POV_MOVE_FORWARD) {
         yPowerCommanded = Constants.HAT_POWER_MOVE;
       } else if (rightJoystick.getPOV() == Constants.HAT_POV_MOVE_BACK) {
@@ -438,34 +556,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
         xPowerCommanded = Constants.HAT_POWER_MOVE * 1.0;
       } else if (rightJoystick.getPOV() == Constants.HAT_POV_MOVE_LEFT) {
         xPowerCommanded = Constants.HAT_POWER_MOVE * -1.0;
-      } else {
-        if (rightJoystick.getY() > 0.1 || rightJoystick.getY() < -0.1) {
-          yPowerCommanded = rightJoystick.getY() * -1;
-        } else {
-          yPowerCommanded = 0;
-        }
-
-        if (rightJoystick.getX() > 0.1 || rightJoystick.getX() < -0.1) {
-          xPowerCommanded = rightJoystick.getX();
-        } else {
-          xPowerCommanded = 0;
-        }
       }
 
       if (leftJoystick.getPOV() == Constants.HAT_POV_ROTATE_RIGHT) {
         rotCommanded = Constants.HAT_POWER_ROTATE * -1;
       } else if (leftJoystick.getPOV() == Constants.HAT_POV_ROTATE_LEFT) {
         rotCommanded = Constants.HAT_POWER_ROTATE;
-      } else {
-        if (Math.pow(rightJoystick.getTwist(), 3) > 0.1
-            || Math.pow(rightJoystick.getTwist(), 3) < -0.1) {
-          rotCommanded = rightJoystick.getTwist() * -1;
-        } else {
-          rotCommanded = 0;
-        }
+      }
+
+      if (rightJoystick.getY() > 0.05 || rightJoystick.getY() < -0.05) {
+        yPowerCommanded = rightJoystick.getY() * -1;
+      }
+
+      if (rightJoystick.getX() > 0.05 || rightJoystick.getX() < -0.05) {
+        xPowerCommanded = rightJoystick.getX();
       }
 
       // TODO: look at the deadband below
+      if (Math.pow(rightJoystick.getTwist(), 3) > 0.05
+          || Math.pow(rightJoystick.getTwist(), 3) < -0.05) {
+        rotCommanded = rightJoystick.getTwist() * -1;
+      }
 
       // TODO: document how to use this button to reset various robot centers of rotation
       // Note: you can have multiple buttons for defining multiple centers of rotation.
@@ -476,56 +587,51 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           true,
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
-      SmartDashboard.putNumber("xPowerCommanded", xPowerCommanded);
-      SmartDashboard.putNumber("yPowerCommanded", yPowerCommanded);
-
-      // this.drive(xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
-      //         0,
-      //         0,
-      //         true);
       this.drive(
-          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
+          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed * -1,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
-          MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2),
+          MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
           true);
-      // this.drive(xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
-      //         yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
-      //         MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2),
-      //         true);
-      // }
     }
+    // }
+    SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
+    SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FR_pos", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("BL_pos", m_backLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("BR_pos", m_backRight.getPosition().distanceMeters);
 
-    // TODO: uncomment the following for swerve debugging
-    // double loggingStateForAdvantageScope[] = {     //Array for predicted values
-    //   swerveModuleStates[Constants.FRONT_LEFT_MODULE_STATE_INDEX].angle.getDegrees() - 90, //
-    // Order here is BR, FR, BL, FL; order on Advantage Scope is FL, FR, BL, BR, but it works like
-    // this and we don't know why
-    //   swerveModuleStates[Constants.FRONT_LEFT_MODULE_STATE_INDEX].speedMetersPerSecond,
-    //   swerveModuleStates[Constants.FRONT_RIGHT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
-    //   swerveModuleStates[Constants.FRONT_RIGHT_MODULE_STATE_INDEX].speedMetersPerSecond,
-    //   swerveModuleStates[Constants.BACK_LEFT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
-    //   swerveModuleStates[Constants.BACK_LEFT_MODULE_STATE_INDEX].speedMetersPerSecond,
-    //   swerveModuleStates[Constants.BACK_RIGHT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
-    //   swerveModuleStates[Constants.BACK_RIGHT_MODULE_STATE_INDEX].speedMetersPerSecond,
-    // };
+    SmartDashboard.putNumber("rotCommanded", rotCommanded);
 
-    // double loggingActualStateForAdvantageScope[] = {
-    //   (m_frontLeft.getTurningEncoderRadians() * 180 / Math.PI) - 90, // same order problem as
-    // predicted values
-    //   m_frontLeft.getVelocity(),
-    //   (m_frontRight.getTurningEncoderRadians() * 180 / Math.PI) - 90,
-    //   m_frontRight.getVelocity(),
-    //   (m_backLeft.getTurningEncoderRadians() * 180 / Math.PI) - 90,
-    //   m_backLeft.getVelocity(),
-    //   (m_backRight.getTurningEncoderRadians() * 180 / Math.PI) - 90,
-    //   m_backRight.getVelocity(),
-    // };
+    double loggingStateForAdvantageScope[] = { // Array for predicted values
+      swerveModuleStates[Constants.FRONT_LEFT_MODULE_STATE_INDEX].angle.getDegrees()
+          - 90, // Order here is BR, FR, BL, FL; order on Advantage Scope is FL, FR, BL, BR, but it
+      // works like this and we don't know why
+      swerveModuleStates[Constants.FRONT_LEFT_MODULE_STATE_INDEX].speedMetersPerSecond,
+      swerveModuleStates[Constants.FRONT_RIGHT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
+      swerveModuleStates[Constants.FRONT_RIGHT_MODULE_STATE_INDEX].speedMetersPerSecond,
+      swerveModuleStates[Constants.BACK_LEFT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
+      swerveModuleStates[Constants.BACK_LEFT_MODULE_STATE_INDEX].speedMetersPerSecond,
+      swerveModuleStates[Constants.BACK_RIGHT_MODULE_STATE_INDEX].angle.getDegrees() - 90,
+      swerveModuleStates[Constants.BACK_RIGHT_MODULE_STATE_INDEX].speedMetersPerSecond,
+    };
 
-    // SmartDashboard.putNumberArray("loggingStateForAdvantageScope",loggingStateForAdvantageScope);
-    // SmartDashboard.putNumberArray("loggingActualStateForAdvantageScope",
-    // loggingActualStateForAdvantageScope);
+    double loggingActualStateForAdvantageScope[] = {
+      (m_frontLeft.getTurningEncoderRadians() * 180 / Math.PI)
+          - 90, // same order problem as predicted values
+      m_frontLeft.getVelocity(),
+      (m_frontRight.getTurningEncoderRadians() * 180 / Math.PI) - 90,
+      m_frontRight.getVelocity(),
+      (m_backLeft.getTurningEncoderRadians() * 180 / Math.PI) - 90,
+      m_backLeft.getVelocity(),
+      (m_backRight.getTurningEncoderRadians() * 180 / Math.PI) - 90,
+      m_backRight.getVelocity(),
+    };
 
-    // updateOdometry();
+    SmartDashboard.putNumberArray("loggingStateForAdvantageScope", loggingStateForAdvantageScope);
+    SmartDashboard.putNumberArray(
+        "loggingActualStateForAdvantageScope", loggingActualStateForAdvantageScope);
+
+    updateOdometry();
 
     putDTSToSmartDashboard();
     tuneAngleOffsetPutToDTS();
@@ -558,12 +664,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
       double xSpeed, double ySpeed, double rot, boolean fieldRelative, Translation2d centerOffset) {
     // TODO: Move kMaxSpeed and kMaxRotation into this method for ySpeed and xSpeed, and rot
     // TODO: Add another parameter for kMaxSpeed so you have an option to set it
-    swerveModuleStates =
-        m_kinematics.toSwerveModuleStates(
-            fieldRelative
-                ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
-                : new ChassisSpeeds(xSpeed, ySpeed, rot),
-            centerOffset);
+    ChassisSpeeds chassisSpeeds =
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+            : new ChassisSpeeds(xSpeed, ySpeed, rot);
+    chassisSpeeds = chassisSpeeds.plus(getAntiTipCorrections());
+
+    swerveModuleStates = m_kinematics.toSwerveModuleStates(chassisSpeeds, centerOffset);
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);
 
     // If the desired states are not in this order then the swerve will not work
@@ -579,8 +686,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
-    m_odometry.updateWithTime(
-        Timer.getFPGATimestamp(),
+    m_odometry.update(
         m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -590,25 +696,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
         });
   }
 
-  public SwerveModulePosition[] getSwerveModulePositions() {
-    return new SwerveModulePosition[] {
-      m_frontLeft.getPosition(),
-      m_frontRight.getPosition(),
-      m_backLeft.getPosition(),
-      m_backRight.getPosition()
-    };
-  }
-
   /** Get pose from odometry field * */
   public Pose2d getPose() {
-    // System.out.println(m_odometry.getPoseMeters());
-    return m_odometry.getEstimatedPosition();
+    return m_odometry.getPoseMeters();
   }
 
-  public Pose2d getPoseMeters() {
-    Pose2d currentPose = getPose();
-    return new Pose2d(currentPose.getTranslation().div(39.37), currentPose.getRotation());
+  public Pose2d getPosePathPlanner() {
+    Pose2d rawPose = m_odometry.getPoseMeters();
+
+    Translation2d adjTranslation = rawPose.getTranslation().rotateBy(Rotation2d.fromDegrees(90));
+    Rotation2d adjRotation = rawPose.getRotation().plus(Rotation2d.fromDegrees(90));
+
+    return new Pose2d(adjTranslation, adjRotation);
   }
+
+  // public Pose2d getPoseMeters() {
+  //   Pose2d currentPose = getPose();
+  //   return new Pose2d(currentPose.getTranslation().div(39.37), currentPose.getRotation());
+  // }
 
   public SwerveDriveKinematics getSwerveDriveKinematics() {
     return m_kinematics;
@@ -713,11 +818,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    */
   public void tuneAngleOffsetPutToDTS() {
     // TUNE ANGLE OFFSETS
-    // System.out.println(getPose());
-    SmartDashboard.putNumber("getFLPose()", m_frontLeft.getDrivePosition());
-    SmartDashboard.putNumber("getFRPose()", m_frontRight.getDrivePosition());
-    SmartDashboard.putNumber("getBLPose()", m_backLeft.getDrivePosition());
-    SmartDashboard.putNumber("getBRPose()", m_backRight.getDrivePosition());
 
     SmartDashboard.putNumber(
         "FL encoder pos", Math.toDegrees(m_frontLeft.getTurningEncoderRadians()));
@@ -728,20 +828,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(
         "BR encoder pos", Math.toDegrees(m_backRight.getTurningEncoderRadians()));
 
-    SmartDashboard.putNumber("FL vel", m_frontLeft.getVelocity());
-    SmartDashboard.putNumber("FR vel", m_frontRight.getVelocity());
-    SmartDashboard.putNumber("BL vel", m_backLeft.getVelocity());
-    SmartDashboard.putNumber("BR vel", m_backRight.getVelocity());
-
     SmartDashboard.putNumber("getPose.getX", getPose().getX());
     SmartDashboard.putNumber("getPose.getY", getPose().getY());
     SmartDashboard.putNumber("gyro.getAngle", m_gyro.getAngle());
     SmartDashboard.putNumber("getPose.getRotation", getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("gyroY", m_gyro.getVelocityY());
+
+    SmartDashboard.putBoolean("tipCorrection", tipCorrection);
   }
 }
-    
-
-  
-
-
