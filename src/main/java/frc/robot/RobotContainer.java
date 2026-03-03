@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import javax.print.attribute.standard.JobHoldUntil;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
+import frc.robot.commands.ManualTurret;
 import frc.robot.commands.PidAutoCommand;
 import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.ShooterCommand;
@@ -40,6 +43,8 @@ public class RobotContainer {
   IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
   IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
+
+  ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
 
   public RobotContainer() {
     autoChooser.setDefaultOption(
@@ -81,9 +86,15 @@ public class RobotContainer {
     Trigger throttleControl = new JoystickButton(leftJoystick, 4);
     Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
     Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
+
+    // right joystick button
+    Trigger manualTurredButton = new JoystickButton(rightJoystick, 4);
+
     // Untested
     Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     shootButton.whileTrue(m_shooterCommand);
+
+    manualTurredButton.onTrue(m_manualTurret);
 
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
     setLowButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, .3));
