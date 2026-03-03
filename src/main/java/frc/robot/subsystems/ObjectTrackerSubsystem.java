@@ -264,6 +264,46 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return 0;
   }
 
+  /*
+   * Gets the vector from camera to target point based on apriltag
+   */
+  public Pose2d getDistVector(double xPrime, double zPrime, double finalYa, int tagId) {
+    Detection detection = null;
+    for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
+      try {
+        detection = getSpecificAprilTag(tagId);
+        break;
+      } catch (Exception e) {
+        System.out.println("Failed vision attempt " + i);
+      }
+    }
+    if (detection == null) {
+      SmartDashboard.putBoolean("ableToSeeAT", false);
+      return null;
+    }
+
+    SmartDashboard.putBoolean("ableToSeeAT", true);
+
+    // detection = m_ots.
+
+    double visionYa = -detection.ya;
+    double x_vt =
+        xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
+    double z_vt =
+        xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
+    // Should be offset variables and change based of camera location relative to the center of the
+    // robot
+    double deltaCamX = -(detection.x + x_vt);
+    double deltaCamY = -(detection.z + z_vt);
+
+    double finalAngle = visionYa + finalYa;
+
+    return new Pose2d(
+        Units.inchesToMeters(deltaCamX),
+        Units.inchesToMeters(deltaCamY),
+        new Rotation2d(Units.degreesToRadians(finalAngle)));
+  }
+
   public Pose2d visionAutoData(double xPrime, double zPrime, double finalYa, int tagId) {
     Detection detection = null;
     for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?

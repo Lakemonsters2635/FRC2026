@@ -130,7 +130,7 @@ public class Constants {
   public static final double TURRET_ANGLE_RANGE =
       2; // This is the amount of error that the go to pose command has in degrees TODO: Change
   public static final double TURRET_PID_CONSTANT = 0.6;
-  public static final double TURRET_ANGLE_MOVE = 1.0;
+  public static final double TURRET_ANGLE_MOVE = 4.0;
   public static final double MIN_LIMIT_ROTATION = -70;
   public static final double MAX_LIMIT_ROTATION = 80;
   public static final double APRIL_TAG_AIM_OFFSET = 5;

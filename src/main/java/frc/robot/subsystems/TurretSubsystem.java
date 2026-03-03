@@ -14,8 +14,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.VisionAutoCommand;
 
+/*
+ * This subsystem is intended to rotate the turret horizontally
+ */
 public class TurretSubsystem extends SubsystemBase {
-  /** Creates a new TurretSubsystem. */
+  /** */
   ObjectTrackerSubsystem m_objectTrackerSubsystem;
 
   VisionAutoCommand m_visionAutoCommand;
@@ -23,6 +26,7 @@ public class TurretSubsystem extends SubsystemBase {
   PIDController m_turretController;
   double pid;
   public double m_poseTarget;
+  private boolean isAutoControl = true;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -37,27 +41,32 @@ public class TurretSubsystem extends SubsystemBase {
     double angleToAP = m_objectTrackerSubsystem.getVisionYa(tag);
     // This is the angle between the april tags one to the bot and the one for the ideal offset
     // vector
+
+    // id9 .356m
     double angleToAPOffset = 0;
     double finalAngle = 0;
     Pose2d aprilTagVector =
-        m_objectTrackerSubsystem.visionAutoData(
-            m_objectTrackerSubsystem.getVisionX(tag),
-            m_objectTrackerSubsystem.getVisionZ(tag),
-            m_objectTrackerSubsystem.getVisionYa(tag),
+        m_objectTrackerSubsystem.getDistVector(
+            0,
+            .6, //m
+            0,
             tag);
-    double aprilTagVectorX = aprilTagVector.getX();
-    double aprilTagVectorY = aprilTagVector.getY();
-    double aprilTagVectorAngle = Math.toDegrees(Math.atan(aprilTagVectorY / aprilTagVectorX));
-    double aprilTagOffsetVectorAngle =
-        Math.toDegrees(
-            Math.atan((aprilTagVectorY + Constants.APRIL_TAG_AIM_OFFSET) / aprilTagVectorX)); //TODO: check if + or - APRIL_TAG_AIM_OFFSET
-    angleToAPOffset = aprilTagOffsetVectorAngle - aprilTagVectorAngle;
-    // We set the pose equal to the angle to the april tag combined with the angle to the ideal
-    // vector from the april tag plus the current angle
-    finalAngle = (angleToAPOffset + angleToAP) + getDegrees();
-    if (finalAngle >= Constants.MIN_LIMIT_ROTATION && finalAngle <= Constants.MAX_LIMIT_ROTATION) {
-      setTurretTarget(finalAngle);
-    }
+    // We shouldn't need any of these code:
+    // double aprilTagVectorX = aprilTagVector.getX();
+    // double aprilTagVectorY = aprilTagVector.getY();
+    // double aprilTagVectorAngle = Math.toDegrees(Math.atan(aprilTagVectorY / aprilTagVectorX));
+    // double aprilTagOffsetVectorAngle =
+    //     Math.toDegrees(
+    //         Math.atan(
+    //             (aprilTagVectorY + Constants.APRIL_TAG_AIM_OFFSET)
+    //                 / aprilTagVectorX)); // TODO: check if + or - APRIL_TAG_AIM_OFFSET
+    // angleToAPOffset = aprilTagOffsetVectorAngle - aprilTagVectorAngle;
+    // // We set the pose equal to the angle to the april tag combined with the angle to the ideal
+    // // vector from the april tag plus the current angle
+    // finalAngle = (angleToAPOffset + angleToAP) + getDegrees();
+
+
+    setTurretTarget(MathUtil.clamp(m_poseTarget+Math.atan(aprilTagVector.getY()/aprilTagVector.getX()), Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION));
   }
 
   public void turretPower(double power) {
@@ -97,21 +106,26 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretTarget(double position) {
-    if (position > Constants.MIN_LIMIT_ROTATION && position < Constants.MAX_LIMIT_ROTATION) {
-      m_poseTarget = position;
-    }
+    m_poseTarget = MathUtil.clamp(m_poseTarget, Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION);
+  }
+
+  public void setAutoControl(boolean state){
+    isAutoControl = state;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
+    if(isAutoControl){
+      aimAtTarget(10);
+    }
     pid =
-        MathUtil.clamp(
-            m_turretController.calculate(getDegrees(), m_poseTarget),
-            -Constants.TURRET_POWER,
-            Constants.TURRET_POWER);
-    turretPower(pid);
+          MathUtil.clamp(
+              m_turretController.calculate(getDegrees(), m_poseTarget),
+              -Constants.TURRET_POWER,
+              Constants.TURRET_POWER);
+      turretPower(pid);
     // This method will be called once per scheduler run
   }
 }
