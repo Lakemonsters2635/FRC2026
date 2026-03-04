@@ -50,7 +50,9 @@ public class TurretSubsystem extends SubsystemBase {
     double aprilTagVectorAngle = Math.toDegrees(Math.atan(aprilTagVectorY / aprilTagVectorX));
     double aprilTagOffsetVectorAngle =
         Math.toDegrees(
-            Math.atan((aprilTagVectorY + Constants.APRIL_TAG_AIM_OFFSET) / aprilTagVectorX)); //TODO: check if + or - APRIL_TAG_AIM_OFFSET
+            Math.atan(
+                (aprilTagVectorY + Constants.APRIL_TAG_AIM_OFFSET)
+                    / aprilTagVectorX)); // TODO: check if + or - APRIL_TAG_AIM_OFFSET
     angleToAPOffset = aprilTagOffsetVectorAngle - aprilTagVectorAngle;
     // We set the pose equal to the angle to the april tag combined with the angle to the ideal
     // vector from the april tag plus the current angle

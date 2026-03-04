@@ -3,19 +3,14 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
+  // SWERVE DRIVE CONSTANTS
   public static final double kPModuleTurningController = 0.1; // 0.5
   public static final double kPModuleDriveController = 0; // added random value for test
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
   public static final double kMaxSpeedMetersPerSecond = 6.0; // TODO: Need to Test
-  public static final int INTAKE_MOTOR_ID = 22; // TODO: Fix when we know ID
-  public static final double IN_VOLTAGE = 2; // TODO: Fix later when we find voltage
-  public static final double OUT_VOLTAGE = -2; // TODO: Fix later when we find voltage
-  public static final int MOTOR_STOP = 0; // to stop the motors
-  public static final int LEFT_JOYSTICK_ID = 0; // TODO: Change if wrong index
-  public static final int RIGHT_JOYSTICK_ID = 1; // TODO: ^^^
-  public static final int INTAKE_IN_BUTTON = 4; // TODO: Adjust later
-  public static final int INTAKE_OUT_BUTTON = 8; // TODO: Adjust later
+
+  
 
   // joystick channels
   public static final int RIGHT_JOYSTICK_CHANNEL = 1;
@@ -41,8 +36,6 @@ public class Constants {
   public static final int BACK_LEFT_MODULE_STATE_INDEX = 3;
   public static final int BACK_RIGHT_MODULE_STATE_INDEX = 2;
 
-  // CANBUS
-  public static final String CAN_BUS_NAME = "CANivore";
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
       Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90);
@@ -86,6 +79,14 @@ public class Constants {
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
 
+  // INTAKE CONSTANTS
+  public static final int INTAKE_MOTOR_ID = 22; // TODO: Fix when we know ID
+  public static final double IN_VOLTAGE = 2; // TODO: Fix later when we find voltage
+  public static final double OUT_VOLTAGE = -2; // TODO: Fix later when we find voltage
+  public static final int MOTOR_STOP = 0; // to stop the motors
+  public static final int INTAKE_IN_BUTTON = 4; // TODO: Adjust later
+  public static final int INTAKE_OUT_BUTTON = 8; // TODO: Adjust later
+
   // Climber Constants
   public static final int CLIMBER_MOTOR_ID = 0; // TODO: find actual number
   public static final int HOOK_MOTOR_ID = 0; // TODO: find actual number
@@ -118,8 +119,8 @@ public class Constants {
   public static final double SHOOT = 5; // Can go up to 10 volts
 
   // Transport Constants
-  public static final int AGITATOR_MOTOR_TOP_ID = 21; // TODO: change to correct id
-  public static final int AGITATOR_MOTOR_BOTTOM_ID = 22; // TODO: change to correct id
+  public static final int AGITATOR_MOTOR_TOP_ID =12; // TODO: change to correct id
+  public static final int AGITATOR_MOTOR_BOTTOM_ID = 13; // TODO: change to correct id
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
 
   // Turret Constants
@@ -131,14 +132,14 @@ public class Constants {
       2; // This is the amount of error that the go to pose command has in degrees TODO: Change
   public static final double TURRET_PID_CONSTANT = 0.6;
   public static final double TURRET_ANGLE_MOVE = 1.0;
-  public static final double MIN_LIMIT_ROTATION = -70;
-  public static final double MAX_LIMIT_ROTATION = 80;
+  public static final double MIN_LIMIT_ROTATION = -45; // We might damage the cables if we rotate too far repeatedly
+  public static final double MAX_LIMIT_ROTATION = 45;
   public static final double APRIL_TAG_AIM_OFFSET = 5;
-  // Actuator Constnats
+
+  // Actuator Constants
   public static final int LEFT_ACTUATOR_ID = 1;
   public static final int RIGHT_ACTUATOR_ID = 0;
 
   // JOYSTICKS
-  public static final int LEFT_JOYSTICK_PORT = 0;
-  public static final int RIGHT_JOYSTICK_PORT = 1;
+  
 }
