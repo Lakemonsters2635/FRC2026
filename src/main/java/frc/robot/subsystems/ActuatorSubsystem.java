@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class ActuatorSubsystem extends SubsystemBase {
+  ObjectTrackerSubsystem m_ots;
   /** Creates a new ActuatorSubsystem. */
   // LinearServo m_linearActuatorLeft;
   // LinearServo m_linearActuatorRight;
@@ -20,6 +21,7 @@ public class ActuatorSubsystem extends SubsystemBase {
   Servo m_linearActuatorLeft;
 
   public ActuatorSubsystem() {
+    m_ots = new ObjectTrackerSubsystem("front");
     m_linearActuatorLeft = new Servo(Constants.LEFT_ACTUATOR_ID);
     m_linearActuatorRight = new Servo(Constants.RIGHT_ACTUATOR_ID);
   }
@@ -45,8 +47,15 @@ public class ActuatorSubsystem extends SubsystemBase {
     return false;
   }
 
+  public double getCalcActuatorPose(){
+    //quadratic func to calc pose
+    double calcActuatorPose = 1.0; //TODO: replace with a function
+    return calcActuatorPose;
+    
+  }
   @Override
   public void periodic() {
+
     // m_linearActuatorLeft.updateCurPos();
     // m_linearActuatorRight.updateCurPos();
     SmartDashboard.putNumber("getPosActuatorLeft", getPosition());

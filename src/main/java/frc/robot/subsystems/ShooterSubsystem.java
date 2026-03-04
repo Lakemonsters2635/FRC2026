@@ -11,6 +11,7 @@ import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
+  
   TalonFX m_shooterMotorLeft;
 
   TalonFX m_shooterMotorRight;
