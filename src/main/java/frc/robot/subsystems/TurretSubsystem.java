@@ -9,7 +9,6 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -38,7 +37,8 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
     m_turretConfig = new SparkMaxConfig();
 
-    m_turretSparkMax.configure(m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_turretSparkMax.configure(
+        m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
     m_turretController = new PIDController(0.08, 0, 0); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
@@ -60,9 +60,9 @@ public class TurretSubsystem extends SubsystemBase {
             Units.metersToInches(.6), // -/+   .6m
             0,
             tag);
-    SmartDashboard.putNumber("turretx",aprilTagVector.getX());
-    SmartDashboard.putNumber("turrety",aprilTagVector.getY());
-    SmartDashboard.putNumber("turretrot",aprilTagVector.getRotation().getDegrees());
+    SmartDashboard.putNumber("turretx", aprilTagVector.getX());
+    SmartDashboard.putNumber("turrety", aprilTagVector.getY());
+    SmartDashboard.putNumber("turretrot", aprilTagVector.getRotation().getDegrees());
     // We shouldn't need any of these code:
     // double aprilTagVectorX = aprilTagVector.getX();
     // double aprilTagVectorY = aprilTagVector.getY();
@@ -77,9 +77,13 @@ public class TurretSubsystem extends SubsystemBase {
     // // vector from the april tag plus the current angle
     // finalAngle = (angleToAPOffset + angleToAP) + getDegrees();
 
-
-    setTurretTarget(MathUtil.clamp(m_poseTarget+Math.atan(aprilTagVector.getY()/aprilTagVector.getX()), Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION));
-    SmartDashboard.putNumber("deltaRotTurret", Math.atan(aprilTagVector.getY()/aprilTagVector.getX()));
+    setTurretTarget(
+        MathUtil.clamp(
+            m_poseTarget + Math.atan(aprilTagVector.getY() / aprilTagVector.getX()),
+            Constants.MIN_LIMIT_ROTATION,
+            Constants.MAX_LIMIT_ROTATION));
+    SmartDashboard.putNumber(
+        "deltaRotTurret", Math.atan(aprilTagVector.getY() / aprilTagVector.getX()));
   }
 
   public void turretPower(double power) {
@@ -101,9 +105,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   public double getDegrees() {
     double deg =
-        (getEncoder()/7.2)
-                // *(Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
-                //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
+        (getEncoder() / 7.2)
+            // *(Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
+            //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
             * 90;
     return deg % 360;
   }
@@ -119,10 +123,11 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretTarget(double position) {
-    m_poseTarget = MathUtil.clamp(m_poseTarget, Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION);
+    m_poseTarget =
+        MathUtil.clamp(m_poseTarget, Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION);
   }
 
-  public void setAutoControl(boolean state){
+  public void setAutoControl(boolean state) {
     isAutoControl = state;
   }
 
@@ -141,7 +146,7 @@ public class TurretSubsystem extends SubsystemBase {
     //           -Constants.TURRET_POWER,
     //           Constants.TURRET_POWER);
     //   turretPower(pid);
-      turretPower(0);
+    turretPower(0);
     // This method will be called once per scheduler run
   }
 }

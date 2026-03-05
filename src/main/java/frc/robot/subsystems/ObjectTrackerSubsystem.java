@@ -279,7 +279,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     }
     if (detection == null) {
       SmartDashboard.putBoolean("ableToSeeAT", false);
-      return new Pose2d(0,0,new Rotation2d(0));
+      return new Pose2d(0, 0, new Rotation2d(0));
     }
 
     SmartDashboard.putBoolean("ableToSeeAT", true);
@@ -287,7 +287,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     // detection = m_ots.
 
     // double visionYa = -detection.ya;
-    double visionYa = Math.atan(visionZ/visionX);
+    double visionYa = Math.atan(visionZ / visionX);
     double x_vt =
         xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
     double z_vt =

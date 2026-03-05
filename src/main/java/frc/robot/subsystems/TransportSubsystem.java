@@ -16,14 +16,15 @@ public class TransportSubsystem extends SubsystemBase {
   TalonFX uptakeMotor;
 
   public TransportSubsystem() {
-    agitatorMotorTop = new TalonFX(Constants.AGITATOR_MOTOR_TOP_ID);
-    agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID);
+    agitatorMotorTop = new TalonFX(Constants.AGITATOR_MOTOR_TOP_ID); // orange
+    agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
+
     uptakeMotor = new TalonFX(Constants.UPTAKE_MOTOR_ID);
   }
 
   public void agitate() {
     // not tested
-    agitatorMotorTop.setVoltage(0.5);
+    agitatorMotorTop.setVoltage(-0.5);
     agitatorMotorBottom.setVoltage(0.5);
   }
 
