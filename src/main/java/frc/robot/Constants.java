@@ -1,13 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
-
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
@@ -41,8 +33,6 @@ public class Constants {
   public static final int BACK_LEFT_MODULE_STATE_INDEX = 3;
   public static final int BACK_RIGHT_MODULE_STATE_INDEX = 2;
 
-  // CANBUS
-  public static final String CAN_BUS_NAME = "CANivore";
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
       Math.toRadians(-13 - 90 - 2.5 + 180 -15 - 90 + 90 - 90);
@@ -100,7 +90,7 @@ public class Constants {
   public static final int RIGHT_ROLL = 1;
 
    // OBJECT TRACKER SUBSYSTEM
-  public static final double CAMERA_TILT = 30; // previous was 37, 30 is for testing post bunnybots
+  public static final double CAMERA_TILT = 26.5; // previous was 37, 30 is for testing post bunnybots
   public static final double[] CAMERA_OFFSET = {3, 13}; // offset = [x, y], In inches
   // VISION AUTO COMMAND
   // TODO: VisionAutoData assumes only a single camera
@@ -134,8 +124,8 @@ public class Constants {
   public static final double MAX_LIMIT_ROTATION = 80;
   public static final double APRIL_TAG_AIM_OFFSET = 5; 
   //Actuator Constnats
-  public static final int LEFT_ACTUATOR_ID = 1;
-  public static final int RIGHT_ACTUATOR_ID = 0;
+  public static final int LEFT_ACTUATOR_ID = 8;
+  public static final int RIGHT_ACTUATOR_ID = 9;
 
     // JOYSTICKS
   public static final int LEFT_JOYSTICK_PORT = 0;

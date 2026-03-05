@@ -63,10 +63,10 @@ public class RobotContainer {
   // SUBSYSTEMS
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem();
   private static ObjectTrackerSubsystem m_objectTrackerSubsystem =
-      new ObjectTrackerSubsystem("front");
+      new ObjectTrackerSubsystem("shripFront");
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
-  // private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
+  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
 
   // Cmmands
   private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
@@ -77,8 +77,6 @@ public class RobotContainer {
   private void configureBindings() {
     Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
     Trigger intakeOutward = new JoystickButton(leftJoystick, Constants.INTAKE_OUT_BUTTON);
-    intakeInward.whileTrue(m_intakeCommand);
-    intakeOutward.whileTrue(m_intakeOutCommand);
     // left joystick buttons
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
     Trigger setHighButton = new JoystickButton(leftJoystick, 2);
@@ -86,15 +84,17 @@ public class RobotContainer {
     Trigger throttleControl = new JoystickButton(leftJoystick, 4);
     Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
     Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
-
+    
     // right joystick button
     Trigger manualTurredButton = new JoystickButton(rightJoystick, 4);
-
+    
     // Untested
     Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     shootButton.whileTrue(m_shooterCommand);
-
+    
     // manualTurredButton.onTrue(m_manualTurret);
+    intakeInward.whileTrue(m_intakeCommand);
+    intakeOutward.whileTrue(m_intakeOutCommand);
 
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
     setLowButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, .3));

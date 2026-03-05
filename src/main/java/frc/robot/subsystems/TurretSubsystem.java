@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -56,9 +57,12 @@ public class TurretSubsystem extends SubsystemBase {
     Pose2d aprilTagVector =
         m_objectTrackerSubsystem.getDistVector(
             0,
-            .6, //m
+            Units.metersToInches(.6), // -/+   .6m
             0,
             tag);
+    SmartDashboard.putNumber("turretx",aprilTagVector.getX());
+    SmartDashboard.putNumber("turrety",aprilTagVector.getY());
+    SmartDashboard.putNumber("turretrot",aprilTagVector.getRotation().getDegrees());
     // We shouldn't need any of these code:
     // double aprilTagVectorX = aprilTagVector.getX();
     // double aprilTagVectorY = aprilTagVector.getY();
@@ -75,6 +79,7 @@ public class TurretSubsystem extends SubsystemBase {
 
 
     setTurretTarget(MathUtil.clamp(m_poseTarget+Math.atan(aprilTagVector.getY()/aprilTagVector.getX()), Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION));
+    SmartDashboard.putNumber("deltaRotTurret", Math.atan(aprilTagVector.getY()/aprilTagVector.getX()));
   }
 
   public void turretPower(double power) {
@@ -96,10 +101,10 @@ public class TurretSubsystem extends SubsystemBase {
 
   public double getDegrees() {
     double deg =
-        (getEncoder()
-                / (Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
-                    * Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
-            * 360;
+        (getEncoder()/7.2)
+                // *(Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
+                //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
+            * 90;
     return deg % 360;
   }
 
@@ -125,15 +130,18 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
-    if(isAutoControl){
-      aimAtTarget(10);
-    }
-    pid =
-          MathUtil.clamp(
-              m_turretController.calculate(getDegrees(), m_poseTarget),
-              -Constants.TURRET_POWER,
-              Constants.TURRET_POWER);
-      turretPower(pid);
+    aimAtTarget(11);
+
+    // if(isAutoControl){
+    //   aimAtTarget(10);
+    // }
+    // pid =
+    //       MathUtil.clamp(
+    //           m_turretController.calculate(getDegrees(), m_poseTarget),
+    //           -Constants.TURRET_POWER,
+    //           Constants.TURRET_POWER);
+    //   turretPower(pid);
+      turretPower(0);
     // This method will be called once per scheduler run
   }
 }
