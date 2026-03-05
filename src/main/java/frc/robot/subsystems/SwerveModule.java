@@ -49,8 +49,8 @@ public class SwerveModule {
       double turningMotorOffsetRadians,
       double driveMotorGain) {
 
-    m_driveMotor = new TalonFX(driveMotorChannel, new CANBus(Constants.CAN_BUS_NAME));
-    m_turningMotor = new TalonFX(turningMotorChannel, new CANBus(Constants.CAN_BUS_NAME));
+    m_driveMotor = new TalonFX(driveMotorChannel);
+    m_turningMotor = new TalonFX(turningMotorChannel);
 
     m_driveMotor.setNeutralMode(NeutralModeValue.Brake);
     m_turningMotor.setNeutralMode(NeutralModeValue.Brake);
