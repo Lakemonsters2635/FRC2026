@@ -112,9 +112,9 @@ public class Constants {
   public static final double SHOOT = 5; //Can go up to 10 volts
   public static final double MOTOR_STOP = 0.0;
   //Intake Constants
-  public static final int INTAKE_MOTOR_ID = 11;
-  public static final int IN_VOLTAGE = 1;
-  public static final int OUT_VOLTAGE = -1;
+  public static final int INTAKE_MOTOR_ID = 22;
+  public static final int IN_VOLTAGE = 12;
+  public static final int OUT_VOLTAGE = -12;
   public static final int INTAKE_IN_BUTTON = 8;
   public static final int INTAKE_OUT_BUTTON = 9;
   // Transport Constants

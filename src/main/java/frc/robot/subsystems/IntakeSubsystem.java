@@ -5,27 +5,39 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   TalonFX intakeMotor;
+  private final SparkMax m_intakeMotor;
+  private final SparkMaxConfig m_intakeConfig;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+    m_intakeMotor = new SparkMax(Constants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+    m_intakeConfig = new SparkMaxConfig();
+
+    m_intakeMotor.configure(m_intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void intakeIn() {
-    intakeMotor.setVoltage(Constants.IN_VOLTAGE);
+    m_intakeMotor.setVoltage(Constants.IN_VOLTAGE);
   }
 
   public void intakeOut() {
-    intakeMotor.setVoltage(Constants.OUT_VOLTAGE);
+    m_intakeMotor.setVoltage(Constants.OUT_VOLTAGE);
   }
 
   public void intakeStop() {
-    intakeMotor.setVoltage(Constants.MOTOR_STOP);
+    m_intakeMotor.setVoltage(Constants.MOTOR_STOP);
   }
 
   @Override

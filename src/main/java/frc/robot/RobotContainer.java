@@ -44,7 +44,7 @@ public class RobotContainer {
   IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
   IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
 
-  ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
+  // ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
 
   public RobotContainer() {
     autoChooser.setDefaultOption(
@@ -66,7 +66,7 @@ public class RobotContainer {
       new ObjectTrackerSubsystem("front");
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TransportSubsystem m_transportSubsystem = new TransportSubsystem();
-  private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
+  // private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
 
   // Cmmands
   private static TransportCommand m_transportCommand = new TransportCommand(m_transportSubsystem);
@@ -94,7 +94,7 @@ public class RobotContainer {
     Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     shootButton.whileTrue(m_shooterCommand);
 
-    manualTurredButton.onTrue(m_manualTurret);
+    // manualTurredButton.onTrue(m_manualTurret);
 
     setHighButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, 0.7));
     setLowButton.onTrue(new SetLinearPoseCommand(m_actuatorSubsystem, .3));
@@ -118,10 +118,10 @@ public class RobotContainer {
     transportButton.whileTrue(m_transportCommand);
     agitateButton.whileTrue(m_agitateCommand);
     uptakeButton.whileTrue(m_uptakeCommand);
-    moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
-    moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
+    // moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
+    // moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
     // Need to change this depending on the alliance, only for testing, be carefull
-    aimTurretAtAprilTag.onTrue(new InstantCommand(() -> m_turretSubsystem.aimAtTarget(10)));
+    // aimTurretAtAprilTag.onTrue(new InstantCommand(() -> m_turretSubsystem.aimAtTarget(10)));
   }
 
   public Command getAutonomousCommand() {

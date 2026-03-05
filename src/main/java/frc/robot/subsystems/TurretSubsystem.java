@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +27,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   VisionAutoCommand m_visionAutoCommand;
   private final SparkMax m_turretSparkMax;
+  private final SparkMaxConfig m_turretConfig;
   PIDController m_turretController;
   double pid;
   public double m_poseTarget;
@@ -30,6 +35,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
+    m_turretConfig = new SparkMaxConfig();
+
+    m_turretSparkMax.configure(m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
     m_turretController = new PIDController(0.08, 0, 0); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
