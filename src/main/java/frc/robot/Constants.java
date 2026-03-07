@@ -33,14 +33,15 @@ public class Constants {
   public static final int BACK_LEFT_MODULE_STATE_INDEX = 3;
   public static final int BACK_RIGHT_MODULE_STATE_INDEX = 2;
 
-  // CANBUS
-  public static final String CAN_BUS_NAME = "CANivore";
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 -15 - 90 + 90 - 90);
-  public static final double FRONT_RIGHT_ANGLE_OFFSET = Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90);
-  public static final double BACK_LEFT_ANGLE_OFFSET = Math.toRadians(-14 + 90 - 40 + 45 + 180-120 -4 + 90 + 90 -90);
-  public static final double BACK_RIGHT_ANGLE_OFFSET = Math.toRadians(75 - 90 + 3 + 180 - 54+7 + 90 - 90);
+      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180);
+  public static final double FRONT_RIGHT_ANGLE_OFFSET =
+      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90+88 - 90);
+  public static final double BACK_LEFT_ANGLE_OFFSET =
+      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90  - 5.5 + 90 + 90 + 180);
+  public static final double BACK_RIGHT_ANGLE_OFFSET =
+      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90+82-90);
 
   // FRONT LEFT
   public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
@@ -49,12 +50,12 @@ public class Constants {
 
   // FRONT RIGHT
   public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 9; // 7
-  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 0; // 0
+  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 3; // 0
   public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 10; // 8
 
   // BACK LEFT
   public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 3; // 3
-  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 3; // 3
+  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 0; // 3
   public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 4; // 10
 
   // BACK RIGHT
@@ -91,14 +92,47 @@ public class Constants {
   public static final int NOSE_DOWN_PITCH = 1;
   public static final int RIGHT_ROLL = 1;
 
-   // OBJECT TRACKER SUBSYSTEM
-  public static final double CAMERA_TILT = 30; // previous was 37, 30 is for testing post bunnybots
+  // OBJECT TRACKER SUBSYSTEM
+  public static final double CAMERA_TILT =
+      26.5; // previous was 37, 30 is for testing post bunnybots
   public static final double[] CAMERA_OFFSET = {3, 13}; // offset = [x, y], In inches
-
   // VISION AUTO COMMAND
   // TODO: VisionAutoData assumes only a single camera
   public static final int CAM_X_OFFSET = 0;
   public static final int CAM_Y_OFFSET = 0;
   public static final int CAM_ANGLE_OFFSET = 0;
+  public static final int SHOOTER_MOTOR_ID_LEFT = 5;
+  public static final int SHOOTER_MOTOR_ID_RIGHT = 6;
+  public static final double SHOOT = 5; // Can go up to 10 volts
+  public static final double MOTOR_STOP = 0.0;
+  // Intake Constants
+  public static final int INTAKE_MOTOR_ID = 22;
+  public static final int IN_VOLTAGE = 12;
+  public static final int OUT_VOLTAGE = -12;
+  public static final int INTAKE_IN_BUTTON = 8;
+  public static final int INTAKE_OUT_BUTTON = 9;
+  // Transport Constants
+  public static final int AGITATOR_MOTOR_TOP_ID = 13; // TODO: change to correct id
+  public static final int AGITATOR_MOTOR_BOTTOM_ID = 12; // TODO: change to correct id
+  public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
 
+  // Turret Constants
+  public static final int TURRET_MOTOR_ID = 21; // TODO: find id
+  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
+  public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
+  public static final double TURRET_POWER = 2; // TODO: Change
+  public static final double TURRET_ANGLE_RANGE =
+      2; // This is the amount of error that the go to pose command has in degrees TODO: Change
+  public static final double TURRET_PID_CONSTANT = 0.6;
+  public static final double TURRET_ANGLE_MOVE = 4.0;
+  public static final double MIN_LIMIT_ROTATION = -45;
+  public static final double MAX_LIMIT_ROTATION = 45;
+  public static final double APRIL_TAG_AIM_OFFSET = 5;
+  // Actuator Constnats
+  public static final int LEFT_ACTUATOR_ID = 8;
+  public static final int RIGHT_ACTUATOR_ID = 9;
+
+  // JOYSTICKS
+  public static final int LEFT_JOYSTICK_PORT = 0;
+  public static final int RIGHT_JOYSTICK_PORT = 1;
 }

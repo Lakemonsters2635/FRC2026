@@ -4,10 +4,7 @@
 
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -157,13 +154,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // AutoBuilder.configure(
     //     // this::getPosePathPlanner, // Robot pose supplier
     //     this::getPose,
-    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting
+    //     this::resetOdometry, // Method to reset odometry (will be called if your auto has a
+    // starting
     //     // pose)
     //     this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
     //     (speeds, feedforwards) ->
     //         setDesiredStates(
     //             speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-    //     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in
+    //     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live
+    // in
     //         // your Constants class
     //         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
     //         new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
@@ -574,10 +573,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
       }
 
       // TODO: look at the deadband below
-      if (Math.pow(rightJoystick.getTwist(), 3) > 0.05
-          || Math.pow(rightJoystick.getTwist(), 3) < -0.05) {
-        rotCommanded = rightJoystick.getTwist() * -1;
-      }
+      // if (Math.pow(rightJoystick.getTwist(), 3) > 0.05
+      //     || Math.pow(rightJoystick.getTwist(), 3) < -0.05) {
+      //   rotCommanded = rightJoystick.getTwist() * -1;
+      // }
 
       // TODO: document how to use this button to reset various robot centers of rotation
       // Note: you can have multiple buttons for defining multiple centers of rotation.

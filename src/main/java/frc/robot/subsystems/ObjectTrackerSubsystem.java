@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import com.google.gson.Gson;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -65,7 +68,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   private final double CAMERA_PITCH_FRONT = 0; // should be 23
   private final double CAMERA_PITCH_BACK = 0;
-  private double m_cameraPitch;
+  private double m_cameraPitch = Constants.CAMERA_TILT;
 
   // rotation matrix
   private double cameraTilt = Constants.CAMERA_TILT;
@@ -261,6 +264,92 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return 0;
   }
 
+  /*
+   * Gets the vector from camera to target point based on apriltag
+   */
+  public Pose2d getDistVector(double xPrime, double zPrime, double finalYa, int tagId) {
+    Detection detection = null;
+    data();
+    for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
+      try {
+        detection = getSpecificAprilTag(tagId);
+        break;
+      } catch (Exception e) {
+        System.out.println("Failed vision attempt " + i);
+      }
+    }
+    if (detection == null) {
+      SmartDashboard.putBoolean("ableToSeeAT", false);
+      return new Pose2d(0, 0, new Rotation2d(0));
+    }
+
+    SmartDashboard.putBoolean("ableToSeeAT", true);
+
+    // detection = m_ots.
+
+    // double visionYa = -detection.ya;
+    
+    double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
+    double x_vt =
+        xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
+    double z_vt =
+        xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
+    // Should be offset variables and change based of camera location relative to the center of the
+    // robot
+    double deltaCamX = -(detection.x + x_vt);
+    double deltaCamY = -(detection.z + z_vt);
+
+    double finalAngle = visionYa + finalYa;
+
+    return new Pose2d(
+        Units.inchesToMeters(deltaCamX),
+        Units.inchesToMeters(deltaCamY),
+        new Rotation2d(Units.degreesToRadians(finalAngle)));
+  }
+
+  public Pose2d visionAutoData(double xPrime, double zPrime, double finalYa, int tagId) {
+    Detection detection = null;
+    for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
+      try {
+        detection = getSpecificAprilTag(tagId);
+        break;
+      } catch (Exception e) {
+        System.out.println("Failed vision attempt " + i);
+      }
+    }
+    if (detection == null) {
+      SmartDashboard.putBoolean("ableToSeeAT", false);
+      return null;
+    }
+
+    SmartDashboard.putBoolean("ableToSeeAT", true);
+
+    // detection = m_ots.
+
+    double visionYa = -detection.ya;
+    double x_vt =
+        xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
+    double z_vt =
+        xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
+    // Should be offset variables and change based of camera location relative to the center of the
+    // robot
+    double deltaRobotX = -(detection.x + x_vt - Constants.CAM_X_OFFSET);
+    double deltaRobotY = -(detection.z + z_vt - Constants.CAM_Y_OFFSET);
+
+    // double deltaRobotX = -(detection.x + x_vt - Constants.VISION_TOTE_CAM_OFFSET[0]);
+    // double deltaRobotY = -(detection.z + z_vt - Constants.VISION_TOTE_CAM_OFFSET[1]);
+
+    double botRadians = 0; // Units.degreesToRadians(m_dts.getPose().getRotation().getDegrees());
+    double deltaFieldX = deltaRobotX * Math.cos(botRadians) - deltaRobotY * Math.sin(botRadians);
+    double deltaFieldY = deltaRobotX * Math.sin(botRadians) + deltaRobotY * Math.cos(botRadians);
+    double finalAngle = visionYa + finalYa + Units.radiansToDegrees(botRadians);
+
+    return new Pose2d(
+        Units.inchesToMeters(deltaFieldX),
+        Units.inchesToMeters(deltaFieldY),
+        new Rotation2d(Units.degreesToRadians(finalAngle)));
+  }
+
   public Detection getAprilTagDetections(int[] tagIds) {
     Detection[] detections = new Detection[tagIds.length];
     for (int i = 0; i < tagIds.length; i++) {
@@ -329,7 +418,9 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             (-y) / z); // angle in camera coordinate system from center of camera to detected object
     // (fraction of the field view)
     SmartDashboard.putNumber("applyPitchCorrection.alpha", alpha);
-    double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    // double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    double hyp = Math.hypot(z, y);
+    double adjustedZ = hyp * Math.cos(Math.toRadians(pitchDegrees) + alpha);
     SmartDashboard.putNumber("applyPitchCorrection.adjustedZ", adjustedZ);
     return adjustedZ;
   }
@@ -656,7 +747,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       Detection detectionObject = (Detection) gsonOut.get(i);
       SmartDashboard.putNumber("updateDetections: raw z", detectionObject.z);
       detectionObject.z = applyPitchCorrection(m_cameraPitch, detectionObject.y, detectionObject.z);
-      detectionObject = applyOffset(detectionObject);
+      // detectionObject = applyOffset(detectionObject);
       SmartDashboard.putNumber("updateDetections.detectionObject.z", detectionObject.z);
       if (detectionObject.objectLabel.substring(0, 3).equals("tag")) {
 
