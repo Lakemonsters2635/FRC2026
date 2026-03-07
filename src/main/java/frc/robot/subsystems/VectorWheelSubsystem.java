@@ -19,11 +19,11 @@ public class VectorWheelSubsystem extends SubsystemBase {
   }
 
   public void setVectorWheelsIn(){
-    agitatorMotorTop.setVoltage(-SmartDashboard.getNumber("vectorPower", 0.5));
+    agitatorMotorTop.setVoltage(-1.5);
   }
   
   public void setVectorWheelsOut(){
-    agitatorMotorTop.setVoltage(SmartDashboard.getNumber("vectorPower", 0.5));
+    agitatorMotorTop.setVoltage(1.5);
   }
 
    public void stopVectorWheels() {

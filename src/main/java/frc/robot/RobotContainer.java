@@ -66,7 +66,7 @@ public class RobotContainer {
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_uptakeSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
-  private static IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
+  private static IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
   private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
   private static IntakeAngleCommand m_intakeAngleCommand = new IntakeAngleCommand(m_intakeAngleSubsystem);
@@ -152,19 +152,28 @@ rollerShakeButton.whileTrue(
 
         // Always run shooter
         m_shooterSubsystem.shoot();
+        m_rollerSubsystem.setRollersForward();
 
         // After 0.5 seconds, run uptake
         if (shootTimer.hasElapsed(0.5)) {
             m_uptakeSubsystem.uptake();
             m_vectorWheelSubsystem.setVectorWheelsIn();
         }
+        if (System.currentTimeMillis() % 1000 > 500) {
+              m_rollerSubsystem.setRollersForward();
+        }
+        else{
+              m_rollerSubsystem.setRollersBackward();
+        }
 
       }, m_shooterSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem)
       .finallyDo(interrupted -> {
         shootTimer.stop();
+        
         m_shooterSubsystem.shooterStop();
         m_uptakeSubsystem.stopUptake();
         m_vectorWheelSubsystem.stopVectorWheels();
+        m_rollerSubsystem.stopRollers();
       })
   );
 
