@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -13,6 +15,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -127,6 +131,19 @@ public class TurretSubsystem extends SubsystemBase {
     isAutoControl = state;
   }
 
+  public int getTag(){
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+      if (alliance.get() == Alliance.Red) {
+        return 10;
+      }
+      else{
+        return 26;
+      }
+    }
+    return 10;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
@@ -138,7 +155,7 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("April tag x turret", aprilTagX);
     SmartDashboard.putNumber("April tag y turret", aprilTagY);
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDelataRot);
-    aimAtTarget(6);
+    aimAtTarget(getTag());
 
     // if(isAutoControl){
     //   aimAtTarget(10);

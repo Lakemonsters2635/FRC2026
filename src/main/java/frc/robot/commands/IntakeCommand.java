@@ -5,16 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.IntakeAngleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   IntakeSubsystem m_intakeSubsystem;
+  IntakeAngleSubsystem m_intakeAngleSubsystem;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem) {
+  public IntakeCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
+    m_intakeAngleSubsystem = intakeAngleSubsystem;
     addRequirements(m_intakeSubsystem);
+    addRequirements(m_intakeAngleSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -22,6 +26,7 @@ public class IntakeCommand extends Command {
   @Override
   public void initialize() {
     m_intakeSubsystem.intakeIn();
+    m_intakeAngleSubsystem.setVolts(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,6 +37,7 @@ public class IntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_intakeSubsystem.intakeStop();
+    m_intakeAngleSubsystem.setVolts(0);
   }
 
   // Returns true when the command should end.
