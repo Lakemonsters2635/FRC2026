@@ -418,7 +418,9 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             (-y) / z); // angle in camera coordinate system from center of camera to detected object
     // (fraction of the field view)
     SmartDashboard.putNumber("applyPitchCorrection.alpha", alpha);
-    double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    // double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    double hyp = Math.hypot(z, y);
+    double adjustedZ = hyp * Math.cos(Math.toRadians(pitchDegrees) + alpha);
     SmartDashboard.putNumber("applyPitchCorrection.adjustedZ", adjustedZ);
     return adjustedZ;
   }
