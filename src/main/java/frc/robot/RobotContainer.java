@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AgitateCommand;
+import frc.robot.commands.IntakeAngleCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.ManualTurret;
@@ -28,6 +29,7 @@ import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UptakeCommand;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeAngleSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 import frc.robot.subsystems.RollerSubsystem;
@@ -58,6 +60,7 @@ public class RobotContainer {
   private static RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
   private static UptakeSubsystem m_uptakeSubsystem = new UptakeSubsystem();
   private static VectorWheelSubsystem m_vectorWheelSubsystem = new VectorWheelSubsystem();
+  private static IntakeAngleSubsystem m_intakeAngleSubsystem = new IntakeAngleSubsystem();
 
   // Cmmands
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
@@ -66,6 +69,7 @@ public class RobotContainer {
   private static IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
   private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
+  private static IntakeAngleCommand m_intakeAngleCommand = new IntakeAngleCommand(m_intakeAngleSubsystem);
 
   public RobotContainer() {
     autoChooser.setDefaultOption(
@@ -78,8 +82,6 @@ public class RobotContainer {
 
   private void configureBindings() {
     // left joystick buttons
-    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
-    Trigger intakeOutward = new JoystickButton(leftJoystick, Constants.INTAKE_OUT_BUTTON);
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
     Trigger setHighButton = new JoystickButton(leftJoystick, 2);
     Trigger setLowButton = new JoystickButton(leftJoystick, 3);
@@ -87,6 +89,9 @@ public class RobotContainer {
     Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
     Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
+    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
+    Trigger intakeOutward = new JoystickButton(leftJoystick, Constants.INTAKE_OUT_BUTTON);
+    Trigger intakeAngleDown = new JoystickButton(leftJoystick, 10);
 
     // right joystick button
     Trigger manualTurredButton = new JoystickButton(rightJoystick, 4);
@@ -106,7 +111,8 @@ public class RobotContainer {
 
     rollerInButton.whileTrue(new StartEndCommand(
       ()->m_rollerSubsystem.setRollersForward(), ()->m_rollerSubsystem.stopRollers(), m_rollerSubsystem));
-
+    
+      intakeAngleDown.whileTrue(m_intakeAngleCommand);
 
 rollerShakeButton.whileTrue(
     new StartEndCommand(
@@ -190,8 +196,8 @@ rollerShakeButton.whileTrue(
 
     vectorWheelInButton.whileTrue(m_agitateCommand);
     uptakeButton.whileTrue(m_uptakeCommand);
-    // moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
-    // moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
+    moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
+    moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
     // Need to change this depending on the alliance, only for testing, be carefull
     // aimTurretAtAprilTag.onTrue(new InstantCommand(() -> m_turretSubsystem.aimAtTarget(10)));
   }

@@ -14,18 +14,19 @@ public class RollerSubsystem extends SubsystemBase {
   /** Creates a new RollerSubsystem. */
   TalonFX agitatorMotorBottom;
   public RollerSubsystem() {
-      agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
-      SmartDashboard.putNumber("rollerPower", 2);
+    agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
+    SmartDashboard.putNumber("rollerPower", 2);
   }
 
   public void setRollersBackward(){
     agitatorMotorBottom.setVoltage(-SmartDashboard.getNumber("rollerPower", 2));
   }
+
   public void setRollersForward(){
     agitatorMotorBottom.setVoltage(SmartDashboard.getNumber("rollerPower", 2));
   }
 
-   public void stopRollers(){
+  public void stopRollers(){
     agitatorMotorBottom.setVoltage(0);
   }
 

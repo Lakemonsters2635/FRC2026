@@ -35,13 +35,13 @@ public class Constants {
 
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90);
+      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180);
   public static final double FRONT_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90+88);
+      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90+88 - 90);
   public static final double BACK_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90);
+      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90  - 5.5 + 90 + 90 + 180);
   public static final double BACK_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90+82);
+      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90+82-90);
 
   // FRONT LEFT
   public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
@@ -120,13 +120,13 @@ public class Constants {
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id
   public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
   public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
-  public static final double TURRET_POWER = 2; // TODO: Chang
+  public static final double TURRET_POWER = 2; // TODO: Change
   public static final double TURRET_ANGLE_RANGE =
       2; // This is the amount of error that the go to pose command has in degrees TODO: Change
   public static final double TURRET_PID_CONSTANT = 0.6;
   public static final double TURRET_ANGLE_MOVE = 4.0;
-  public static final double MIN_LIMIT_ROTATION = -70;
-  public static final double MAX_LIMIT_ROTATION = 80;
+  public static final double MIN_LIMIT_ROTATION = -45;
+  public static final double MAX_LIMIT_ROTATION = 45;
   public static final double APRIL_TAG_AIM_OFFSET = 5;
   // Actuator Constnats
   public static final int LEFT_ACTUATOR_ID = 8;

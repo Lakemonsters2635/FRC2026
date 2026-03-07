@@ -22,7 +22,6 @@ public class UptakeSubsystem extends SubsystemBase {
   }
 
  
-
   public void stopUptake() {
     uptakeMotor.setVoltage(0);
   }

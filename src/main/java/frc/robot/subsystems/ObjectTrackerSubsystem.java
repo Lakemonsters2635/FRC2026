@@ -68,7 +68,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   private final double CAMERA_PITCH_FRONT = 0; // should be 23
   private final double CAMERA_PITCH_BACK = 0;
-  private double m_cameraPitch;
+  private double m_cameraPitch = Constants.CAMERA_TILT;
 
   // rotation matrix
   private double cameraTilt = Constants.CAMERA_TILT;
@@ -269,6 +269,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
    */
   public Pose2d getDistVector(double xPrime, double zPrime, double finalYa, int tagId) {
     Detection detection = null;
+    data();
     for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
       try {
         detection = getSpecificAprilTag(tagId);
@@ -287,7 +288,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     // detection = m_ots.
 
     // double visionYa = -detection.ya;
-    double visionYa = Math.atan(visionZ / visionX);
+    
+    double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
         xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
     double z_vt =
@@ -743,7 +745,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       Detection detectionObject = (Detection) gsonOut.get(i);
       SmartDashboard.putNumber("updateDetections: raw z", detectionObject.z);
       detectionObject.z = applyPitchCorrection(m_cameraPitch, detectionObject.y, detectionObject.z);
-      detectionObject = applyOffset(detectionObject);
+      // detectionObject = applyOffset(detectionObject);
       SmartDashboard.putNumber("updateDetections.detectionObject.z", detectionObject.z);
       if (detectionObject.objectLabel.substring(0, 3).equals("tag")) {
 

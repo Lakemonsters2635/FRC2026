@@ -32,58 +32,55 @@ public class TurretSubsystem extends SubsystemBase {
   double pid;
   public double m_poseTarget;
   private boolean isAutoControl = true;
+  public double aprilTagX = 0;
+  public double aprilTagY = 0;
+  public double aprilTagDelataRot = 0;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
     m_turretConfig = new SparkMaxConfig();
+    
+    SmartDashboard.putNumber("kp turret", .08);
+    SmartDashboard.putNumber("ki turret", .0);
+    SmartDashboard.putNumber("kd turret", .0);
 
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(0.08, 0, 0); // TODO: change values
+    m_turretController = new PIDController(SmartDashboard.getNumber("kp turret", .08), SmartDashboard.getNumber("ki turret", .0), SmartDashboard.getNumber("kd turret", .0)); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
   public void aimAtTarget(int tag) {
-    // This is the angle that needs to be added to the turrets current angle to make the turret aim
-    // at the april tag
-    double angleToAP = m_objectTrackerSubsystem.getVisionYa(tag);
-    // This is the angle between the april tags one to the bot and the one for the ideal offset
-    // vector
-
-    // id9 .356m
-    double angleToAPOffset = 0;
-    double finalAngle = 0;
     Pose2d aprilTagVector =
         m_objectTrackerSubsystem.getDistVector(
             0,
-            Units.metersToInches(.6), // -/+   .6m
+            0, // -/+   .6m
             0,
             tag);
+    // Pose2d aprilTagVector =
+    //     m_objectTrackerSubsystem.getDistVector(
+    //         0,
+    //         Units.metersToInches(-0.6), // -/+   .6m
+    //         0,
+    //         tag);
+    aprilTagX = aprilTagVector.getX();
+    aprilTagY = aprilTagVector.getY();
+    aprilTagDelataRot = Math.atan2(aprilTagVector.getY(), aprilTagVector.getX());
     SmartDashboard.putNumber("turretx", aprilTagVector.getX());
     SmartDashboard.putNumber("turrety", aprilTagVector.getY());
     SmartDashboard.putNumber("turretrot", aprilTagVector.getRotation().getDegrees());
-    // We shouldn't need any of these code:
-    // double aprilTagVectorX = aprilTagVector.getX();
-    // double aprilTagVectorY = aprilTagVector.getY();
-    // double aprilTagVectorAngle = Math.toDegrees(Math.atan(aprilTagVectorY / aprilTagVectorX));
-    // double aprilTagOffsetVectorAngle =
-    //     Math.toDegrees(
-    //         Math.atan(
-    //             (aprilTagVectorY + Constants.APRIL_TAG_AIM_OFFSET)
-    //                 / aprilTagVectorX)); // TODO: check if + or - APRIL_TAG_AIM_OFFSET
-    // angleToAPOffset = aprilTagOffsetVectorAngle - aprilTagVectorAngle;
-    // // We set the pose equal to the angle to the april tag combined with the angle to the ideal
-    // // vector from the april tag plus the current angle
-    // finalAngle = (angleToAPOffset + angleToAP) + getDegrees();
 
-    setTurretTarget(
-        MathUtil.clamp(
-            m_poseTarget + Math.atan(aprilTagVector.getY() / aprilTagVector.getX()),
-            Constants.MIN_LIMIT_ROTATION,
-            Constants.MAX_LIMIT_ROTATION));
+    m_objectTrackerSubsystem.data();
+    SmartDashboard.putNumber("Camera Z", m_objectTrackerSubsystem.getVisionZ(tag));
+
+    // setTurretTarget(
+    //     MathUtil.clamp(
+    //         m_poseTarget + Math.atan2(aprilTagVector.getY(),aprilTagVector.getX()),
+    //         Constants.MIN_LIMIT_ROTATION,
+    //         Constants.MAX_LIMIT_ROTATION));
     SmartDashboard.putNumber(
-        "deltaRotTurret", Math.atan(aprilTagVector.getY() / aprilTagVector.getX()));
+        "deltaRotTurret", Math.atan2(aprilTagVector.getY(), aprilTagVector.getX()));
   }
 
   public void turretPower(double power) {
@@ -105,7 +102,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public double getDegrees() {
     double deg =
-        (getEncoder() / 7.2)
+        (getEncoder() / 7.5)
             // *(Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
             //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
             * 90;
@@ -113,13 +110,12 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void moveTurretLeft() {
-    setTurretTarget(
-        m_poseTarget - Constants.TURRET_ANGLE_MOVE); // do not know if this is correct (+/-)
+   
+        m_poseTarget -= Constants.TURRET_ANGLE_MOVE; // do not know if this is correct (+/-)
   }
 
   public void moveTurretRight() {
-    setTurretTarget(
-        m_poseTarget + Constants.TURRET_ANGLE_MOVE); // do not know if this is correct (+/-)
+        m_poseTarget += Constants.TURRET_ANGLE_MOVE; // do not know if this is correct (+/-)
   }
 
   public void setTurretTarget(double position) {
@@ -135,7 +131,14 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
-    aimAtTarget(11);
+    m_poseTarget = MathUtil.clamp(m_poseTarget, -45, 45);
+    double fb = m_turretController.calculate(getDegrees(),m_poseTarget);
+    SmartDashboard.putNumber("Feed Back", fb);
+    SmartDashboard.putNumber("Pose Target", m_poseTarget);
+    SmartDashboard.putNumber("April tag x turret", aprilTagX);
+    SmartDashboard.putNumber("April tag y turret", aprilTagY);
+    SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDelataRot);
+    aimAtTarget(6);
 
     // if(isAutoControl){
     //   aimAtTarget(10);
@@ -145,8 +148,8 @@ public class TurretSubsystem extends SubsystemBase {
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
     //           -Constants.TURRET_POWER,
     //           Constants.TURRET_POWER);
-    //   turretPower(pid);
-    turretPower(0);
+    turretPower(fb);
+    //turretPower(0);
     // This method will be called once per scheduler run
   }
 }
