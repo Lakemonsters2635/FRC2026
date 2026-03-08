@@ -38,7 +38,11 @@ public class TurretSubsystem extends SubsystemBase {
   private boolean isAutoControl = true;
   public double aprilTagX = 0;
   public double aprilTagY = 0;
-  public double aprilTagDeltaRot = 0;
+  public double aprilTagDeltaRot = 0; // target
+  public double m_poseTarget_prev1 = 0;
+  public double m_poseTarget_prev2 = 0;
+  public double m_poseTarget_prev3 = 0;
+  public double m_poseTarget_prev4 = 0;
   private double feedForward = 0;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
@@ -52,11 +56,13 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(0.07, 0.0, 0); // TODO: change values
+    m_turretController = new PIDController(0.14, 0.0, 0.05); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
   public void aimAtTarget(int tag) {
+    m_objectTrackerSubsystem.data();
+
     Pose2d aprilTagVector =
         m_objectTrackerSubsystem.getDistVector(
             0,
@@ -69,28 +75,43 @@ public class TurretSubsystem extends SubsystemBase {
     //         Units.metersToInches(-0.6), // -/+   .6m
     //         0,
     //         tag);
-    aprilTagX = aprilTagVector.getX();
+    aprilTagX = -aprilTagVector.getX();
     aprilTagY = -aprilTagVector.getY();
+    double pose_target;
     if (!aprilTagVector.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
       aprilTagDeltaRot =
           Units.radiansToDegrees(
-              Math.atan2(aprilTagVector.getY(), aprilTagVector.getX()) + Math.PI / 2);
+              Math.atan2(aprilTagY, aprilTagX) - Math.PI / 2);
+      pose_target = getDegrees() - aprilTagDeltaRot;
+      m_poseTarget_prev1 = pose_target;
+      m_poseTarget_prev2 = pose_target;
+      m_poseTarget_prev3 = pose_target;
+      m_poseTarget_prev4 = pose_target;
     } else {
-      aprilTagDeltaRot = 0;
+      pose_target = m_poseTarget_prev1;
+      m_poseTarget_prev1 = m_poseTarget_prev2;
+      m_poseTarget_prev2 = m_poseTarget_prev3;
+      m_poseTarget_prev3 = m_poseTarget_prev4;
+      m_poseTarget_prev4 = 0; // goes back to straight if we are unable to see for about 80ms
     }
-    setTurretTarget(getDegrees() + aprilTagDeltaRot);
-    SmartDashboard.putNumber("turretx", aprilTagVector.getX());
-    SmartDashboard.putNumber("turrety", aprilTagVector.getY());
-    SmartDashboard.putNumber("turretrot", aprilTagVector.getRotation().getDegrees());
 
-    m_objectTrackerSubsystem.data();
+    // aprilTagDeltaRot is positive ccw, getDegrees is positive cw
+    // Substracting off the deltaRot gives us the correct target turret pos in the turret frame of reference
+    // TODO: Refactor everything to make coordinates aligned
+
+    setTurretTarget(pose_target);    
+    SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
+    SmartDashboard.putNumber("tur: vision targety", aprilTagY);
+    SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
+    SmartDashboard.putNumber("tur: getDegrees", getDegrees());
+    SmartDashboard.putNumber("tur: pose_target aimAtTarget", pose_target);
+
 
     // setTurretTarget(
     //     MathUtil.clamp(
     //         m_poseTarget + Math.atan2(aprilTagVector.getY(),aprilTagVector.getX()),
     //         Constants.MIN_LIMIT_ROTATION,
     //         Constants.MAX_LIMIT_ROTATION));
-    SmartDashboard.putNumber("deltaRotTurret", aprilTagDeltaRot);
   }
 
   public void turretPower(double power) {
@@ -164,12 +185,11 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("April tag x turret", aprilTagX);
     SmartDashboard.putNumber("April tag y turret", aprilTagY);
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
-    aimAtTarget(10);
-    // aimAtTarget(getTag());
 
-    // if(isAutoControl){
-    //   aimAtTarget(10);
-    // }
+
+    if(isAutoControl){
+      aimAtTarget(10); //TODO: replace with getTarget when done
+    }
     // pid =
     //       MathUtil.clamp(
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
@@ -183,10 +203,10 @@ public class TurretSubsystem extends SubsystemBase {
       feedForward = -0.7 * (getDegrees() + 30) / (Constants.MIN_LIMIT_ROTATION + 30);
     }
 
-    if (Math.abs(getDegrees()) > 62) {
+    if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      turretPower(-fb + feedForward);
+      turretPower(fb);// + feedForward);
     }
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
     // turretPower(feedForward);
