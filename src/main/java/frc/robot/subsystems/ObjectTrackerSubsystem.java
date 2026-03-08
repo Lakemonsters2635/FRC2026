@@ -288,7 +288,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     // detection = m_ots.
 
     // double visionYa = -detection.ya;
-    
+
     double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
         xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));

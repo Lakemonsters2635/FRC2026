@@ -11,10 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -66,10 +64,12 @@ public class RobotContainer {
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_uptakeSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
-  private static IntakeCommand m_intakeCommand = new IntakeCommand(m_intakeSubsystem);
+  private static IntakeCommand m_intakeCommand =
+      new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
   private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
-  private static IntakeAngleCommand m_intakeAngleCommand = new IntakeAngleCommand(m_intakeAngleSubsystem);
+  private static IntakeAngleCommand m_intakeAngleCommand =
+      new IntakeAngleCommand(m_intakeAngleSubsystem);
 
   public RobotContainer() {
     autoChooser.setDefaultOption(
@@ -103,70 +103,81 @@ public class RobotContainer {
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 8);
 
-    vectorWheelOutButton.whileTrue(new StartEndCommand(
-      ()->m_vectorWheelSubsystem.setVectorWheelsOut(), ()->m_vectorWheelSubsystem.stopVectorWheels(), m_vectorWheelSubsystem  ));
+    vectorWheelOutButton.whileTrue(
+        new StartEndCommand(
+            () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
+            () -> m_vectorWheelSubsystem.stopVectorWheels(),
+            m_vectorWheelSubsystem));
 
-    rollerOutButton.whileTrue(new StartEndCommand(
-      ()->m_rollerSubsystem.setRollersBackward(), ()->m_rollerSubsystem.stopRollers(), m_rollerSubsystem));
+    rollerOutButton.whileTrue(
+        new StartEndCommand(
+            () -> m_rollerSubsystem.setRollersBackward(),
+            () -> m_rollerSubsystem.stopRollers(),
+            m_rollerSubsystem));
 
-    rollerInButton.whileTrue(new StartEndCommand(
-      ()->m_rollerSubsystem.setRollersForward(), ()->m_rollerSubsystem.stopRollers(), m_rollerSubsystem));
-    
-      intakeAngleDown.whileTrue(m_intakeAngleCommand);
+    rollerInButton.whileTrue(
+        new StartEndCommand(
+            () -> m_rollerSubsystem.setRollersForward(),
+            () -> m_rollerSubsystem.stopRollers(),
+            m_rollerSubsystem));
 
-rollerShakeButton.whileTrue(
-    new StartEndCommand(
-        // onStart
-        () -> {
-            lastFlipTime = System.currentTimeMillis();
-        },
+    intakeAngleDown.whileTrue(m_intakeAngleCommand);
 
-        // onEnd
-        () -> m_rollerSubsystem.stopRollers(),
+    rollerShakeButton.whileTrue(
+        new StartEndCommand(
+                // onStart
+                () -> {
+                  lastFlipTime = System.currentTimeMillis();
+                },
 
-        m_rollerSubsystem
-    ).andThen(
-        new RunCommand(() -> {
-            long now = System.currentTimeMillis();
-            if (now - lastFlipTime > SHAKE_INTERVAL_MS) {
-                lastFlipTime = now;
-                forward = !forward;
+                // onEnd
+                () -> m_rollerSubsystem.stopRollers(),
+                m_rollerSubsystem)
+            .andThen(
+                new RunCommand(
+                    () -> {
+                      long now = System.currentTimeMillis();
+                      if (now - lastFlipTime > SHAKE_INTERVAL_MS) {
+                        lastFlipTime = now;
+                        forward = !forward;
 
-                if (forward) {
-                    m_rollerSubsystem.setRollersForward();
-                } else {
-                    m_rollerSubsystem.setRollersBackward();
-                }
-            }
-        }, m_rollerSubsystem)
-    )
-);
+                        if (forward) {
+                          m_rollerSubsystem.setRollersForward();
+                        } else {
+                          m_rollerSubsystem.setRollersBackward();
+                        }
+                      }
+                    },
+                    m_rollerSubsystem)));
 
     shootButton.whileTrue(
-      new RunCommand(() -> {
-        // Start timer on first loop
-        if (!shootTimer.isRunning()) {
-            shootTimer.reset();
-            shootTimer.start();
-        }
+        new RunCommand(
+                () -> {
+                  // Start timer on first loop
+                  if (!shootTimer.isRunning()) {
+                    shootTimer.reset();
+                    shootTimer.start();
+                  }
 
-        // Always run shooter
-        m_shooterSubsystem.shoot();
+                  // Always run shooter
+                  m_shooterSubsystem.shoot();
 
-        // After 0.5 seconds, run uptake
-        if (shootTimer.hasElapsed(0.5)) {
-            m_uptakeSubsystem.uptake();
-            m_vectorWheelSubsystem.setVectorWheelsIn();
-        }
-
-      }, m_shooterSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem)
-      .finallyDo(interrupted -> {
-        shootTimer.stop();
-        m_shooterSubsystem.shooterStop();
-        m_uptakeSubsystem.stopUptake();
-        m_vectorWheelSubsystem.stopVectorWheels();
-      })
-  );
+                  // After 0.5 seconds, run uptake
+                  if (shootTimer.hasElapsed(0.5)) {
+                    m_uptakeSubsystem.uptake();
+                    m_vectorWheelSubsystem.setVectorWheelsIn();
+                  }
+                },
+                m_shooterSubsystem,
+                m_uptakeSubsystem,
+                m_vectorWheelSubsystem)
+            .finallyDo(
+                interrupted -> {
+                  shootTimer.stop();
+                  m_shooterSubsystem.shooterStop();
+                  m_uptakeSubsystem.stopUptake();
+                  m_vectorWheelSubsystem.stopVectorWheels();
+                }));
 
     // shootButton.whileTrue(new SequentialCommandGroup(
     //   m_shooterCommand.withTimeout(0),

@@ -5,13 +5,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class UptakeSubsystem extends SubsystemBase {
   /** Creates a new UptakeSubsystem. */
   TalonFX uptakeMotor;
+
   public UptakeSubsystem() {
     uptakeMotor = new TalonFX(Constants.UPTAKE_MOTOR_ID);
   }
@@ -21,11 +21,9 @@ public class UptakeSubsystem extends SubsystemBase {
     uptakeMotor.setVoltage(-3);
   }
 
- 
   public void stopUptake() {
     uptakeMotor.setVoltage(0);
   }
-
 
   @Override
   public void periodic() {

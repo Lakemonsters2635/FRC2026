@@ -5,13 +5,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeAngleSubsystem extends SubsystemBase {
   /** Creates a new IntakeAngleSubsystem. */
   TalonFX intakeAngleMotor;
+
   public IntakeAngleSubsystem() {
     intakeAngleMotor = new TalonFX(11);
     SmartDashboard.putNumber("Intake Angle voltage", 0);
@@ -22,7 +22,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     intakeAngleMotor.setVoltage(3); // +
   }
 
-  public void setVolts(double volts){
+  public void setVolts(double volts) {
     intakeAngleMotor.setVoltage(volts);
   }
 
@@ -31,7 +31,5 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic(){
-  }
-
+  public void periodic() {}
 }

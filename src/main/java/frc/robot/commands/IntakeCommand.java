@@ -12,6 +12,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   IntakeSubsystem m_intakeSubsystem;
+
   IntakeAngleSubsystem m_intakeAngleSubsystem;
 
   public IntakeCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {

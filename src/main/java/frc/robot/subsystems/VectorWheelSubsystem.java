@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,20 +12,21 @@ import frc.robot.Constants;
 public class VectorWheelSubsystem extends SubsystemBase {
   /** Creates a new VectorWheelSubsystem. */
   TalonFX agitatorMotorTop;
+
   public VectorWheelSubsystem() {
     agitatorMotorTop = new TalonFX(Constants.AGITATOR_MOTOR_TOP_ID); // orange
     SmartDashboard.putNumber("vectorPower", 0.5);
   }
 
-  public void setVectorWheelsIn(){
+  public void setVectorWheelsIn() {
     agitatorMotorTop.setVoltage(-SmartDashboard.getNumber("vectorPower", 0.5));
   }
-  
-  public void setVectorWheelsOut(){
+
+  public void setVectorWheelsOut() {
     agitatorMotorTop.setVoltage(SmartDashboard.getNumber("vectorPower", 0.5));
   }
 
-   public void stopVectorWheels() {
+  public void stopVectorWheels() {
     agitatorMotorTop.setVoltage(0);
   }
 
