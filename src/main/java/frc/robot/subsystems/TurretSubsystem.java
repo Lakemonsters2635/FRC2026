@@ -206,7 +206,8 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      turretPower(fb);// + feedForward);
+      // turretPower(fb + feedForward);
+      turretPower(0);
     }
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
     // turretPower(feedForward);
