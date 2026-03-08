@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -38,7 +39,8 @@ public class TurretSubsystem extends SubsystemBase {
   private boolean isAutoControl = true;
   public double aprilTagX = 0;
   public double aprilTagY = 0;
-  public double aprilTagDelataRot = 0;
+  public double aprilTagDeltaRot = 0;
+  private double feedForward = 0;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -51,7 +53,7 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(SmartDashboard.getNumber("kp turret", .08), SmartDashboard.getNumber("ki turret", .0), SmartDashboard.getNumber("kd turret", .0)); // TODO: change values
+    m_turretController = new PIDController(0.07,0.0, 0); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
@@ -59,7 +61,7 @@ public class TurretSubsystem extends SubsystemBase {
     Pose2d aprilTagVector =
         m_objectTrackerSubsystem.getDistVector(
             0,
-            0, // -/+   .6m
+            Units.metersToInches(.6), // -/+   .6m
             0,
             tag);
     // Pose2d aprilTagVector =
@@ -69,14 +71,19 @@ public class TurretSubsystem extends SubsystemBase {
     //         0,
     //         tag);
     aprilTagX = aprilTagVector.getX();
-    aprilTagY = aprilTagVector.getY();
-    aprilTagDelataRot = Math.atan2(aprilTagVector.getY(), aprilTagVector.getX());
+    aprilTagY = -aprilTagVector.getY();
+    if(!aprilTagVector.equals(new Pose2d(0,0, new Rotation2d(0)))){
+      aprilTagDeltaRot = Units.radiansToDegrees(Math.atan2(aprilTagVector.getY(), aprilTagVector.getX()) + Math.PI/2);
+    }
+    else{
+      aprilTagDeltaRot = 0;
+    }
+    setTurretTarget(getDegrees() + aprilTagDeltaRot);
     SmartDashboard.putNumber("turretx", aprilTagVector.getX());
     SmartDashboard.putNumber("turrety", aprilTagVector.getY());
     SmartDashboard.putNumber("turretrot", aprilTagVector.getRotation().getDegrees());
 
     m_objectTrackerSubsystem.data();
-    SmartDashboard.putNumber("Camera Z", m_objectTrackerSubsystem.getVisionZ(tag));
 
     // setTurretTarget(
     //     MathUtil.clamp(
@@ -84,7 +91,7 @@ public class TurretSubsystem extends SubsystemBase {
     //         Constants.MIN_LIMIT_ROTATION,
     //         Constants.MAX_LIMIT_ROTATION));
     SmartDashboard.putNumber(
-        "deltaRotTurret", Math.atan2(aprilTagVector.getY(), aprilTagVector.getX()));
+        "deltaRotTurret", aprilTagDeltaRot);
   }
 
   public void turretPower(double power) {
@@ -110,7 +117,7 @@ public class TurretSubsystem extends SubsystemBase {
             // *(Constants.RATIO_SPARKMAX_ROTATION_TO_TURRET
             //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
             * 90;
-    return deg % 360;
+    return deg;
   }
 
   public void moveTurretLeft() {
@@ -124,7 +131,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void setTurretTarget(double position) {
     m_poseTarget =
-        MathUtil.clamp(m_poseTarget, Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION);
+        MathUtil.clamp(position, Constants.MIN_LIMIT_ROTATION, Constants.MAX_LIMIT_ROTATION);
   }
 
   public void setAutoControl(boolean state) {
@@ -148,14 +155,15 @@ public class TurretSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
-    m_poseTarget = MathUtil.clamp(m_poseTarget, -45, 45);
-    double fb = m_turretController.calculate(getDegrees(),m_poseTarget);
+    m_poseTarget = MathUtil.clamp(m_poseTarget, -60, 60);
+    double fb = MathUtil.clamp(m_turretController.calculate(getDegrees(), m_poseTarget), -5, 5);
     SmartDashboard.putNumber("Feed Back", fb);
     SmartDashboard.putNumber("Pose Target", m_poseTarget);
     SmartDashboard.putNumber("April tag x turret", aprilTagX);
     SmartDashboard.putNumber("April tag y turret", aprilTagY);
-    SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDelataRot);
-    aimAtTarget(getTag());
+    SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
+    aimAtTarget(10);
+    // aimAtTarget(getTag());
 
     // if(isAutoControl){
     //   aimAtTarget(10);
@@ -165,8 +173,24 @@ public class TurretSubsystem extends SubsystemBase {
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
     //           -Constants.TURRET_POWER,
     //           Constants.TURRET_POWER);
-    turretPower(fb);
-    //turretPower(0);
+    if(getDegrees() > -30 && getDegrees() < 17){
+      feedForward = 0;
+    } else if(getDegrees() > 17){
+      feedForward = 0.7 * (getDegrees()-17)/(Constants.MAX_LIMIT_ROTATION-17);
+    } else{
+      feedForward = -0.7 * (getDegrees()+30)/(Constants.MIN_LIMIT_ROTATION+30);
+    }
+
+    if(Math.abs(getDegrees()) > 62){
+      turretPower(0);
+    }
+    else{
+      turretPower(-fb + feedForward);
+    }
+    SmartDashboard.putNumber("Feed Forward Turret", feedForward);
+    // turretPower(feedForward);
+    
+    // turretPower(0);
     // This method will be called once per scheduler run
   }
 }
