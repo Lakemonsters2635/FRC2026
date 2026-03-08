@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,10 +20,12 @@ public class ActuatorSubsystem extends SubsystemBase {
   Servo m_linearActuatorRight;
 
   Servo m_linearActuatorLeft;
+  ObjectTrackerSubsystem m_obj;
 
-  public ActuatorSubsystem() {
+  public ActuatorSubsystem(ObjectTrackerSubsystem obj) {
     m_linearActuatorLeft = new Servo(Constants.LEFT_ACTUATOR_ID);
     m_linearActuatorRight = new Servo(Constants.RIGHT_ACTUATOR_ID);
+    m_obj = obj;
   }
 
   public void setPosition(double pos) {
@@ -45,6 +49,11 @@ public class ActuatorSubsystem extends SubsystemBase {
     return false;
   }
 
+  public void getDesiredAngle(){
+    Pose2d target = m_obj.getDistVector(0, Units.metersToInches(.6), 0, -1);
+    
+  }
+
   @Override
   public void periodic() {
     // m_linearActuatorLeft.updateCurPos();
@@ -53,6 +62,7 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("getPosActuatorRight", m_linearActuatorRight.getPosition());
     // SmartDashboard.putNumber("getPosActuatorRight",
     // m_linearActuatorRight.getEstimatedPosition());
+    
     setPosition(
         MathUtil.clamp(
             Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop

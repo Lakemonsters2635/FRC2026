@@ -49,9 +49,9 @@ public class RobotContainer {
   public static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
 
   // SUBSYSTEMS
-  private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem();
   private static ObjectTrackerSubsystem m_objectTrackerSubsystem =
-      new ObjectTrackerSubsystem("shripFront");
+  new ObjectTrackerSubsystem("shripFront");
+  private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(m_objectTrackerSubsystem);
   private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
   private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
   private static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
