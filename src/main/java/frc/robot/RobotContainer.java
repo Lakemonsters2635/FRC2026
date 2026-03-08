@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -93,6 +94,7 @@ public class RobotContainer {
     Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
     Trigger intakeOutward = new JoystickButton(leftJoystick, Constants.INTAKE_OUT_BUTTON);
     Trigger intakeAngleDown = new JoystickButton(leftJoystick, 10);
+    Trigger lockTurret = new JoystickButton(leftJoystick, 11);
 
     // right joystick button
     Trigger manualTurredButton = new JoystickButton(rightJoystick, 4);
@@ -150,6 +152,16 @@ public class RobotContainer {
                       }
                     },
                     m_rollerSubsystem)));
+
+    lockTurret.toggleOnTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(()-> m_turretSubsystem.setAutoControl(false)),
+        new InstantCommand(()-> m_turretSubsystem.setTurretTarget(0))
+      )
+    );
+    lockTurret.toggleOnFalse(
+      new InstantCommand(()-> m_turretSubsystem.setAutoControl(true))
+    );
 
     shootButton.whileTrue(new Shoot(m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
     // shootButton.whileTrue(

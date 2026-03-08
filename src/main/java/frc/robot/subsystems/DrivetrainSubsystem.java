@@ -587,8 +587,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           true,
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
+      xPowerCommanded *=-1;
+      SmartDashboard.putNumber("swerve: xCommanded", xPowerCommanded);
+      SmartDashboard.putNumber("swerve: yCommanded", yPowerCommanded);
       this.drive(
-          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed * -1,
+          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
           true);

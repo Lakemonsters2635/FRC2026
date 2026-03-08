@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-  public static final double kPModuleTurningController = 0.1; // 0.5
+  public static final double kPModuleTurningController = 0.7; // 0.5
   public static final double kPModuleDriveController = 0; // added random value for test
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
@@ -35,13 +35,13 @@ public class Constants {
 
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180);
+      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180-3);
   public static final double FRONT_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90 + 88 - 90);
+      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90 + 88 - 90 + 9);
   public static final double BACK_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90 - 5.5 + 90 + 90 + 180);
+      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90 - 5.5 + 90 + 90 + 180 +2 );
   public static final double BACK_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90 + 82 - 90);
+      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90 + 82 - 90 + 1);
 
   // FRONT LEFT
   public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
@@ -128,8 +128,8 @@ public class Constants {
 
   public static final double TURRET_PID_CONSTANT = 0.6;
   public static final double TURRET_ANGLE_MOVE = 4.0;
-  public static final double MIN_LIMIT_ROTATION = -60;
-  public static final double MAX_LIMIT_ROTATION = 60;
+  public static final double MIN_LIMIT_ROTATION = -45;
+  public static final double MAX_LIMIT_ROTATION = 45;
   public static final double APRIL_TAG_AIM_OFFSET = 5;
   // Actuator Constnats
   public static final int LEFT_ACTUATOR_ID = 8;
