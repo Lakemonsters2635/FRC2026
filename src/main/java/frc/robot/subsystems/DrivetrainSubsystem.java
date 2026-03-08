@@ -573,10 +573,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
       }
 
       // TODO: look at the deadband below
-      // if (Math.pow(rightJoystick.getTwist(), 3) > 0.05
-      //     || Math.pow(rightJoystick.getTwist(), 3) < -0.05) {
-      //   rotCommanded = rightJoystick.getTwist() * -1;
-      // }
+      if (Math.pow(rightJoystick.getTwist(), 3) > 0.05
+          || Math.pow(rightJoystick.getTwist(), 3) < -0.05) {
+        rotCommanded = rightJoystick.getTwist() * -1;
+      }
 
       // TODO: document how to use this button to reset various robot centers of rotation
       // Note: you can have multiple buttons for defining multiple centers of rotation.
@@ -592,8 +592,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
           true);
+      // this.drive(0, 0, 0, true);
     }
     // }
+
     SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
     SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("FR_pos", m_frontRight.getPosition().distanceMeters);

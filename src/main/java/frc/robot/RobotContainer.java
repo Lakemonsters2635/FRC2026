@@ -23,6 +23,7 @@ import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.ManualTurret;
 import frc.robot.commands.PidAutoCommand;
 import frc.robot.commands.SetLinearPoseCommand;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UptakeCommand;
 import frc.robot.subsystems.ActuatorSubsystem;
@@ -150,34 +151,43 @@ public class RobotContainer {
                     },
                     m_rollerSubsystem)));
 
-    shootButton.whileTrue(
-        new RunCommand(
-                () -> {
-                  // Start timer on first loop
-                  if (!shootTimer.isRunning()) {
-                    shootTimer.reset();
-                    shootTimer.start();
-                  }
+    shootButton.whileTrue(new Shoot(m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
+    // shootButton.whileTrue(
+    //     new RunCommand(
+    //             () -> {
+    //               // Start timer on first loop
+    //               if (!shootTimer.isRunning()) {
+    //                 shootTimer.reset();
+    //                 shootTimer.start();
+    //               }
 
-                  // Always run shooter
-                  m_shooterSubsystem.shoot();
+    //               // Always run shooter
+    //               m_shooterSubsystem.shoot();
+    //               m_rollerSubsystem.setRollersForward();
 
-                  // After 0.5 seconds, run uptake
-                  if (shootTimer.hasElapsed(0.5)) {
-                    m_uptakeSubsystem.uptake();
-                    m_vectorWheelSubsystem.setVectorWheelsIn();
-                  }
-                },
-                m_shooterSubsystem,
-                m_uptakeSubsystem,
-                m_vectorWheelSubsystem)
-            .finallyDo(
-                interrupted -> {
-                  shootTimer.stop();
-                  m_shooterSubsystem.shooterStop();
-                  m_uptakeSubsystem.stopUptake();
-                  m_vectorWheelSubsystem.stopVectorWheels();
-                }));
+    //               // After 0.5 seconds, run uptake
+    //               if (shootTimer.hasElapsed(0.5)) {
+    //                 m_uptakeSubsystem.uptake();
+    //                 m_vectorWheelSubsystem.setVectorWheelsIn();
+    //               }
+    //               if (System.currentTimeMillis() % 1000 > 500) {
+    //                 m_rollerSubsystem.setRollersForward();
+    //               } else {
+    //                 m_rollerSubsystem.setRollersBackward();
+    //               }
+    //             },
+    //             m_shooterSubsystem,
+    //             m_uptakeSubsystem,
+    //             m_vectorWheelSubsystem)
+    //         .finallyDo(
+    //             interrupted -> {
+    //               shootTimer.stop();
+
+    //               m_shooterSubsystem.shooterStop();
+    //               m_uptakeSubsystem.stopUptake();
+    //               m_vectorWheelSubsystem.stopVectorWheels();
+    //               m_rollerSubsystem.stopRollers();
+    //             }));
 
     // shootButton.whileTrue(new SequentialCommandGroup(
     //   m_shooterCommand.withTimeout(0),

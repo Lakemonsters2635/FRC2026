@@ -19,11 +19,11 @@ public class RollerSubsystem extends SubsystemBase {
   }
 
   public void setRollersBackward() {
-    agitatorMotorBottom.setVoltage(-SmartDashboard.getNumber("rollerPower", 2));
+    agitatorMotorBottom.setVoltage(-2);
   }
 
   public void setRollersForward() {
-    agitatorMotorBottom.setVoltage(SmartDashboard.getNumber("rollerPower", 2));
+    agitatorMotorBottom.setVoltage(2);
   }
 
   public void stopRollers() {

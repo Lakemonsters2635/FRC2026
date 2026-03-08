@@ -115,6 +115,7 @@ public class Constants {
   public static final int AGITATOR_MOTOR_TOP_ID = 13; // TODO: change to correct id
   public static final int AGITATOR_MOTOR_BOTTOM_ID = 12; // TODO: change to correct id
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
+  public static final int SHAKE_INTERVAL_MS = 500;
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id
@@ -123,10 +124,12 @@ public class Constants {
   public static final double TURRET_POWER = 2; // TODO: Change
   public static final double TURRET_ANGLE_RANGE =
       2; // This is the amount of error that the go to pose command has in degrees TODO: Change
+  public static final double TURRET_TOLERANCE = 0;
+
   public static final double TURRET_PID_CONSTANT = 0.6;
   public static final double TURRET_ANGLE_MOVE = 4.0;
-  public static final double MIN_LIMIT_ROTATION = -45;
-  public static final double MAX_LIMIT_ROTATION = 45;
+  public static final double MIN_LIMIT_ROTATION = -60;
+  public static final double MAX_LIMIT_ROTATION = 60;
   public static final double APRIL_TAG_AIM_OFFSET = 5;
   // Actuator Constnats
   public static final int LEFT_ACTUATOR_ID = 8;

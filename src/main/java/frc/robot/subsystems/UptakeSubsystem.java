@@ -18,7 +18,7 @@ public class UptakeSubsystem extends SubsystemBase {
 
   public void uptake() {
     // not tested
-    uptakeMotor.setVoltage(-3);
+    uptakeMotor.setVoltage(-4);
   }
 
   public void stopUptake() {
