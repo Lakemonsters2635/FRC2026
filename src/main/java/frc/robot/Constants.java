@@ -103,7 +103,7 @@ public class Constants {
   public static final int CAM_ANGLE_OFFSET = 0;
   public static final int SHOOTER_MOTOR_ID_LEFT = 5;
   public static final int SHOOTER_MOTOR_ID_RIGHT = 6;
-  public static final double SHOOT = 2; // Can go up to 10 volts
+  public static final double SHOOT = 8; // Can go up to 10 volts
   public static final double MOTOR_STOP = 0.0;
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;
