@@ -49,14 +49,12 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
     m_turretConfig = new SparkMaxConfig();
 
-    SmartDashboard.putNumber("kp turret", .08);
-    SmartDashboard.putNumber("ki turret", .0);
-    SmartDashboard.putNumber("kd turret", .0);
+    m_turretConfig.smartCurrentLimit(20);
 
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(0.14, 0.0, 0.05); // TODO: change values
+    m_turretController = new PIDController(0.14, 0.0, 0.0); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
@@ -77,22 +75,26 @@ public class TurretSubsystem extends SubsystemBase {
     //         tag);
     aprilTagX = -aprilTagVector.getX();
     aprilTagY = -aprilTagVector.getY();
-    double pose_target;
+    double pose_target = 0;
     if (!aprilTagVector.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
       aprilTagDeltaRot =
           Units.radiansToDegrees(
               Math.atan2(aprilTagY, aprilTagX) - Math.PI / 2);
       pose_target = getDegrees() - aprilTagDeltaRot;
-      m_poseTarget_prev1 = pose_target;
-      m_poseTarget_prev2 = pose_target;
-      m_poseTarget_prev3 = pose_target;
-      m_poseTarget_prev4 = pose_target;
+      // m_poseTarget_prev1 = pose_target;
+      // m_poseTarget_prev2 = pose_target;
+      // m_poseTarget_prev3 = pose_target;
+      // m_poseTarget_prev4 = pose_target;
+      // setTurretTarget(pose_target);   
+      SmartDashboard.putNumber("tur: pose_target aimAtTarget", pose_target);
+
     } else {
-      pose_target = m_poseTarget_prev1;
-      m_poseTarget_prev1 = m_poseTarget_prev2;
-      m_poseTarget_prev2 = m_poseTarget_prev3;
-      m_poseTarget_prev3 = m_poseTarget_prev4;
-      m_poseTarget_prev4 = 0; // goes back to straight if we are unable to see for about 80ms
+      pose_target =getDegrees();
+      // pose_target = m_poseTarget_prev1;
+      // m_poseTarget_prev1 = m_poseTarget_prev2;
+      // m_poseTarget_prev2 = m_poseTarget_prev3;
+      // m_poseTarget_prev3 = m_poseTarget_prev4;
+      // m_poseTarget_prev4 = 0; // goes back to straight if we are unable to see for about 80ms
     }
 
     // aprilTagDeltaRot is positive ccw, getDegrees is positive cw
@@ -104,7 +106,7 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("tur: vision targety", aprilTagY);
     SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
     SmartDashboard.putNumber("tur: getDegrees", getDegrees());
-    SmartDashboard.putNumber("tur: pose_target aimAtTarget", pose_target);
+    SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
 
 
     // setTurretTarget(
@@ -206,8 +208,8 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      // turretPower(fb + feedForward);
-      turretPower(0);
+      turretPower(fb);//+ feedForward);
+      // turretPower(0);
     }
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
     // turretPower(feedForward);
