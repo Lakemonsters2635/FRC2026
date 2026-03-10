@@ -26,14 +26,15 @@ public class ShooterSubsystem extends SubsystemBase {
     m_objectTrackerSubsystem = objectTrackerSubsystem;
     m_shooterMotorLeft = new TalonFX(Constants.SHOOTER_MOTOR_ID_LEFT);
     m_shooterMotorRight = new TalonFX(Constants.SHOOTER_MOTOR_ID_RIGHT);
-    SmartDashboard.putNumber("Shooter Power", 8);
+   // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
   public void shoot() {
     Pose2d target = m_objectTrackerSubsystem.getDistVector(0, Units.metersToInches(.6), 0, 10);
     double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     m_shooterMotorRight.setVoltage(((power)+(magnitude/4.5))*-1);//SmartDashboard.getNumber("Shooter Power", 8) * -1);
-    m_shooterMotorLeft.setVoltage((power+(magnitude/4.5)));SmartDashboard.getNumber("Shooter Power", 8);
+    m_shooterMotorLeft.setVoltage((power+(magnitude/4.5)));//SmartDashboard.getNumber("Shooter Power", 8);
+    SmartDashboard.putNumber("Shooter Volt", (power+(magnitude/4.5)));
   }
 
   public void shooterStop() {

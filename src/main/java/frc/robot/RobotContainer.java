@@ -53,7 +53,7 @@ public class RobotContainer {
   private static ObjectTrackerSubsystem m_objectTrackerSubsystem =
   new ObjectTrackerSubsystem("shripFront");
   private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(m_objectTrackerSubsystem);
-  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(m_objectTrackerSubsystem);
   private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
   private static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
@@ -91,20 +91,25 @@ public class RobotContainer {
     Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
     Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
-    Trigger intakeInward = new JoystickButton(leftJoystick, Constants.INTAKE_IN_BUTTON);
-    Trigger intakeOutward = new JoystickButton(leftJoystick, Constants.INTAKE_OUT_BUTTON);
     Trigger intakeAngleDown = new JoystickButton(leftJoystick, 10);
     Trigger lockTurret = new JoystickButton(leftJoystick, 11);
 
     // right joystick button
-    Trigger manualTurredButton = new JoystickButton(rightJoystick, 4);
-    Trigger transportButton = new JoystickButton(rightJoystick, 1);
+        Trigger intakeInward = new JoystickButton(rightJoystick,1);
+
     Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 2);
     Trigger uptakeButton = new JoystickButton(rightJoystick, 3);
-    Trigger rollerOutButton = new JoystickButton(rightJoystick, 5);
-    Trigger rollerInButton = new JoystickButton(rightJoystick, 6);
+    Trigger rollerOutButton = new JoystickButton(rightJoystick, 10);
+    Trigger intakeOutward = new JoystickButton(rightJoystick, 6);
+
+    Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 8);
+    Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
+    swerveResetButton.onTrue(new SequentialCommandGroup(
+      new InstantCommand(()->m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.1),
+      new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry())
+    ));
 
     vectorWheelOutButton.whileTrue(
         new StartEndCommand(

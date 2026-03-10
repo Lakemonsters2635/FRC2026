@@ -55,7 +55,7 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(0.14, 0.0, 0.0); // TODO: change values
+    m_turretController = new PIDController(0.14, 0., 0.0); // TODO: change values
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
 
@@ -65,7 +65,7 @@ public class TurretSubsystem extends SubsystemBase {
     Pose2d aprilTagVector =
         m_objectTrackerSubsystem.getDistVector(
             0,
-            Units.metersToInches(.6), // -/+   .6m
+            Units.metersToInches(0.8), // -/+   .6m
             0,
             tag);
     // Pose2d aprilTagVector =
@@ -185,11 +185,13 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
     m_poseTarget = MathUtil.clamp(m_poseTarget, -60, 60);
     double fb = MathUtil.clamp(m_turretController.calculate(getDegrees(), m_poseTarget), -5, 5);
-    SmartDashboard.putNumber("Feed Back", fb);
+    SmartDashboard.putNumber("Fee d Back", fb);
     SmartDashboard.putNumber("Pose Target", m_poseTarget);
     SmartDashboard.putNumber("April tag x turret", aprilTagX);
     SmartDashboard.putNumber("April tag y turret", aprilTagY);
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
+    SmartDashboard.putNumber("tur: vision dist to target", Math.sqrt((aprilTagX*aprilTagX + aprilTagY*aprilTagY)));
+
 
 
     // if(isAutoControl){
