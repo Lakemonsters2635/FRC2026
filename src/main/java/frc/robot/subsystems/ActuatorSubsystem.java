@@ -18,7 +18,7 @@ public class ActuatorSubsystem extends SubsystemBase {
   // LinearServo m_linearActuatorLeft;
   // LinearServo m_linearActuatorRight;
   Servo m_linearActuatorRight;
-
+  double desiredPose;
   Servo m_linearActuatorLeft;
   ObjectTrackerSubsystem m_obj;
 
@@ -26,6 +26,7 @@ public class ActuatorSubsystem extends SubsystemBase {
     m_linearActuatorLeft = new Servo(Constants.LEFT_ACTUATOR_ID);
     m_linearActuatorRight = new Servo(Constants.RIGHT_ACTUATOR_ID);
     m_obj = obj;
+    SmartDashboard.putNumber("Hood Position", 0.24);
   }
 
   public void setPosition(double pos) {
@@ -49,10 +50,15 @@ public class ActuatorSubsystem extends SubsystemBase {
     return false;
   }
 
-  public void getDesiredAngle(){
-    Pose2d target = m_obj.getDistVector(0, Units.metersToInches(.6), 0, -1);
-    
+  public double getDesiredPose(){
+    Pose2d target = m_obj.getDistVector(0, Units.metersToInches(.6), 0, 10);
+    double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    if(magnitude != 0){
+      desiredPose = -0.000244799* magnitude * magnitude + 0.0787634 * magnitude + 0.134677;
+    }
+    return desiredPose;
   }
+
 
   @Override
   public void periodic() {
@@ -62,10 +68,11 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("getPosActuatorRight", m_linearActuatorRight.getPosition());
     // SmartDashboard.putNumber("getPosActuatorRight",
     // m_linearActuatorRight.getEstimatedPosition());
-    
-    setPosition(
-        MathUtil.clamp(
-            Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop
+    setPosition(getDesiredPose());
+    SmartDashboard.putNumber("desiredPose calc", getDesiredPose());
+    // setPosition(
+    //     MathUtil.clamp(SmartDashboard.getNumber("Hood Position", 0.24),0.24, 0.65));
+            //Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop
     SmartDashboard.putNumber("throttle", Math.abs(RobotContainer.leftJoystick.getThrottle()));
     // This method will be called once per scheduler run
   }

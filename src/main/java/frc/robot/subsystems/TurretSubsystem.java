@@ -44,6 +44,7 @@ public class TurretSubsystem extends SubsystemBase {
   public double m_poseTarget_prev3 = 0;
   public double m_poseTarget_prev4 = 0;
   private double feedForward = 0;
+  private double savePose = 0;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -85,7 +86,8 @@ public class TurretSubsystem extends SubsystemBase {
       // m_poseTarget_prev2 = pose_target;
       // m_poseTarget_prev3 = pose_target;
       // m_poseTarget_prev4 = pose_target;
-      // setTurretTarget(pose_target);   
+      // setTurretTarget(pose_target);
+      savePose = pose_target;   
       SmartDashboard.putNumber("tur: pose_target aimAtTarget", pose_target);
 
     } else {
@@ -104,6 +106,7 @@ public class TurretSubsystem extends SubsystemBase {
     setTurretTarget(pose_target);    
     SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
     SmartDashboard.putNumber("tur: vision targety", aprilTagY);
+    SmartDashboard.putNumber("tur: vision dist to target", Math.sqrt((aprilTagX*aprilTagX + aprilTagY*aprilTagY)));
     SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
     SmartDashboard.putNumber("tur: getDegrees", getDegrees());
     SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
@@ -189,9 +192,9 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
 
 
-    if(isAutoControl){
-      aimAtTarget(10); //TODO: replace with getTarget when done
-    }
+    // if(isAutoControl){
+    aimAtTarget(10); //TODO: replace with getTarget when done
+    // }
     // pid =
     //       MathUtil.clamp(
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
@@ -214,7 +217,7 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
     // turretPower(feedForward);
 
-    // turretPower(0);
+    //turretPower(0);
     // This method will be called once per scheduler run
   }
 }
