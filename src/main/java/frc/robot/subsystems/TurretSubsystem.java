@@ -45,6 +45,8 @@ public class TurretSubsystem extends SubsystemBase {
   public double m_poseTarget_prev4 = 0;
   private double feedForward = 0;
   private double savePose = 0;
+  private double waitTime = 25; //each increment by 1 is an additional 20 mileseconds
+  private double time = 0;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -87,11 +89,20 @@ public class TurretSubsystem extends SubsystemBase {
       // m_poseTarget_prev3 = pose_target;
       // m_poseTarget_prev4 = pose_target;
       // setTurretTarget(pose_target);
+      time = 0;
       savePose = pose_target;   
       SmartDashboard.putNumber("tur: pose_target aimAtTarget", pose_target);
 
     } else {
-      pose_target =getDegrees();
+      time++;
+      if (time < waitTime){
+        pose_target = savePose;
+      }
+      else{
+        pose_target = getDegrees();
+      }
+      
+      
       // pose_target = m_poseTarget_prev1;
       // m_poseTarget_prev1 = m_poseTarget_prev2;
       // m_poseTarget_prev2 = m_poseTarget_prev3;
