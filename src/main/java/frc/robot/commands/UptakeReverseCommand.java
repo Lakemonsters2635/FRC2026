@@ -4,48 +4,38 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeAngleSubsystem;
+import frc.robot.subsystems.UptakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeAngleCommand extends Command {
-  /** Creates a new IntakeAngleCommand. */
-  IntakeAngleSubsystem m_intakeAngleSubsystem;
-  Timer m_timer;
+public class UptakeReverseCommand extends Command {
+  /** Creates a new UptakeCommand. */
+  UptakeSubsystem m_uptakeSubsystem;
 
-  public IntakeAngleCommand(IntakeAngleSubsystem intakeAngleSubsystem) {
+  public UptakeReverseCommand(UptakeSubsystem uptakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeAngleSubsystem = intakeAngleSubsystem;
-    m_timer = new Timer();
-    addRequirements(m_intakeAngleSubsystem);
+    m_uptakeSubsystem = uptakeSubsystem;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_intakeAngleSubsystem.intakeAngleDown();
-    m_timer.start();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_intakeAngleSubsystem.intakeAngleDown();
+    m_uptakeSubsystem.reverseUptake();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeAngleSubsystem.intakeAngleStop();
+    m_uptakeSubsystem.stopUptake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_timer.get()>0.3){
-      return true;
-    }
     return false;
   }
 }

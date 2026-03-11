@@ -49,6 +49,7 @@ public class TurretSubsystem extends SubsystemBase {
   Timer m_timer;
   private double waitTime = 25; //each increment by 1 is an additional 20 mileseconds
   private double time = 0;
+  boolean isMidMode = false;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -217,22 +218,27 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
     SmartDashboard.putNumber(
         "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY * aprilTagY)));
-    if(!checkIsAutoControlValid()){
-      if(!m_timer.isRunning()){
-        m_timer.reset();
-        m_timer.start();
+    if(!isMidMode){
+      if(!checkIsAutoControlValid()){
+        if(!m_timer.isRunning()){
+          m_timer.reset();
+          m_timer.start();
+        }
+        if(m_timer.get() > 1){
+          isAutoControl = false;
+        }
       }
-      if(m_timer.get() > 1){
-        isAutoControl = false;
+      if(checkIsAutoControlValid()){
+        m_timer.stop();
+        
+        isAutoControl = true;
       }
-    }
-    if(checkIsAutoControlValid()){
-      m_timer.stop();
-      
-      isAutoControl = true;
-    }
-    if(isAutoControl){
-      aimAtTarget();
+      if(isAutoControl){
+        aimAtTarget();
+      }
+      else{
+        m_poseTarget = 0;
+      }
     }
     else{
       m_poseTarget = 0;

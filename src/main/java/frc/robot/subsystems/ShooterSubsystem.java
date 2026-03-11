@@ -14,7 +14,7 @@ import frc.robot.Constants;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   ObjectTrackerSubsystem m_objectTrackerSubsystem;
-
+  boolean isMidMode = false;
   TalonFX m_shooterMotorLeft;
 
   TalonFX m_shooterMotorRight;
