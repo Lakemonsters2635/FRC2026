@@ -569,6 +569,76 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return null;
   }
 
+  public int getNearestAprilTag() {
+    if (aprilTags.size() > 0) {
+      return Integer.parseInt(getNearestAprilTagDetection().objectLabel.substring(10));
+    }
+    return -1;
+  }
+
+  public Pose2d getNearestAprilTagDistShooter() {
+
+    int nearestTag = getNearestAprilTag();
+    if (nearestTag != -1) {
+      if (nearestTag == 21
+          || nearestTag == 26
+          || nearestTag == 18
+          || nearestTag == 10
+          || nearestTag == 5
+          || nearestTag == 2) {
+        return getDistVector(
+            0,
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
+        return getDistVector(
+            Units.metersToInches(0.35),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 24 || nearestTag == 8) {
+        return getDistVector(
+            Units.metersToInches(-0.35),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      }
+    }
+    return new Pose2d(0, 0, new Rotation2d(0));
+  }
+
+  public Pose2d getNearestAprilTagDistTurret() {
+    int nearestTag = getNearestAprilTag();
+    if (nearestTag != -1) {
+      if (nearestTag == 21
+          || nearestTag == 26
+          || nearestTag == 18
+          || nearestTag == 10
+          || nearestTag == 5
+          || nearestTag == 2) {
+        return getDistVector(
+            0,
+            Units.metersToInches(0.8), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
+        return getDistVector(
+            Units.metersToInches(0.35),
+            Units.metersToInches(0.8), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 24 || nearestTag == 8) {
+        return getDistVector(
+            Units.metersToInches(-0.35),
+            Units.metersToInches(0.8), // -/+   .6m
+            0,
+            nearestTag);
+      }
+    }
+    return new Pose2d(0, 0, new Rotation2d(0));
+  }
+
   public Detection getSpecificAprilTag(int id) {
     Detection currentAprilTag;
     data();

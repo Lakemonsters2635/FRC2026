@@ -35,11 +35,11 @@ public class Constants {
 
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180-3);
+      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180 - 3);
   public static final double FRONT_RIGHT_ANGLE_OFFSET =
       Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90 + 88 - 90 + 9);
   public static final double BACK_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90 - 5.5 + 90 + 90 + 180 +2 );
+      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90 - 5.5 + 90 + 90 + 180 + 2);
   public static final double BACK_RIGHT_ANGLE_OFFSET =
       Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90 + 82 - 90 + 1);
 
@@ -108,7 +108,7 @@ public class Constants {
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;
   public static final int IN_VOLTAGE = 12;
-  public static final int OUT_VOLTAGE = -12;
+  public static final int OUT_VOLTAGE = -3;
   public static final int INTAKE_IN_BUTTON = 8;
   public static final int INTAKE_OUT_BUTTON = 9;
   // Transport Constants
@@ -116,6 +116,11 @@ public class Constants {
   public static final int AGITATOR_MOTOR_BOTTOM_ID = 12; // TODO: change to correct id
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
   public static final int SHAKE_INTERVAL_MS = 500;
+
+  // April Tags
+  public static final int[] APRIL_TAGS_HUB = {
+    9, 10, 11, 2, 8, 5, 24, 21, 25, 26, 27, 18
+  };
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id

@@ -51,9 +51,11 @@ public class RobotContainer {
 
   // SUBSYSTEMS
   private static ObjectTrackerSubsystem m_objectTrackerSubsystem =
-  new ObjectTrackerSubsystem("shripFront");
-  private static ActuatorSubsystem m_actuatorSubsystem = new ActuatorSubsystem(m_objectTrackerSubsystem);
-  private static ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem(m_objectTrackerSubsystem);
+      new ObjectTrackerSubsystem("shripFront");
+  private static ActuatorSubsystem m_actuatorSubsystem =
+      new ActuatorSubsystem(m_objectTrackerSubsystem);
+  private static ShooterSubsystem m_shooterSubsystem =
+      new ShooterSubsystem(m_objectTrackerSubsystem);
   private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
   private static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
@@ -95,7 +97,7 @@ public class RobotContainer {
     Trigger lockTurret = new JoystickButton(leftJoystick, 11);
 
     // right joystick button
-        Trigger intakeInward = new JoystickButton(rightJoystick,1);
+    Trigger intakeInward = new JoystickButton(rightJoystick, 1);
 
     Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 2);
     Trigger uptakeButton = new JoystickButton(rightJoystick, 3);
@@ -106,10 +108,10 @@ public class RobotContainer {
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 8);
     Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
-    swerveResetButton.onTrue(new SequentialCommandGroup(
-      new InstantCommand(()->m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.1),
-      new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry())
-    ));
+    swerveResetButton.onTrue(
+        new SequentialCommandGroup(
+            new InstantCommand(() -> m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.1),
+            new InstantCommand(() -> m_drivetrainSubsystem.zeroOdometry())));
 
     vectorWheelOutButton.whileTrue(
         new StartEndCommand(
@@ -159,16 +161,14 @@ public class RobotContainer {
                     m_rollerSubsystem)));
 
     lockTurret.toggleOnTrue(
-      new SequentialCommandGroup(
-        new InstantCommand(()-> m_turretSubsystem.setAutoControl(false)),
-        new InstantCommand(()-> m_turretSubsystem.setTurretTarget(0))
-      )
-    );
-    lockTurret.toggleOnFalse(
-      new InstantCommand(()-> m_turretSubsystem.setAutoControl(true))
-    );
+        new SequentialCommandGroup(
+            new InstantCommand(() -> m_turretSubsystem.setAutoControl(false)),
+            new InstantCommand(() -> m_turretSubsystem.setTurretTarget(0))));
+    lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setAutoControl(true)));
 
-    shootButton.whileTrue(new Shoot(m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
+    shootButton.whileTrue(
+        new Shoot(
+            m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {

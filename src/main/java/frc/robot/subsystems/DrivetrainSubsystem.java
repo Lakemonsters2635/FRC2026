@@ -587,7 +587,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           true,
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
-      xPowerCommanded *=-1;
+      xPowerCommanded *= -1;
       SmartDashboard.putNumber("swerve: xCommanded", xPowerCommanded);
       SmartDashboard.putNumber("swerve: yCommanded", yPowerCommanded);
       this.drive(
@@ -598,7 +598,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // this.drive(0, 0, 0, true);
     }
     // }
-     SmartDashboard.putNumber("m_gyro.getRotation2d()", m_gyro.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("m_gyro.getRotation2d()", m_gyro.getRotation2d().getDegrees());
 
     SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
     SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
@@ -672,7 +672,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // TODO: Add another parameter for kMaxSpeed so you have an option to set it
     ChassisSpeeds chassisSpeeds =
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d().unaryMinus())
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeed, ySpeed, rot, m_gyro.getRotation2d().unaryMinus())
             : new ChassisSpeeds(xSpeed, ySpeed, rot);
     // chassisSpeeds = chassisSpeeds.plus(getAntiTipCorrections());
 
