@@ -41,6 +41,12 @@ public class ShooterSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
     }
   }
+  public void shootFar() {
+    m_shooterMotorRight.setVoltage( Constants.SHOOTER_FAR_POWER * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+    m_shooterMotorLeft.setVoltage(Constants.SHOOTER_FAR_POWER * -1); // SmartDashboard.getNumber("Shooter Power", 8);
+      //SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+  }
+  
 
   public void shooterStop() {
     m_shooterMotorLeft.setVoltage(Constants.MOTOR_STOP);

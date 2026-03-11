@@ -13,7 +13,7 @@ public class IntakeAngleCommand extends Command {
   /** Creates a new IntakeAngleCommand. */
   IntakeAngleSubsystem m_intakeAngleSubsystem;
   Timer m_timer;
-
+  boolean feedForwardApplied;
   public IntakeAngleCommand(IntakeAngleSubsystem intakeAngleSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intakeAngleSubsystem = intakeAngleSubsystem;
@@ -24,8 +24,11 @@ public class IntakeAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeAngleSubsystem.intakeAngleDown();
+    m_timer.reset();
     m_timer.start();
+    feedForwardApplied = false;
+    m_intakeAngleSubsystem.intakeAngleDown();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -43,7 +46,7 @@ public class IntakeAngleCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(m_timer.get()>0.3){
+    if(m_timer.get()>0.5){
       return true;
     }
     return false;

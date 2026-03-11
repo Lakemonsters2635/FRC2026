@@ -267,7 +267,7 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
     // turretPower(feedForward);
 
-    // turretPower(0);
+    turretPower(0);
     // This method will be called once per scheduler run
   }
 }

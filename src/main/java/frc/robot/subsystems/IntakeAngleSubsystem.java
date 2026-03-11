@@ -17,7 +17,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public IntakeAngleSubsystem() {
     intakeAngleMotor = new TalonFX(11);
     intakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
-    SmartDashboard.putNumber("Intake Angle voltage", 0);
+    SmartDashboard.putNumber("Intake Angle Feed Forward voltage", -1.5);
   }
 
   public void intakeAngleDown() {
@@ -28,7 +28,9 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public void setVolts(double volts) {
     intakeAngleMotor.setVoltage(volts);
   }
-
+  public void intakeAngleFeedForward(){
+    intakeAngleMotor.setVoltage(-1.5);
+  }
   public void intakeAngleStop() {
     intakeAngleMotor.setVoltage(0); // -
   }

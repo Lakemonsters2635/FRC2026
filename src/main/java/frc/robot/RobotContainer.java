@@ -135,8 +135,13 @@ public class RobotContainer {
             () -> m_rollerSubsystem.stopRollers(),
             m_rollerSubsystem));
 
-    intakeAngleDown.onTrue(m_intakeAngleCommand);
-
+  intakeAngleDown.whileTrue(
+      new SequentialCommandGroup(
+          new IntakeAngleCommand(m_intakeAngleSubsystem), // runs for 0.3s
+          new RunCommand(
+              () -> m_intakeAngleSubsystem.intakeAngleFeedForward(),
+              m_intakeAngleSubsystem)));
+    
     rollerShakeButton.whileTrue(
         new StartEndCommand(
                 // onStart
