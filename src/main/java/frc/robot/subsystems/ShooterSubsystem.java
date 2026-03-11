@@ -32,8 +32,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void shoot() {
     Pose2d target = m_objectTrackerSubsystem.getDistVector(0, Units.metersToInches(.6), 0, 10);
     double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
-    m_shooterMotorRight.setVoltage(((power)+(magnitude/4.5))*-1);//SmartDashboard.getNumber("Shooter Power", 8) * -1);
-    m_shooterMotorLeft.setVoltage((power+(magnitude/4.5)));//SmartDashboard.getNumber("Shooter Power", 8);
+    m_shooterMotorRight.setVoltage(((power)+(magnitude/4.35))*-1);//SmartDashboard.getNumber("Shooter Power", 8) * -1);
+    m_shooterMotorLeft.setVoltage((power+(magnitude/4.35)));//SmartDashboard.getNumber("Shooter Power", 8);
     SmartDashboard.putNumber("Shooter Volt", (power+(magnitude/4.5)));
   }
 

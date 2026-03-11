@@ -128,8 +128,8 @@ public class Constants {
 
   public static final double TURRET_PID_CONSTANT = 0.6;
   public static final double TURRET_ANGLE_MOVE = 4.0;
-  public static final double MIN_LIMIT_ROTATION = -45;
-  public static final double MAX_LIMIT_ROTATION = 45;
+  public static final double MIN_LIMIT_ROTATION = -60;
+  public static final double MAX_LIMIT_ROTATION = 60;
   public static final double APRIL_TAG_AIM_OFFSET = 5;
   // Actuator Constnats
   public static final int LEFT_ACTUATOR_ID = 8;
