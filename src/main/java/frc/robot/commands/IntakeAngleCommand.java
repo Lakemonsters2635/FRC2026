@@ -29,7 +29,7 @@ public class IntakeAngleCommand extends Command {
     m_timer.reset();
     m_timer.start();
     feedForwardApplied = false;
-    m_intakeAngleSubsystem.intakeAngleDown();
+    m_intakeAngleSubsystem.intakeAngleDownHard();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

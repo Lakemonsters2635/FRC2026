@@ -23,7 +23,7 @@ public class VectorWheelSubsystem extends SubsystemBase {
   }
 
   public void setVectorWheelsOut() {
-    agitatorMotorTop.setVoltage(1.5);
+    agitatorMotorTop.setVoltage(1.65);
   }
 
   public void stopVectorWheels() {

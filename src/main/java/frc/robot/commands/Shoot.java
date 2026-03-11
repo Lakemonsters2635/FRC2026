@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.RollerSubsystem;
@@ -26,7 +28,7 @@ public class Shoot extends Command {
       RollerSubsystem rs,
       ShooterSubsystem ss,
       VectorWheelSubsystem vws,
-      boolean aimingAprilTag) { // this is for if we are shooting far or close
+      Boolean aimingAprilTag) { // this is for if we are shooting far or close
     m_us = us;
     m_rs = rs;
     m_ss = ss;

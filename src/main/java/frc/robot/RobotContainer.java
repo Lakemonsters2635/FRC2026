@@ -115,7 +115,7 @@ public class RobotContainer {
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
 
-    shootFromMidButton.toggleOnFalse(
+    shootFromMidButton.whileFalse(
       new SequentialCommandGroup(
         new InstantCommand(()-> aimingAprilTag=true).withTimeout(.01),
         new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(true)).withTimeout(.01),
@@ -123,12 +123,18 @@ public class RobotContainer {
       )
     );
 
-    shootFromMidButton.toggleOnTrue(
+    shootFromMidButton.whileTrue(
       new SequentialCommandGroup(
         new InstantCommand(()-> aimingAprilTag=false).withTimeout(.01),
         new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
         new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
-        new SetLinearPoseCommand(m_actuatorSubsystem, 0.6).withTimeout(0.01)
+        new SetLinearPoseCommand(m_actuatorSubsystem, 0.6).withTimeout(0.01),
+        new Shoot(
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            false)
       )
     );
 
@@ -171,7 +177,7 @@ public class RobotContainer {
 
     intakeAngleDown.whileTrue(
         new SequentialCommandGroup(
-            new IntakeAngleCommand(m_intakeAngleSubsystem), // runs for 0.3s
+            new IntakeAngleCommand(m_intakeAngleSubsystem), // runs for 0.s
             new RunCommand(
                 () -> m_intakeAngleSubsystem.intakeAngleFeedForward(), m_intakeAngleSubsystem)));
 
@@ -209,12 +215,13 @@ public class RobotContainer {
     lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setAutoControl(true)));
 
     shootButton.whileTrue(
+        new SequentialCommandGroup(
         new Shoot(
             m_uptakeSubsystem,
             m_rollerSubsystem,
             m_shooterSubsystem,
             m_vectorWheelSubsystem,
-            true));
+            true)));
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {
