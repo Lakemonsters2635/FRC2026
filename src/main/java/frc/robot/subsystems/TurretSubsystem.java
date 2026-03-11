@@ -47,7 +47,7 @@ public class TurretSubsystem extends SubsystemBase {
   private double feedForward = 0;
   private double savePose = 0;
   Timer m_timer;
-  private double waitTime = 25; //each increment by 1 is an additional 20 mileseconds
+  private double waitTime = 25; // each increment by 1 is an additional 20 mileseconds
   private double time = 0;
   boolean isMidMode = false;
 
@@ -60,22 +60,22 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController = new PIDController(0.10, 0., 0.01); // Having a kd of 0.01 does induce some jitter but greatly reduces overshoot
+    m_turretController =
+        new PIDController(
+            0.10, 0.,
+            0.01); // Having a kd of 0.01 does induce some jitter but greatly reduces overshoot
     m_timer = new Timer();
     m_objectTrackerSubsystem = objectTrackerSubsystem;
-    
   }
 
-  public boolean checkIsAutoControlValid(){
-    for(int i = 0; i < Constants.APRIL_TAGS_HUB.length;i++){
-      if(Constants.APRIL_TAGS_HUB[i] == m_objectTrackerSubsystem.getNearestAprilTag()){
+  public boolean checkIsAutoControlValid() {
+    for (int i = 0; i < Constants.APRIL_TAGS_HUB.length; i++) {
+      if (Constants.APRIL_TAGS_HUB[i] == m_objectTrackerSubsystem.getNearestAprilTag()) {
         return true;
       }
     }
     return false;
   }
-
-  
 
   public void aimAtTarget() {
     m_objectTrackerSubsystem.data();
@@ -109,14 +109,12 @@ public class TurretSubsystem extends SubsystemBase {
 
     } else {
       time++;
-      if (time < waitTime){
+      if (time < waitTime) {
         pose_target = savePose;
-      }
-      else{
+      } else {
         pose_target = getDegrees();
       }
-      
-      
+
       // pose_target = m_poseTarget_prev1;
       // m_poseTarget_prev1 = m_poseTarget_prev2;
       // m_poseTarget_prev2 = m_poseTarget_prev3;
@@ -205,6 +203,10 @@ public class TurretSubsystem extends SubsystemBase {
     return 10;
   }
 
+  public void setMidMode(boolean val) {
+    isMidMode = val;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
@@ -218,33 +220,30 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("April tag delta rotation turret", aprilTagDeltaRot);
     SmartDashboard.putNumber(
         "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY * aprilTagY)));
-    if(!isMidMode){
-      if(!checkIsAutoControlValid()){
-        if(!m_timer.isRunning()){
+    if (!isMidMode) {
+      if (!checkIsAutoControlValid()) {
+        if (!m_timer.isRunning()) {
           m_timer.reset();
           m_timer.start();
         }
-        if(m_timer.get() > 1){
+        if (m_timer.get() > 1) {
           isAutoControl = false;
         }
       }
-      if(checkIsAutoControlValid()){
+      if (checkIsAutoControlValid()) {
         m_timer.stop();
-        
+
         isAutoControl = true;
       }
-      if(isAutoControl){
+      if (isAutoControl) {
         aimAtTarget();
-      }
-      else{
+      } else {
         m_poseTarget = 0;
       }
-    }
-    else{
+    } else {
       m_poseTarget = 0;
     }
-  
-   
+
     // pid =
     //       MathUtil.clamp(
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
@@ -261,13 +260,14 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      turretPower(fb); // + feedForward);
+      turretPower(fb + feedForward);
       // turretPower(0);
     }
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
+    SmartDashboard.putBoolean("tur: isMidMode", isMidMode);
+    SmartDashboard.putBoolean("tur: isAutoControl", isAutoControl);
     // turretPower(feedForward);
 
-    turretPower(0);
     // This method will be called once per scheduler run
   }
 }

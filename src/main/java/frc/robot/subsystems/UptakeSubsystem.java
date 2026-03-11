@@ -21,7 +21,7 @@ public class UptakeSubsystem extends SubsystemBase {
     uptakeMotor.setVoltage(-4);
   }
 
-  public void reverseUptake(){
+  public void reverseUptake() {
     uptakeMotor.setVoltage(4);
   }
 

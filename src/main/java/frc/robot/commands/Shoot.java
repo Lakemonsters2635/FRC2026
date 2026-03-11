@@ -19,20 +19,31 @@ public class Shoot extends Command {
   RollerSubsystem m_rs;
   ShooterSubsystem m_ss;
   VectorWheelSubsystem m_vws;
+  boolean m_aimingAprilTag; // If we are aiming at the apriltag(auto angle ajust)
 
   public Shoot(
-      UptakeSubsystem us, RollerSubsystem rs, ShooterSubsystem ss, VectorWheelSubsystem vws) {
+      UptakeSubsystem us,
+      RollerSubsystem rs,
+      ShooterSubsystem ss,
+      VectorWheelSubsystem vws,
+      boolean aimingAprilTag) { // this is for if we are shooting far or close
     m_us = us;
     m_rs = rs;
     m_ss = ss;
     m_vws = vws;
+    m_aimingAprilTag = aimingAprilTag;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_ss.shoot();
+    if (m_aimingAprilTag) {
+      m_ss.shoot();
+    } else {
+      m_ss.shootFar();
+    }
+
     m_us.uptake();
     m_vws.setVectorWheelsIn();
   }

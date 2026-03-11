@@ -20,6 +20,7 @@ public class ActuatorSubsystem extends SubsystemBase {
   double desiredPose;
   Servo m_linearActuatorLeft;
   ObjectTrackerSubsystem m_obj;
+  boolean autoControl = true;
 
   public ActuatorSubsystem(ObjectTrackerSubsystem obj) {
     m_linearActuatorLeft = new Servo(Constants.LEFT_ACTUATOR_ID);
@@ -35,6 +36,10 @@ public class ActuatorSubsystem extends SubsystemBase {
     // m_linearActuatorRight.setNewPosition(pos);
     m_linearActuatorLeft.setPosition(pos);
     m_linearActuatorRight.setPosition(pos);
+  }
+
+  public void setAutoControl(boolean val) {
+    autoControl = val;
   }
 
   public double getPosition() {
@@ -66,8 +71,11 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("getPosActuatorRight", m_linearActuatorRight.getPosition());
     // SmartDashboard.putNumber("getPosActuatorRight",
     // m_linearActuatorRight.getEstimatedPosition());
-    setPosition(getDesiredPose());
+    if (autoControl) {
+      setPosition(getDesiredPose());
+    }
     SmartDashboard.putNumber("desiredPose calc", getDesiredPose());
+    SmartDashboard.putBoolean("act: autoControl", autoControl);
     // setPosition(
     //     MathUtil.clamp(SmartDashboard.getNumber("Hood Position", 0.24),0.24, 0.65));
     // Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop

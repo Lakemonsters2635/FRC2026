@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -18,7 +16,6 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.UptakeSubsystem;
 import frc.robot.subsystems.VectorWheelSubsystem;
-import java.util.Optional;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Autos extends Command {
@@ -49,17 +46,6 @@ public class Autos extends Command {
     m_turretSubsystem = turretSubsystem;
   }
 
-  // TODO: Not complete
-  public Command autoChoose() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (!alliance.isPresent()) {
-      return goStraight();
-    }
-
-    // Logic to get the alliance number and auto choose the auto
-    return new Command() {};
-  }
-
   // goes forward one meter, no vision
   public Command goStraight() {
     // sequential does the commands one by one
@@ -83,7 +69,8 @@ public class Autos extends Command {
             m_uptakeSubsystem,
             m_rollerSubsystem,
             m_shooterSubsystem,
-            m_vectorWheelSubsystem)); // runs the shooter command
+            m_vectorWheelSubsystem,
+            true)); // runs the shooter command
   }
 
   // robot starts to the left of the hub, moves away from it 1.98m and shoots at 45 deg angle
@@ -96,7 +83,11 @@ public class Autos extends Command {
             m_turretSubsystem, 45), // TODO check angle    turns turret to 45 deg
         new WaitCommand(0.5), // wait 0.5s
         new Shoot(
-            m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            true));
   }
 
   // robot starts to the right of the hub, moves away from it 1.98m and shoots at -45 deg angle
@@ -109,7 +100,11 @@ public class Autos extends Command {
             m_turretSubsystem, -45), // TODO check angle       turns turret to 45 deg
         new WaitCommand(0.5), // wait 0.5s
         new Shoot(
-            m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            true));
   }
 
   // ---------old

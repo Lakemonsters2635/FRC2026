@@ -105,7 +105,7 @@ public class Constants {
   public static final int SHOOTER_MOTOR_ID_RIGHT = 6;
   public static final double SHOOT = 8; // Can go up to 10 volts
   public static final double MOTOR_STOP = 0.0;
-  public static final double SHOOTER_FAR_POWER = 12;
+  public static final double SHOOTER_FAR_POWER = 8;
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;
   public static final int IN_VOLTAGE = 12;
@@ -119,9 +119,7 @@ public class Constants {
   public static final int SHAKE_INTERVAL_MS = 500;
 
   // April Tags
-  public static final int[] APRIL_TAGS_HUB = {
-    9, 10, 11, 2, 8, 5, 24, 21, 25, 26, 27, 18
-  };
+  public static final int[] APRIL_TAGS_HUB = {9, 10, 11, 2, 8, 5, 24, 21, 25, 26, 27, 18};
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id

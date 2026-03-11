@@ -45,6 +45,8 @@ public class RobotContainer {
   private long lastFlipTime = 0;
   private final Timer shootTimer = new Timer();
 
+  private boolean aimingAprilTag = true;
+
   // Joysticks
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
   public static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
@@ -68,7 +70,8 @@ public class RobotContainer {
   // Cmmands
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_uptakeSubsystem);
-  private static UptakeReverseCommand m_uptakeReverseCommand = new UptakeReverseCommand(m_uptakeSubsystem);
+  private static UptakeReverseCommand m_uptakeReverseCommand =
+      new UptakeReverseCommand(m_uptakeSubsystem);
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
   private static IntakeCommand m_intakeCommand =
       new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
@@ -112,10 +115,41 @@ public class RobotContainer {
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
 
+    shootFromMidButton.toggleOnFalse(
+      new SequentialCommandGroup(
+        new InstantCommand(()-> aimingAprilTag=true).withTimeout(.01),
+        new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(true)).withTimeout(.01),
+        new InstantCommand(() -> m_turretSubsystem.setMidMode(false)).withTimeout(.01)
+      )
+    );
+
+    shootFromMidButton.toggleOnTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(()-> aimingAprilTag=false).withTimeout(.01),
+        new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
+        new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
+        new SetLinearPoseCommand(m_actuatorSubsystem, 0.6).withTimeout(0.01)
+      )
+    );
+
+    // shootFromMidButton.whileTrue(
+    //     new SequentialCommandGroup(
+    //         new SetLinearPoseCommand(m_actuatorSubsystem, 0.6).withTimeout(0.01),
+    //         new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
+    //         new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
+    //         new Shoot(
+    //             m_uptakeSubsystem,
+    //             m_rollerSubsystem,
+    //             m_shooterSubsystem,
+    //             m_vectorWheelSubsystem,
+    //             false),
+    //         new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(true)).withTimeout(.01),
+    //         new InstantCommand(() -> m_turretSubsystem.setMidMode(false)).withTimeout(.01)));
+
     swerveResetButton.onTrue(
         new SequentialCommandGroup(
-            new InstantCommand(() -> m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.1),
-            new InstantCommand(() -> m_drivetrainSubsystem.zeroOdometry())));
+            new InstantCommand(() -> m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.01),
+            new InstantCommand(() -> m_drivetrainSubsystem.zeroOdometry()).withTimeout(.01)));
 
     vectorWheelOutButton.whileTrue(
         new StartEndCommand(
@@ -135,13 +169,12 @@ public class RobotContainer {
             () -> m_rollerSubsystem.stopRollers(),
             m_rollerSubsystem));
 
-  intakeAngleDown.whileTrue(
-      new SequentialCommandGroup(
-          new IntakeAngleCommand(m_intakeAngleSubsystem), // runs for 0.3s
-          new RunCommand(
-              () -> m_intakeAngleSubsystem.intakeAngleFeedForward(),
-              m_intakeAngleSubsystem)));
-    
+    intakeAngleDown.whileTrue(
+        new SequentialCommandGroup(
+            new IntakeAngleCommand(m_intakeAngleSubsystem), // runs for 0.3s
+            new RunCommand(
+                () -> m_intakeAngleSubsystem.intakeAngleFeedForward(), m_intakeAngleSubsystem)));
+
     rollerShakeButton.whileTrue(
         new StartEndCommand(
                 // onStart
@@ -177,7 +210,11 @@ public class RobotContainer {
 
     shootButton.whileTrue(
         new Shoot(
-            m_uptakeSubsystem, m_rollerSubsystem, m_shooterSubsystem, m_vectorWheelSubsystem));
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            true));
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {
@@ -225,7 +262,6 @@ public class RobotContainer {
 
     intakeOutward.whileTrue(m_intakeOutCommand);
 
-    
     throttleControl.whileTrue(
         new InstantCommand(
             () ->
@@ -241,7 +277,7 @@ public class RobotContainer {
     // oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
 
     vectorWheelInButton.whileTrue(m_agitateCommand);
-    //uptakeButton.whileTrue(m_uptakeCommand);
+    // uptakeButton.whileTrue(m_uptakeCommand);
     moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
     moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
     // Need to change this depending on the alliance, only for testing, be carefull

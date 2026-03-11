@@ -14,6 +14,7 @@ import frc.robot.Constants;
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   ObjectTrackerSubsystem m_objectTrackerSubsystem;
+
   boolean isMidMode = false;
   TalonFX m_shooterMotorLeft;
 
@@ -41,12 +42,14 @@ public class ShooterSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
     }
   }
+
   public void shootFar() {
-    m_shooterMotorRight.setVoltage( Constants.SHOOTER_FAR_POWER * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-    m_shooterMotorLeft.setVoltage(Constants.SHOOTER_FAR_POWER * -1); // SmartDashboard.getNumber("Shooter Power", 8);
-      //SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+    m_shooterMotorRight.setVoltage(
+        Constants.SHOOTER_FAR_POWER * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+    m_shooterMotorLeft.setVoltage(
+        Constants.SHOOTER_FAR_POWER); // SmartDashboard.getNumber("Shooter Power", 8);
+    // SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
   }
-  
 
   public void shooterStop() {
     m_shooterMotorLeft.setVoltage(Constants.MOTOR_STOP);
