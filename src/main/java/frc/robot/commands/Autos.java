@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 import frc.robot.subsystems.RollerSubsystem;
@@ -61,18 +62,6 @@ public class Autos extends Command {
         new InstantCommand(() -> m_dts.zeroOdometry())); // zero the odometry
   }
 
-  // doesn't move, only shoots, no vision
-  public Command middleShootAuto() {
-    // sequential does the commands one by one
-    return new SequentialCommandGroup(
-        new Shoot(
-            m_uptakeSubsystem,
-            m_rollerSubsystem,
-            m_shooterSubsystem,
-            m_vectorWheelSubsystem,
-            true)); // runs the shooter command
-  }
-
   // robot starts to the left of the hub, moves away from it 1.98m and shoots at 45 deg angle
   public Command leftShootAuto() {
     // sequential does the commands one by one
@@ -109,17 +98,35 @@ public class Autos extends Command {
 
   // ---------old
 
-  public Command straightScoreAuto() {
+  public Command middleScoreAuto() {
     return new SequentialCommandGroup(
-        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -1, 0));
+        new InstantCommand(() -> m_dts.resetAngle(0)), // reset the angle to 180 deg
+        new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -1, 0),
+        new WaitCommand(1),
+        new ShooterTimerCommand(
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            true,
+          Constants.EIGHT_BALL_TIME)
+      );
   }
 
   public Command leftScoreAuto() {
     return new SequentialCommandGroup(
-        new PidAutoCommand(
-            m_dts, m_objectTrackerSubsystem, 0, -Units.inchesToMeters(148.375 - 11 - 12), 0),
-        new WaitCommand(0.3),
-        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -1, 30));
+        new InstantCommand(() -> m_dts.resetAngle(90)), // reset the angle to 180 deg
+        new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -1, -45),
+        new WaitCommand(1),
+        new Shoot(
+            m_uptakeSubsystem,
+            m_rollerSubsystem,
+            m_shooterSubsystem,
+            m_vectorWheelSubsystem,
+            true)
+        );
   }
 
   public Command rightScoreAuto() {
