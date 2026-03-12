@@ -53,7 +53,7 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (System.currentTimeMillis() % (Constants.SHAKE_INTERVAL_MS * 2)
+    if (System.currentTimeMillis() % (Constants.SHAKE_INTERVAL_MS * 1.5)
         > Constants.SHAKE_INTERVAL_MS) {
       m_rs.setRollersForward();
     } else {

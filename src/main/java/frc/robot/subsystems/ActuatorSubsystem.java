@@ -56,7 +56,12 @@ public class ActuatorSubsystem extends SubsystemBase {
 
   public double getDesiredPose() {
     Pose2d target = m_obj.getNearestAprilTagDistShooter();
+    SmartDashboard.putNumber("targetX: ", target.getX());
+    SmartDashboard.putNumber("targetY: ", target.getY());
+
     double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    SmartDashboard.putNumber("targetMag: ", magnitude);
+
     if (magnitude != 0) {
       desiredPose = -0.000244799 * magnitude * magnitude + 0.0787634 * magnitude + 0.134677;
     }

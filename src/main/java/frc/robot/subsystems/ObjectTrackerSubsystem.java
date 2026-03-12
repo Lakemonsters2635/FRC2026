@@ -586,6 +586,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
           || nearestTag == 10
           || nearestTag == 5
           || nearestTag == 2) {
+      
         return getDistVector(
             0,
             Units.metersToInches(0.6), // -/+   .6m
@@ -610,6 +611,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   public Pose2d getNearestAprilTagDistTurret() {
     int nearestTag = getNearestAprilTag();
+    SmartDashboard.putNumber("nearestTag", nearestTag);
     if (nearestTag != -1) {
       if (nearestTag == 21
           || nearestTag == 26
@@ -619,19 +621,19 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
           || nearestTag == 2) {
         return getDistVector(
             0,
-            Units.metersToInches(0.8), // -/+   .6m
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             nearestTag);
       } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
         return getDistVector(
             Units.metersToInches(0.35),
-            Units.metersToInches(0.8), // -/+   .6m
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             nearestTag);
       } else if (nearestTag == 24 || nearestTag == 8) {
         return getDistVector(
             Units.metersToInches(-0.35),
-            Units.metersToInches(0.8), // -/+   .6m
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             nearestTag);
       }

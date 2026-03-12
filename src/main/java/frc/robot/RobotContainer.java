@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AgitateCommand;
+import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeAngleCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
@@ -79,13 +80,16 @@ public class RobotContainer {
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
   private static IntakeAngleCommand m_intakeAngleCommand =
       new IntakeAngleCommand(m_intakeAngleSubsystem);
+  private static Autos m_autos = new Autos(m_drivetrainSubsystem, m_objectTrackerSubsystem, m_rollerSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem, m_shooterSubsystem, m_turretSubsystem, m_intakeAngleSubsystem);
 
   public RobotContainer() {
     autoChooser.setDefaultOption(
         "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     autoChooser.addOption(
         "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
+    autoChooser.addOption("midAuto", m_autos.middleScoreAuto());
     SmartDashboard.putData("Auto Mode", autoChooser);
+  
     configureBindings();
   }
 
@@ -102,16 +106,17 @@ public class RobotContainer {
 
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
+    Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
+    Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
+    Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
 
     Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 8);
-    Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 4);
+    Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
     Trigger rollerOutButton = new JoystickButton(rightJoystick, 3);
-    Trigger intakeOutward = new JoystickButton(rightJoystick, 6);
 
     Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
-    Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
 

@@ -160,7 +160,7 @@ public class PidAutoCommand extends Command {
     // If conditions are met
     return Math.abs(m_x_target - x) < 0.05
         && Math.abs(m_y_target - y) < 0.05
-        && Math.abs((m_rot_target - rot) % 360) < 5;
+        && Math.abs((m_rot_target - rot) % 360) < 10;
     //  && Math.abs(m_dts.getYawGyroValue()) < 10;
   }
 
