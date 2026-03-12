@@ -21,7 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
   TalonFX m_shooterMotorRight;
   Joystick joystick = new Joystick(0);
   double power = 7;
-
+  double savePower;
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_objectTrackerSubsystem = objectTrackerSubsystem;
     m_shooterMotorLeft = new TalonFX(Constants.SHOOTER_MOTOR_ID_LEFT);
@@ -34,12 +34,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     if (magnitude != 0) {
+      savePower = ((power) + (magnitude / 4.35));
       m_shooterMotorRight.setVoltage(
           ((power) + (magnitude / 4.35))
               * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
       m_shooterMotorLeft.setVoltage(
           (power + (magnitude / 4.35))); // SmartDashboard.getNumber("Shooter Power", 8);
       SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+    }
+    else{
+      m_shooterMotorRight.setVoltage(savePower* -1); 
+      m_shooterMotorLeft.setVoltage(savePower);
     }
   }
 
