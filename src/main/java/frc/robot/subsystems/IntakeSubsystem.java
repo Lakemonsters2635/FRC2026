@@ -10,26 +10,25 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-  TalonFX intakeMotor;
-  private final SparkMax m_intakeMotor;
-  private final SparkMaxConfig m_intakeConfig;
-
+  TalonFX m_intakeMotor;
+  
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
-    m_intakeMotor = new SparkMax(Constants.INTAKE_MOTOR_ID, MotorType.kBrushless);
-    m_intakeConfig = new SparkMaxConfig();
-    m_intakeConfig.smartCurrentLimit(20);
+    m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
+    SmartDashboard.putNumber("intake voltage", 0);
 
-    m_intakeMotor.configure(
-        m_intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
   }
 
   public void intakeIn() {
-    m_intakeMotor.setVoltage(Constants.IN_VOLTAGE);
+    m_intakeMotor.setVoltage((SmartDashboard.getNumber("intake voltage", 0)));
+
   }
 
   public void intakeOut() {

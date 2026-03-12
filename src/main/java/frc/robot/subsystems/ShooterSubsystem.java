@@ -17,29 +17,48 @@ public class ShooterSubsystem extends SubsystemBase {
 
   boolean isMidMode = false;
   TalonFX m_shooterMotorLeft;
-
+  
   TalonFX m_shooterMotorRight;
   Joystick joystick = new Joystick(0);
   double power = 7;
   double savePower;
+  double magnitude;
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_objectTrackerSubsystem = objectTrackerSubsystem;
     m_shooterMotorLeft = new TalonFX(Constants.SHOOTER_MOTOR_ID_LEFT);
     m_shooterMotorRight = new TalonFX(Constants.SHOOTER_MOTOR_ID_RIGHT);
+    SmartDashboard.putNumber("a", 1.1);
+    SmartDashboard.putNumber("b", 0.4);
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
   public void shoot() {
     Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistShooter();
 
-    double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
-    if (magnitude != 0) {
+    magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    // if (magnitude != 0) {
+    //   double c = magnitude < 2 ? -0.2 : 0;
+    //   savePower = ((power) + (magnitude / 4.35));
+    
+    //   m_shooterMotorRight.setVoltage(
+    //       ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)) 
+    //           * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+    //   m_shooterMotorLeft.setVoltage(
+    //       ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)));  // SmartDashboard.getNumber("Shooter Power", 8);
+    //   SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+    // }
+    // else{
+    //   m_shooterMotorRight.setVoltage(savePower* -1); 
+    //   m_shooterMotorLeft.setVoltage(savePower);
+    // }
+
+     if (magnitude != 0) {
       savePower = ((power) + (magnitude / 4.35));
       m_shooterMotorRight.setVoltage(
-          ((power) + (magnitude / 4.35))
+          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2))) 
               * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
       m_shooterMotorLeft.setVoltage(
-          (power + (magnitude / 4.35))); // SmartDashboard.getNumber("Shooter Power", 8);
+          ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
       SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
     }
     else{
@@ -63,6 +82,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    SmartDashboard.putNumber("mag of dist center camera to center hub", magnitude);
     // power = (joystick.getThrottle() + 1) * 5;
     // This method will be called once per scheduler run
   }

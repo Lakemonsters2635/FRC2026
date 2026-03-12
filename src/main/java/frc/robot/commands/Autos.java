@@ -7,10 +7,13 @@ package frc.robot.commands;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeAngleSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 import frc.robot.subsystems.RollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -28,6 +31,8 @@ public class Autos extends Command {
   VectorWheelSubsystem m_vectorWheelSubsystem;
   ShooterSubsystem m_shooterSubsystem;
   TurretSubsystem m_turretSubsystem;
+  IntakeAngleSubsystem m_intakeAngleSubsystem;
+  IntakeSubsystem m_IntakeSubsystem;
 
   /** Creates a new Autos. */
   public Autos(
@@ -37,7 +42,8 @@ public class Autos extends Command {
       UptakeSubsystem uptakeSubsystem,
       VectorWheelSubsystem vectorWheelSubsystem,
       ShooterSubsystem shooterSubsystem,
-      TurretSubsystem turretSubsystem) {
+      TurretSubsystem turretSubsystem,
+      IntakeAngleSubsystem intakeAngleSubsystem) {
     m_dts = dts;
     m_objectTrackerSubsystem = objectTrackerSubsystem;
     m_rollerSubsystem = rollerSubsystem;
@@ -45,6 +51,7 @@ public class Autos extends Command {
     m_vectorWheelSubsystem = vectorWheelSubsystem;
     m_shooterSubsystem = shooterSubsystem;
     m_turretSubsystem = turretSubsystem;
+    m_intakeAngleSubsystem = intakeAngleSubsystem;
   }
 
   // goes forward one meter, no vision
@@ -110,22 +117,28 @@ public class Autos extends Command {
             m_shooterSubsystem,
             m_vectorWheelSubsystem,
             true,
-          Constants.EIGHT_BALL_TIME)
+          Constants.EIGHT_BALL_TIME
+          )
       );
   }
 
   public Command leftScoreAuto() {
     return new SequentialCommandGroup(
-        new InstantCommand(() -> m_dts.resetAngle(90)), // reset the angle to 180 deg
+        new InstantCommand(() -> m_dts.resetAngle(-90)), // reset the angle to 180 deg
         new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
-        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -1, -45),
-        new WaitCommand(1),
-        new Shoot(
-            m_uptakeSubsystem,
-            m_rollerSubsystem,
-            m_shooterSubsystem,
-            m_vectorWheelSubsystem,
-            true)
+        new WaitCommand(1)
+        // new ParallelCommandGroup(
+        //   new ShooterTimerCommand(
+        //       m_uptakeSubsystem,
+        //       m_rollerSubsystem,
+        //       m_shooterSubsystem,
+        //       m_vectorWheelSubsystem,
+        //       true, 
+        //       Constants.EIGHT_BALL_TIME),
+        //   new IntakeAngleCommand(m_intakeAngleSubsystem)
+        // ),
+        // new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -2.23, 180),
+        //new IntakeCommand(m_intakeSubsystem)
         );
   }
 
