@@ -34,10 +34,14 @@ public class PidAutoCommand extends Command {
   // Probably need to fine tune constants depending on the bot
   private final PIDController m_visionSwerveController_x = new PIDController(10, 0, 0);
   private final PIDController m_visionSwerveController_y = new PIDController(10, 0, 0);
-  private final PIDController m_visionSwerveController_rot = new PIDController(4, 0, 0);
+  private final PIDController m_visionSwerveController_rot = new PIDController(4, 0.1, 0.1);
 
   private static final double PURE_VISION_MAX_M_PER_SEC = 2;
   private static final double PURE_VISION_MAX_RAD_PER_SEC = Math.PI;
+
+  double pid_rot;
+  double pid_x;
+  double pid_y;
 
   private final Trigger cancelTeleAuto =
       new JoystickButton(RobotContainer.rightJoystick, 6); // Button in case visionAuto goes haywire
@@ -103,6 +107,7 @@ public class PidAutoCommand extends Command {
 
   @Override
   public void execute() {
+    updateDashboard();
     double x_pose = m_dts.getPose().getX();
     double y_pose = m_dts.getPose().getY();
     double rot_pose = m_dts.getPose().getRotation().getDegrees();
@@ -117,12 +122,42 @@ public class PidAutoCommand extends Command {
             PURE_VISION_MAX_M_PER_SEC);
 
     m_visionSwerveController_rot.enableContinuousInput(-180, 180);
+    if(!(Math.abs(m_x_target - x_pose) < 0.05)){
+        pid_x = m_visionSwerveController_x.calculate(x_pose, m_x_target);
+        SmartDashboard.putBoolean("xFinished", false);
+    }
+    else{
+      pid_x = 0;
+      SmartDashboard.putBoolean("xFinished", true);
+    }
 
-    double pid_x = m_visionSwerveController_x.calculate(x_pose, m_x_target);
-    double pid_y = m_visionSwerveController_y.calculate(y_pose, m_y_target);
-    double pid_rot =
-        m_visionSwerveController_rot.calculate(
-            Math.toRadians(rot_pose), Math.toRadians(m_rot_target));
+     if(!(Math.abs(m_y_target - y_pose) < 0.05)){
+        pid_y = m_visionSwerveController_y.calculate(y_pose, m_y_target);
+        SmartDashboard.putBoolean("yFinished", false);
+
+    }
+    else{
+      pid_y = 0;
+      SmartDashboard.putBoolean("yFinished", true);
+
+    }
+
+    if(!(Math.abs(m_rot_target - rot_pose) < 5)){
+      pid_rot =
+              -m_visionSwerveController_rot.calculate(
+                  Math.toRadians(rot_pose), Math.toRadians(m_rot_target)); 
+      SmartDashboard.putBoolean("rotFinished", false);
+   
+    }
+    else{
+      pid_rot = 0;
+      SmartDashboard.putBoolean("rotFinished", true);
+
+    }
+
+  
+   
+
 
     double pid_c = Math.hypot(pid_x, pid_y);
     double x_clamp = pid_c > speed_clamp ? (speed_clamp * (Math.abs(pid_x) / pid_c)) : speed_clamp;
@@ -152,6 +187,7 @@ public class PidAutoCommand extends Command {
     double y = m_dts.getPose().getY();
     double rot = m_dts.getPose().getRotation().getDegrees();
 
+    
     // Manual Stop by Driver
     if (cancelTeleAuto.getAsBoolean()) {
       return true;
@@ -160,7 +196,7 @@ public class PidAutoCommand extends Command {
     // If conditions are met
     return Math.abs(m_x_target - x) < 0.05
         && Math.abs(m_y_target - y) < 0.05
-        && Math.abs((m_rot_target - rot) % 360) < 10;
+        && Math.abs((m_rot_target - rot)) < 5;
     //  && Math.abs(m_dts.getYawGyroValue()) < 10;
   }
 
@@ -207,6 +243,7 @@ public class PidAutoCommand extends Command {
     SmartDashboard.putNumber("xPidTarget", m_x_target);
     SmartDashboard.putNumber("yPidTarget", m_y_target);
     SmartDashboard.putNumber("rotPidTarget", m_rot_target);
+    SmartDashboard.putNumber("rot_pid", pid_rot);
     SmartDashboard.putNumber("xPrime", m_xPrime);
     SmartDashboard.putNumber("zPrime", m_zPrime);
     SmartDashboard.putNumber("finalYa", m_finalYa);

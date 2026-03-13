@@ -621,19 +621,19 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
           || nearestTag == 2) {
         return getDistVector(
             0,
-            Units.metersToInches(0.7), // -/+   .6m
+            Units.metersToInches(0.75), // -/+   .6m
             0,
             nearestTag);
       } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
         return getDistVector(
             Units.metersToInches(0.35),
-            Units.metersToInches(0.7), // -/+   .6m
+            Units.metersToInches(0.75), // -/+   .6m
             0,
             nearestTag);
       } else if (nearestTag == 24 || nearestTag == 8) {
         return getDistVector(
             Units.metersToInches(-0.35),
-            Units.metersToInches(0.7), // -/+   .6m
+            Units.metersToInches(0.75), // -/+   .6m
             0,
             nearestTag);
       }

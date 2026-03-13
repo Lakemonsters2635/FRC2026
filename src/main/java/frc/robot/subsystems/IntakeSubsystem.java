@@ -21,13 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-    SmartDashboard.putNumber("intake voltage", 0);
 
 
   }
 
   public void intakeIn() {
-    m_intakeMotor.setVoltage((SmartDashboard.getNumber("intake voltage", 0)));
+    m_intakeMotor.setVoltage(5);
 
   }
 

@@ -87,20 +87,40 @@ public class ShooterSubsystem extends SubsystemBase {
         m_shooterMotorLeft.setVoltage(
             ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
         SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+        SmartDashboard.putNumber("shootNum", 1.1);
       }
-      else{
+      else if(magnitude > 1.3){
         savePower = ((power) + (magnitude / 4.65));
         m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.65))
+            ((power) + (magnitude / 4.60))
                 * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
         m_shooterMotorLeft.setVoltage(
-            ((power) + (magnitude / 4.65)));  // SmartDashboard.getNumber("Shooter Power", 8);
-        SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.45)));
+            ((power) + (magnitude / 4.60)));  // SmartDashboard.getNumber("Shooter Power", 8);
+        SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.6)));
+        SmartDashboard.putNumber("shootNum", 1.2);
+
+      }
+      else{
+        m_shooterMotorLeft.setVoltage(6.5);
+        m_shooterMotorRight.setVoltage(-6.5);
+        SmartDashboard.putNumber("shootNum", 1.3);
+
       }
     }
     else{
-      m_shooterMotorRight.setVoltage(savePower* -1); 
-      m_shooterMotorLeft.setVoltage(savePower);
+      if(savePower!= 0){
+        m_shooterMotorRight.setVoltage(savePower* -1); 
+        m_shooterMotorLeft.setVoltage(savePower);
+        SmartDashboard.putNumber("shootNum", 2.1);
+
+      }
+      else{
+        m_shooterMotorLeft.setVoltage(6.5);
+        m_shooterMotorRight.setVoltage(-6.5);        
+        SmartDashboard.putNumber("shootNum", 2.2);
+
+      }
+      
     }
   }
   

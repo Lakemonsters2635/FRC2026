@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -80,14 +81,20 @@ public class RobotContainer {
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
   private static IntakeAngleCommand m_intakeAngleCommand =
       new IntakeAngleCommand(m_intakeAngleSubsystem);
-  private static Autos m_autos = new Autos(m_drivetrainSubsystem, m_objectTrackerSubsystem, m_rollerSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem, m_shooterSubsystem, m_turretSubsystem, m_intakeAngleSubsystem);
+  private static Autos m_autos = new Autos(m_drivetrainSubsystem, m_objectTrackerSubsystem, m_rollerSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem, m_shooterSubsystem, m_turretSubsystem, m_intakeAngleSubsystem, m_actuatorSubsystem);
 
   public RobotContainer() {
-    autoChooser.setDefaultOption(
-        "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
+    // autoChooser.setDefaultOption(
+    //     "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
+    // autoChooser.addOption(
+    //     "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     autoChooser.addOption(
-        "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
-    autoChooser.addOption("midAuto", m_autos.middleScoreAuto());
+        "LeftShoot", m_autos.leftShootAuto());
+    autoChooser.addOption(
+        "RightShoot", m_autos.rightShootAuto());
+    // autoChooser.addOption(
+    //     "LeftShootRamp", m_autos.leftShootRampAuto());
+    autoChooser.setDefaultOption("midAuto", m_autos.middleScoreAuto());
     SmartDashboard.putData("Auto Mode", autoChooser);
   
     configureBindings();
@@ -96,30 +103,51 @@ public class RobotContainer {
   private void configureBindings() {
     // left joystick buttons
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
-    Trigger shootFromMidButton = new JoystickButton(leftJoystick, 2);
-    Trigger throttleControl = new JoystickButton(leftJoystick, 4);
-    Trigger moveTurretLeft = new JoystickButton(leftJoystick, 5);
-    Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
-    Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
+    Trigger lockTurret = new JoystickButton(leftJoystick, 5);
+    
+    Trigger shootFromMidButton = new JoystickButton(leftJoystick, 3);
+    // Trigger throttleControl = new JoystickButton(leftJoystick, 4);
+    // Trigger moveTurretLeft = new JoystickButton(leftJoystick, 11);
+    // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
+    // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     Trigger intakeAngleDown = new JoystickButton(leftJoystick, 10);
-    Trigger lockTurret = new JoystickButton(leftJoystick, 11);
-
+    Trigger hexAndRollerOutButton = new JoystickButton(leftJoystick, 4);
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
     Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
     Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
     Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
 
-    Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 8);
+    // Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 8);
     Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
-    Trigger rollerOutButton = new JoystickButton(rightJoystick, 3);
+    // Trigger rollerOutButton = new JoystickButton(rightJoystick, 3);
 
-    Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
+    // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
-    Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
+    // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
+    hexAndRollerInButton.whileTrue(new ParallelCommandGroup(
+      new StartEndCommand(
+            () -> m_vectorWheelSubsystem.setVectorWheelsIn(),
+            () -> m_vectorWheelSubsystem.stopVectorWheels(),
+            m_vectorWheelSubsystem),
+       new StartEndCommand(
+            () -> m_rollerSubsystem.setRollersForward(),
+            () -> m_rollerSubsystem.stopRollers(),
+            m_rollerSubsystem)));
 
+
+     hexAndRollerOutButton.whileTrue(new ParallelCommandGroup(
+      new StartEndCommand(
+            () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
+            () -> m_vectorWheelSubsystem.stopVectorWheels(),
+            m_vectorWheelSubsystem),
+       new StartEndCommand(
+            () -> m_rollerSubsystem.setRollersBackward(),
+            () -> m_rollerSubsystem.stopRollers(),
+            m_rollerSubsystem)));
+      
     shootFromMidButton.whileFalse(
       new SequentialCommandGroup(
         new InstantCommand(()-> aimingAprilTag=true).withTimeout(.01),
@@ -133,13 +161,15 @@ public class RobotContainer {
         new InstantCommand(()-> aimingAprilTag=false).withTimeout(.01),
         new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
         new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
-        new SetLinearPoseCommand(m_actuatorSubsystem, 0.6).withTimeout(0.01),
+        new ParallelCommandGroup(
+        new InstantCommand(()->m_actuatorSubsystem.setPosition(0.6)),
         new Shoot(
             m_uptakeSubsystem,
             m_rollerSubsystem,
             m_shooterSubsystem,
             m_vectorWheelSubsystem,
-            false)
+            m_actuatorSubsystem,
+            false))
       )
     );
 
@@ -162,23 +192,23 @@ public class RobotContainer {
             new InstantCommand(() -> m_drivetrainSubsystem.resetAngle(0)).withTimeout(0.01),
             new InstantCommand(() -> m_drivetrainSubsystem.zeroOdometry()).withTimeout(.01)));
 
-    vectorWheelOutButton.whileTrue(
-        new StartEndCommand(
-            () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
-            () -> m_vectorWheelSubsystem.stopVectorWheels(),
-            m_vectorWheelSubsystem));
+    // vectorWheelOutButton.whileTrue(
+    //     new StartEndCommand(
+    //         () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
+    //         () -> m_vectorWheelSubsystem.stopVectorWheels(),
+    //         m_vectorWheelSubsystem));
 
-    rollerOutButton.whileTrue(
-        new StartEndCommand(
-            () -> m_rollerSubsystem.setRollersBackward(),
-            () -> m_rollerSubsystem.stopRollers(),
-            m_rollerSubsystem));
+    // rollerOutButton.whileTrue(
+    //     new StartEndCommand(
+    //         () -> m_rollerSubsystem.setRollersBackward(),
+    //         () -> m_rollerSubsystem.stopRollers(),
+    //         m_rollerSubsystem));
 
-    rollerInButton.whileTrue(
-        new StartEndCommand(
-            () -> m_rollerSubsystem.setRollersForward(),
-            () -> m_rollerSubsystem.stopRollers(),
-            m_rollerSubsystem));
+    // rollerInButton.whileTrue(
+    //     new StartEndCommand(
+    //         () -> m_rollerSubsystem.setRollersForward(),
+    //         () -> m_rollerSubsystem.stopRollers(),
+    //         m_rollerSubsystem));
 
     intakeAngleDown.whileTrue(
         new SequentialCommandGroup(
@@ -226,6 +256,7 @@ public class RobotContainer {
             m_rollerSubsystem,
             m_shooterSubsystem,
             m_vectorWheelSubsystem,
+            m_actuatorSubsystem,
             true)));
     // shootButton.whileTrue(
     //     new RunCommand(
@@ -274,24 +305,24 @@ public class RobotContainer {
 
     intakeOutward.whileTrue(m_intakeOutCommand);
 
-    throttleControl.whileTrue(
-        new InstantCommand(
-            () ->
-                CommandScheduler.getInstance()
-                    .schedule(
-                        new SetLinearPoseCommand(
-                            m_actuatorSubsystem,
-                            MathUtil.clamp(Math.abs(leftJoystick.getThrottle()), .24, .8)))));
+    // throttleControl.whileTrue(
+    //     new InstantCommand(
+    //         () ->
+    //             CommandScheduler.getInstance()
+    //                 .schedule(
+    //                     new SetLinearPoseCommand(
+    //                         m_actuatorSubsystem,
+    //                         MathUtil.clamp(Math.abs(leftJoystick.getThrottle()), .24, .8)))));
 
     // right joystick buttons
 
     // turretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(1)));
     // oppositeTurretButton.whileTrue(new InstantCommand(()->m_turretSubsystem.turretPower(-1)));
 
-    vectorWheelInButton.whileTrue(m_agitateCommand);
+    // vectorWheelInButton.whileTrue(m_agitateCommand);
     // uptakeButton.whileTrue(m_uptakeCommand);
-    moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
-    moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
+    // moveTurretLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretLeft()));
+    // moveTurretRight.onTrue(new InstantCommand(() -> m_turretSubsystem.moveTurretRight()));
     // Need to change this depending on the alliance, only for testing, be carefull
     // aimTurretAtAprilTag.onTrue(new InstantCommand(() -> m_turretSubsystem.aimAtTarget(10)));
   }

@@ -106,11 +106,11 @@ public class Constants {
   public static final double SHOOT = 8; // Can go up to 10 volts
   public static final double MOTOR_STOP = 0.0;
   public static final double SHOOTER_FAR_POWER = 8;
-  public static final double EIGHT_BALL_TIME = 12;
+  public static final double EIGHT_BALL_TIME = 15;
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;
   public static final int IN_VOLTAGE = 6;
-  public static final double OUT_VOLTAGE = -1.5;
+  public static final double OUT_VOLTAGE = -3;
   public static final int INTAKE_IN_BUTTON = 8;
   public static final int INTAKE_OUT_BUTTON = 9;
   // Transport Constants

@@ -79,6 +79,9 @@ public class ActuatorSubsystem extends SubsystemBase {
     if (autoControl) {
       setPosition(getDesiredPose());
     }
+    else{
+      setPosition(0.6);
+    }
     SmartDashboard.putNumber("desiredPose calc", getDesiredPose());
     SmartDashboard.putBoolean("act: autoControl", autoControl);
     // setPosition(
