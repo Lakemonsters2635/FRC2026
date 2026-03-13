@@ -3,14 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-  // SWERVE DRIVE CONSTANTS
-  public static final double kPModuleTurningController = 0.1; // 0.5
+  public static final double kPModuleTurningController = 0.7; // 0.5
   public static final double kPModuleDriveController = 0; // added random value for test
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
   public static final double kMaxSpeedMetersPerSecond = 6.0; // TODO: Need to Test
-
-  
 
   // joystick channels
   public static final int RIGHT_JOYSTICK_CHANNEL = 1;
@@ -38,13 +35,13 @@ public class Constants {
 
   // ANGLE OFFSETS
   public static final double FRONT_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90);
+      Math.toRadians(-13 - 90 - 2.5 + 180 - 15 - 90 + 90 - 90 + 2.5 + 90 + 90 + 180 - 3);
   public static final double FRONT_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90);
+      Math.toRadians(-53 + 90 - 229 + 45 + 99 - 90 + 90 - 90 + 88 - 90 + 9);
   public static final double BACK_LEFT_ANGLE_OFFSET =
-      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90);
+      Math.toRadians(-14 + 90 - 40 + 45 + 180 - 120 - 4 + 90 + 90 - 90 - 5.5 + 90 + 90 + 180 + 2);
   public static final double BACK_RIGHT_ANGLE_OFFSET =
-      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90);
+      Math.toRadians(75 - 90 + 3 + 180 - 54 + 7 + 90 - 90 + 82 - 90 + 1);
 
   // FRONT LEFT
   public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; // 1
@@ -53,12 +50,12 @@ public class Constants {
 
   // FRONT RIGHT
   public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 9; // 7
-  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 0; // 0
+  public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 3; // 0
   public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 10; // 8
 
   // BACK LEFT
   public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 3; // 3
-  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 3; // 3
+  public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 0; // 3
   public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 4; // 10
 
   // BACK RIGHT
@@ -79,17 +76,6 @@ public class Constants {
   public static final int HAT_POV_ROTATE_LEFT = 270;
   public static final int HAT_POV_ROTATE_RIGHT = 90;
 
-  // INTAKE CONSTANTS
-  public static final int INTAKE_MOTOR_ID = 22; // TODO: Fix when we know ID
-  public static final double IN_VOLTAGE = 2; // TODO: Fix later when we find voltage
-  public static final double OUT_VOLTAGE = -2; // TODO: Fix later when we find voltage
-  public static final int MOTOR_STOP = 0; // to stop the motors
-  public static final int INTAKE_IN_BUTTON = 4; // TODO: Adjust later
-  public static final int INTAKE_OUT_BUTTON = 8; // TODO: Adjust later
-
-  // Climber Constants
-  public static final int CLIMBER_MOTOR_ID = 0; // TODO: find actual number
-  public static final int HOOK_MOTOR_ID = 0; // TODO: find actual number
   // Tipping Constants
   public static final double TIPPING_ANGLE_THRESHOLD = 5;
   public static final int WINDOW_SIZE = 10;
@@ -107,7 +93,8 @@ public class Constants {
   public static final int RIGHT_ROLL = 1;
 
   // OBJECT TRACKER SUBSYSTEM
-  public static final double CAMERA_TILT = 30; // previous was 37, 30 is for testing post bunnybots
+  public static final double CAMERA_TILT =
+      26.5; // previous was 37, 30 is for testing post bunnybots
   public static final double[] CAMERA_OFFSET = {3, 13}; // offset = [x, y], In inches
   // VISION AUTO COMMAND
   // TODO: VisionAutoData assumes only a single camera
@@ -116,30 +103,44 @@ public class Constants {
   public static final int CAM_ANGLE_OFFSET = 0;
   public static final int SHOOTER_MOTOR_ID_LEFT = 5;
   public static final int SHOOTER_MOTOR_ID_RIGHT = 6;
-  public static final double SHOOT = 5; // Can go up to 10 volts
-
+  public static final double SHOOT = 8; // Can go up to 10 volts
+  public static final double MOTOR_STOP = 0.0;
+  public static final double SHOOTER_FAR_POWER = 8;
+  public static final double EIGHT_BALL_TIME = 15;
+  // Intake Constants
+  public static final int INTAKE_MOTOR_ID = 22;
+  public static final int IN_VOLTAGE = 6;
+  public static final double OUT_VOLTAGE = -3;
+  public static final int INTAKE_IN_BUTTON = 8;
+  public static final int INTAKE_OUT_BUTTON = 9;
   // Transport Constants
-  public static final int AGITATOR_MOTOR_TOP_ID =12; // TODO: change to correct id
-  public static final int AGITATOR_MOTOR_BOTTOM_ID = 13; // TODO: change to correct id
+  public static final int AGITATOR_MOTOR_TOP_ID = 13; // TODO: change to correct id
+  public static final int AGITATOR_MOTOR_BOTTOM_ID = 12; // TODO: change to correct id
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
+  public static final int SHAKE_INTERVAL_MS = 500;
+
+  // April Tags
+  public static final int[] APRIL_TAGS_HUB = {9, 10, 11, 2, 8, 5, 24, 21, 25, 26, 27, 18};
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id
   public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
   public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
-  public static final double TURRET_POWER = 2; // TODO: Chang
+  public static final double TURRET_POWER = 2; // TODO: Change
   public static final double TURRET_ANGLE_RANGE =
       2; // This is the amount of error that the go to pose command has in degrees TODO: Change
-  public static final double TURRET_PID_CONSTANT = 0.6;
-  public static final double TURRET_ANGLE_MOVE = 1.0;
-  public static final double MIN_LIMIT_ROTATION = -45; // We might damage the cables if we rotate too far repeatedly
-  public static final double MAX_LIMIT_ROTATION = 45;
-  public static final double APRIL_TAG_AIM_OFFSET = 5;
+  public static final double TURRET_TOLERANCE = 0;
 
-  // Actuator Constants
-  public static final int LEFT_ACTUATOR_ID = 1;
-  public static final int RIGHT_ACTUATOR_ID = 0;
+  public static final double TURRET_PID_CONSTANT = 0.6;
+  public static final double TURRET_ANGLE_MOVE = 4.0;
+  public static final double MIN_LIMIT_ROTATION = -60;
+  public static final double MAX_LIMIT_ROTATION = 60;
+  public static final double APRIL_TAG_AIM_OFFSET = 5;
+  // Actuator Constnats
+  public static final int LEFT_ACTUATOR_ID = 8;
+  public static final int RIGHT_ACTUATOR_ID = 9;
 
   // JOYSTICKS
-  
+  public static final int LEFT_JOYSTICK_PORT = 0;
+  public static final int RIGHT_JOYSTICK_PORT = 1;
 }

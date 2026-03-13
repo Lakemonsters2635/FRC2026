@@ -467,58 +467,58 @@ public class DrivetrainSubsystem extends SubsystemBase {
     tipCorrection = bool;
   }
 
-  public ChassisSpeeds getAntiTipCorrections() {
-    if (tipCorrection && isTipping()) {
-      double pitch = m_gyro.getPitch() - pitchOffset;
-      double roll = m_gyro.getRoll() - rollOffset;
-      double pitchCorrection = 0;
-      double rollCorrection = 0;
-      // Multiplying by NOSE_DOWN_PITCH and RIGHT_ROLL to capture directionality gyro coordinates
-      // versus robot coordinates
-      if (pitch == Math.abs(pitch) * Constants.NOSE_DOWN_PITCH) {
-        pitchCorrection =
-            pitch
-                * Constants.NOSE_DOWN_PITCH
-                * Constants.PITCH_NOSE_DOWN_PROPORTION_CONSTANT
-                * kMaxSpeed;
-      } else {
-        pitchCorrection =
-            pitch
-                * Constants.NOSE_DOWN_PITCH
-                * Constants.PITCH_NOSE_UP_PROPORTION_CONSTANT
-                * kMaxSpeed;
-      }
+  // public ChassisSpeeds getAntiTipCorrections() {
+  //   if (tipCorrection && isTipping()) {
+  //     double pitch = m_gyro.getPitch() - pitchOffset;
+  //     double roll = m_gyro.getRoll() - rollOffset;
+  //     double pitchCorrection = 0;
+  //     double rollCorrection = 0;
+  //     // Multiplying by NOSE_DOWN_PITCH and RIGHT_ROLL to capture directionality gyro coordinates
+  //     // versus robot coordinates
+  //     if (pitch == Math.abs(pitch) * Constants.NOSE_DOWN_PITCH) {
+  //       pitchCorrection =
+  //           pitch
+  //               * Constants.NOSE_DOWN_PITCH
+  //               * Constants.PITCH_NOSE_DOWN_PROPORTION_CONSTANT
+  //               * kMaxSpeed;
+  //     } else {
+  //       pitchCorrection =
+  //           pitch
+  //               * Constants.NOSE_DOWN_PITCH
+  //               * Constants.PITCH_NOSE_UP_PROPORTION_CONSTANT
+  //               * kMaxSpeed;
+  //     }
 
-      if (roll == Math.abs(roll) * Constants.RIGHT_ROLL) {
-        rollCorrection =
-            roll * Constants.RIGHT_ROLL * Constants.ROLL_RIGHT_PROPORTION_CONSTANT * kMaxSpeed;
-      } else {
-        rollCorrection =
-            roll * Constants.RIGHT_ROLL * Constants.ROLL_LEFT_PROPORTION_CONSTANT * kMaxSpeed;
-      }
-      SmartDashboard.putNumber("pitchCorrection", pitchCorrection);
-      SmartDashboard.putNumber("rollCorrection", rollCorrection);
-      return new ChassisSpeeds(rollCorrection, pitchCorrection, 0);
-    }
-    return new ChassisSpeeds(0, 0, 0);
-  }
+  //     if (roll == Math.abs(roll) * Constants.RIGHT_ROLL) {
+  //       rollCorrection =
+  //           roll * Constants.RIGHT_ROLL * Constants.ROLL_RIGHT_PROPORTION_CONSTANT * kMaxSpeed;
+  //     } else {
+  //       rollCorrection =
+  //           roll * Constants.RIGHT_ROLL * Constants.ROLL_LEFT_PROPORTION_CONSTANT * kMaxSpeed;
+  //     }
+  //     SmartDashboard.putNumber("pitchCorrection", pitchCorrection);
+  //     SmartDashboard.putNumber("rollCorrection", rollCorrection);
+  //     return new ChassisSpeeds(rollCorrection, pitchCorrection, 0);
+  //   }
+  //   return new ChassisSpeeds(0, 0, 0);
+  // }
 
-  public boolean isTipping() {
-    double pitch = m_gyro.getPitch() - pitchOffset;
-    double roll = m_gyro.getRoll() - rollOffset;
+  // public boolean isTipping() {
+  //   double pitch = m_gyro.getPitch() - pitchOffset;
+  //   double roll = m_gyro.getRoll() - rollOffset;
 
-    SmartDashboard.putNumber("pitchWithOffset", pitch);
-    SmartDashboard.putNumber("rollWithOffset", roll);
+  //   SmartDashboard.putNumber("pitchWithOffset", pitch);
+  //   SmartDashboard.putNumber("rollWithOffset", roll);
 
-    // addRollValue(roll);
-    // addPitchValue(pitch);
+  //   // addRollValue(roll);
+  //   // addPitchValue(pitch);
 
-    // smoothedPitch = calculateSmoothedValue(pitchValues);
-    // smoothedRoll = calculateSmoothedValue(rollValues);
+  //   // smoothedPitch = calculateSmoothedValue(pitchValues);
+  //   // smoothedRoll = calculateSmoothedValue(rollValues);
 
-    return Math.abs(pitch) > Constants.TIPPING_ANGLE_THRESHOLD
-        || Math.abs(roll) > Constants.TIPPING_ANGLE_THRESHOLD;
-  }
+  //   return Math.abs(pitch) > Constants.TIPPING_ANGLE_THRESHOLD
+  //       || Math.abs(roll) > Constants.TIPPING_ANGLE_THRESHOLD;
+  // }
 
   @Override
   public void periodic() {
@@ -528,7 +528,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // "+getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("gyro.pitch()", m_gyro.getPitch());
     SmartDashboard.putNumber("gyro.roll()", m_gyro.getRoll());
-    SmartDashboard.putBoolean("isTipping", isTipping());
+    // SmartDashboard.putBoolean("isTipping", isTipping());
 
     SmartDashboard.putNumber("stashAngle", m_angleCache);
     SmartDashboard.putNumber("BackRight turn", m_backRight.getTurningEncoderRadians());
@@ -587,13 +587,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           true,
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
+      xPowerCommanded *= -1;
+      SmartDashboard.putNumber("swerve: xCommanded", xPowerCommanded);
+      SmartDashboard.putNumber("swerve: yCommanded", yPowerCommanded);
       this.drive(
-          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed * -1,
+          xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
           true);
+      // this.drive(0, 0, 0, true);
     }
     // }
+    SmartDashboard.putNumber("m_gyro.getRotation2d()", m_gyro.getRotation2d().getDegrees());
+
     SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
     SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
     SmartDashboard.putNumber("FR_pos", m_frontRight.getPosition().distanceMeters);
@@ -666,9 +672,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // TODO: Add another parameter for kMaxSpeed so you have an option to set it
     ChassisSpeeds chassisSpeeds =
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                xSpeed, ySpeed, rot, m_gyro.getRotation2d().unaryMinus())
             : new ChassisSpeeds(xSpeed, ySpeed, rot);
-    chassisSpeeds = chassisSpeeds.plus(getAntiTipCorrections());
+    // chassisSpeeds = chassisSpeeds.plus(getAntiTipCorrections());
 
     swerveModuleStates = m_kinematics.toSwerveModuleStates(chassisSpeeds, centerOffset);
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, kMaxSpeed);

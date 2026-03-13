@@ -8,33 +8,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class TransportSubsystem extends SubsystemBase {
-  /** Creates a new TransportSubsystem. */
-  TalonFX agitatorMotorTop;
-
-  TalonFX agitatorMotorBottom;
+public class UptakeSubsystem extends SubsystemBase {
+  /** Creates a new UptakeSubsystem. */
   TalonFX uptakeMotor;
 
-  public TransportSubsystem() {
-    agitatorMotorTop = new TalonFX(Constants.AGITATOR_MOTOR_TOP_ID);
-    agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID);
+  public UptakeSubsystem() {
     uptakeMotor = new TalonFX(Constants.UPTAKE_MOTOR_ID);
-  }
-
-  public void agitate() {
-    // not tested
-    agitatorMotorTop.setVoltage(0.5);
-    agitatorMotorBottom.setVoltage(0.5);
   }
 
   public void uptake() {
     // not tested
-    uptakeMotor.setVoltage(-3);
+    uptakeMotor.setVoltage(-4);
   }
 
-  public void stopAgitate() {
-    agitatorMotorTop.setVoltage(0);
-    agitatorMotorBottom.setVoltage(0);
+  public void reverseUptake() {
+    uptakeMotor.setVoltage(4);
   }
 
   public void stopUptake() {

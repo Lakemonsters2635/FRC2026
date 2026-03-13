@@ -5,16 +5,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.TransportSubsystem;
+import frc.robot.subsystems.VectorWheelSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AgitateCommand extends Command {
-  TransportSubsystem m_transportSubsystem;
+  VectorWheelSubsystem m_vws;
 
   /** Creates a new AgitateCommand. */
-  public AgitateCommand(TransportSubsystem transportSubsystem) {
+  public AgitateCommand(VectorWheelSubsystem vws) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_transportSubsystem = transportSubsystem;
+    m_vws = vws;
   }
 
   // Called when the command is initially scheduled.
@@ -24,13 +24,13 @@ public class AgitateCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_transportSubsystem.agitate();
+    m_vws.setVectorWheelsIn();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_transportSubsystem.stopAgitate();
+    m_vws.stopVectorWheels();
   }
 
   // Returns true when the command should end.

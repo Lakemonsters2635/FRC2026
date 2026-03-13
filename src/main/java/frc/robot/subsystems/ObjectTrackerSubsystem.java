@@ -68,7 +68,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   private final double CAMERA_PITCH_FRONT = 0; // should be 23
   private final double CAMERA_PITCH_BACK = 0;
-  private double m_cameraPitch;
+  private double m_cameraPitch = Constants.CAMERA_TILT;
 
   // rotation matrix
   private double cameraTilt = Constants.CAMERA_TILT;
@@ -264,6 +264,49 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return 0;
   }
 
+  /*
+   * Gets the vector from camera to target point based on apriltag
+   */
+  public Pose2d getDistVector(double xPrime, double zPrime, double finalYa, int tagId) {
+    Detection detection = null;
+    data();
+    for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
+      try {
+        detection = getSpecificAprilTag(tagId);
+        break;
+      } catch (Exception e) {
+        System.out.println("Failed vision attempt " + i);
+      }
+    }
+    if (detection == null) {
+      SmartDashboard.putBoolean("ableToSeeAT", false);
+      return new Pose2d(0, 0, new Rotation2d(0));
+    }
+
+    SmartDashboard.putBoolean("ableToSeeAT", true);
+
+    // detection = m_ots.
+
+    // double visionYa = -detection.ya;
+
+    double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
+    double x_vt =
+        xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
+    double z_vt =
+        xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
+    // Should be offset variables and change based of camera location relative to the center of the
+    // robot
+    double deltaCamX = -(detection.x + x_vt);
+    double deltaCamY = -(detection.z + z_vt);
+
+    double finalAngle = visionYa + finalYa;
+
+    return new Pose2d(
+        Units.inchesToMeters(deltaCamX),
+        Units.inchesToMeters(deltaCamY),
+        new Rotation2d(Units.degreesToRadians(finalAngle)));
+  }
+
   public Pose2d visionAutoData(double xPrime, double zPrime, double finalYa, int tagId) {
     Detection detection = null;
     for (int i = 0; i < 100; i++) { // TODO: do we still want to keep for loop?
@@ -375,7 +418,9 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             (-y) / z); // angle in camera coordinate system from center of camera to detected object
     // (fraction of the field view)
     SmartDashboard.putNumber("applyPitchCorrection.alpha", alpha);
-    double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    // double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
+    double hyp = Math.hypot(z, y);
+    double adjustedZ = hyp * Math.cos(Math.toRadians(pitchDegrees) + alpha);
     SmartDashboard.putNumber("applyPitchCorrection.adjustedZ", adjustedZ);
     return adjustedZ;
   }
@@ -522,6 +567,78 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       return aprilTags.get(0);
     }
     return null;
+  }
+
+  public int getNearestAprilTag() {
+    if (aprilTags.size() > 0) {
+      return Integer.parseInt(getNearestAprilTagDetection().objectLabel.substring(10));
+    }
+    return -1;
+  }
+
+  public Pose2d getNearestAprilTagDistShooter() {
+
+    int nearestTag = getNearestAprilTag();
+    if (nearestTag != -1) {
+      if (nearestTag == 21
+          || nearestTag == 26
+          || nearestTag == 18
+          || nearestTag == 10
+          || nearestTag == 5
+          || nearestTag == 2) {
+      
+        return getDistVector(
+            0,
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
+        return getDistVector(
+            Units.metersToInches(0.35),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 24 || nearestTag == 8) {
+        return getDistVector(
+            Units.metersToInches(-0.35),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            nearestTag);
+      }
+    }
+    return new Pose2d(0, 0, new Rotation2d(0));
+  }
+
+  public Pose2d getNearestAprilTagDistTurret() {
+    int nearestTag = getNearestAprilTag();
+    SmartDashboard.putNumber("nearestTag", nearestTag);
+    if (nearestTag != -1) {
+      if (nearestTag == 21
+          || nearestTag == 26
+          || nearestTag == 18
+          || nearestTag == 10
+          || nearestTag == 5
+          || nearestTag == 2) {
+        return getDistVector(
+            0,
+            Units.metersToInches(0.75), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 25 || nearestTag == 27 || nearestTag == 9 || nearestTag == 11) {
+        return getDistVector(
+            Units.metersToInches(0.35),
+            Units.metersToInches(0.75), // -/+   .6m
+            0,
+            nearestTag);
+      } else if (nearestTag == 24 || nearestTag == 8) {
+        return getDistVector(
+            Units.metersToInches(-0.35),
+            Units.metersToInches(0.75), // -/+   .6m
+            0,
+            nearestTag);
+      }
+    }
+    return new Pose2d(0, 0, new Rotation2d(0));
   }
 
   public Detection getSpecificAprilTag(int id) {
@@ -702,7 +819,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       Detection detectionObject = (Detection) gsonOut.get(i);
       SmartDashboard.putNumber("updateDetections: raw z", detectionObject.z);
       detectionObject.z = applyPitchCorrection(m_cameraPitch, detectionObject.y, detectionObject.z);
-      detectionObject = applyOffset(detectionObject);
+      // detectionObject = applyOffset(detectionObject);
       SmartDashboard.putNumber("updateDetections.detectionObject.z", detectionObject.z);
       if (detectionObject.objectLabel.substring(0, 3).equals("tag")) {
 

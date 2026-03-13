@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,11 +17,16 @@ public class ActuatorSubsystem extends SubsystemBase {
   // LinearServo m_linearActuatorRight;
   Servo m_linearActuatorRight;
 
+  double desiredPose;
   Servo m_linearActuatorLeft;
+  ObjectTrackerSubsystem m_obj;
+  boolean autoControl = true;
 
-  public ActuatorSubsystem() {
+  public ActuatorSubsystem(ObjectTrackerSubsystem obj) {
     m_linearActuatorLeft = new Servo(Constants.LEFT_ACTUATOR_ID);
     m_linearActuatorRight = new Servo(Constants.RIGHT_ACTUATOR_ID);
+    m_obj = obj;
+    SmartDashboard.putNumber("Hood Position", 0.24);
   }
 
   public void setPosition(double pos) {
@@ -31,6 +36,10 @@ public class ActuatorSubsystem extends SubsystemBase {
     // m_linearActuatorRight.setNewPosition(pos);
     m_linearActuatorLeft.setPosition(pos);
     m_linearActuatorRight.setPosition(pos);
+  }
+
+  public void setAutoControl(boolean val) {
+    autoControl = val;
   }
 
   public double getPosition() {
@@ -45,6 +54,20 @@ public class ActuatorSubsystem extends SubsystemBase {
     return false;
   }
 
+  public double getDesiredPose() {
+    Pose2d target = m_obj.getNearestAprilTagDistShooter();
+    SmartDashboard.putNumber("targetX: ", target.getX());
+    SmartDashboard.putNumber("targetY: ", target.getY());
+
+    double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
+    SmartDashboard.putNumber("targetMag: ", magnitude);
+
+    if (magnitude != 0) {
+      desiredPose = -0.000244799 * magnitude * magnitude + 0.0787634 * magnitude + 0.134677;
+    }
+    return desiredPose;
+  }
+
   @Override
   public void periodic() {
     // m_linearActuatorLeft.updateCurPos();
@@ -53,9 +76,17 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("getPosActuatorRight", m_linearActuatorRight.getPosition());
     // SmartDashboard.putNumber("getPosActuatorRight",
     // m_linearActuatorRight.getEstimatedPosition());
-    setPosition(
-        MathUtil.clamp(
-            Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop
+    if (autoControl) {
+      setPosition(getDesiredPose());
+    }
+    else{
+      setPosition(0.6);
+    }
+    SmartDashboard.putNumber("desiredPose calc", getDesiredPose());
+    SmartDashboard.putBoolean("act: autoControl", autoControl);
+    // setPosition(
+    //     MathUtil.clamp(SmartDashboard.getNumber("Hood Position", 0.24),0.24, 0.65));
+    // Math.abs(RobotContainer.leftJoystick.getThrottle()), .24, .65)); // .65 is hard stop
     SmartDashboard.putNumber("throttle", Math.abs(RobotContainer.leftJoystick.getThrottle()));
     // This method will be called once per scheduler run
   }
