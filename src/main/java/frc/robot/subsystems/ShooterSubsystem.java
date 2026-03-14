@@ -27,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
   double power = 7;
   double savePower;
   double magnitude;
+  double joystickDeltaPower = 0;
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();
@@ -45,6 +46,13 @@ public class ShooterSubsystem extends SubsystemBase {
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
+  public void deltaShooterVoltage(double deltaPower){
+    joystickDeltaPower += deltaPower;
+  }
+
+  public void setDeltaShooterVoltage(double voltage){
+    joystickDeltaPower = voltage;
+  }
   public void shoot() {
     Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistShooter();
 
@@ -80,43 +88,44 @@ public class ShooterSubsystem extends SubsystemBase {
     // }
     if (magnitude != 0) {
       if(magnitude > 2.8){
-        savePower = ((power) + (magnitude / 4.35));
+        savePower = ((power) + (magnitude / 4.35)) + joystickDeltaPower;
         m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.35))
+        (((power) + (magnitude / 4.35)) + joystickDeltaPower)
                 * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
         m_shooterMotorLeft.setVoltage(
-            ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
+                 (((power) + (magnitude / 4.35)) + joystickDeltaPower));
+ // SmartDashboard.getNumber("Shooter Power", 8);
         SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
         SmartDashboard.putNumber("shootNum", 1.1);
       }
       else if(magnitude > 1.3){
-        savePower = ((power) + (magnitude / 4.65));
+        savePower = ((power) + (magnitude / 4.65)) + joystickDeltaPower;
         m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.60))
+            (((power) + (magnitude / 4.60)) + joystickDeltaPower)
                 * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
         m_shooterMotorLeft.setVoltage(
-            ((power) + (magnitude / 4.60)));  // SmartDashboard.getNumber("Shooter Power", 8);
+            (((power) + (magnitude / 4.60))) + joystickDeltaPower);  // SmartDashboard.getNumber("Shooter Power", 8);
         SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.6)));
         SmartDashboard.putNumber("shootNum", 1.2);
 
       }
       else{
-        m_shooterMotorLeft.setVoltage(6.5);
-        m_shooterMotorRight.setVoltage(-6.5);
+        m_shooterMotorLeft.setVoltage(7 + joystickDeltaPower);
+        m_shooterMotorRight.setVoltage(-1*(7 + joystickDeltaPower));
         SmartDashboard.putNumber("shootNum", 1.3);
 
       }
     }
     else{
       if(savePower!= 0){
-        m_shooterMotorRight.setVoltage(savePower* -1); 
-        m_shooterMotorLeft.setVoltage(savePower);
+        m_shooterMotorRight.setVoltage((savePower + joystickDeltaPower)* -1); 
+        m_shooterMotorLeft.setVoltage(savePower + joystickDeltaPower);
         SmartDashboard.putNumber("shootNum", 2.1);
 
       }
       else{
-        m_shooterMotorLeft.setVoltage(6.5);
-        m_shooterMotorRight.setVoltage(-6.5);        
+        m_shooterMotorLeft.setVoltage(7 + joystickDeltaPower);
+        m_shooterMotorRight.setVoltage((7 + joystickDeltaPower) * -1);        
         SmartDashboard.putNumber("shootNum", 2.2);
 
       }
@@ -140,6 +149,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("deltaVoltage", joystickDeltaPower);
     
     SmartDashboard.putNumber("mag of dist center camera to center hub", magnitude);
     // power = (joystick.getThrottle() + 1) * 5;

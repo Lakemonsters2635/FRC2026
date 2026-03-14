@@ -23,6 +23,12 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     // not tested
     intakeAngleMotor.setVoltage(0.5); // +
   }
+
+   public void intakeAngleUp() {
+    // not tested
+    intakeAngleMotor.setVoltage(-2); // +
+  }
+  
   public void intakeAngleDownHard() {
     // not tested
     intakeAngleMotor.setVoltage(1); // +

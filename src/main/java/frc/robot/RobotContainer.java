@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.IntakeAngleCommand;
+import frc.robot.commands.IntakeAngleUpCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.ManualTurret;
@@ -62,7 +63,7 @@ public class RobotContainer {
   private static ShooterSubsystem m_shooterSubsystem =
       new ShooterSubsystem(m_objectTrackerSubsystem);
   private static TurretSubsystem m_turretSubsystem = new TurretSubsystem(m_objectTrackerSubsystem);
-  private static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   private static IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private static RollerSubsystem m_rollerSubsystem = new RollerSubsystem();
   private static UptakeSubsystem m_uptakeSubsystem = new UptakeSubsystem();
@@ -110,7 +111,9 @@ public class RobotContainer {
     // Trigger moveTurretLeft = new JoystickButton(leftJoystick, 11);
     // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
-    Trigger intakeAngleDown = new JoystickButton(leftJoystick, 10);
+    Trigger intakeAngleDown = new JoystickButton(leftJoystick, 11);
+    Trigger upShooterVoltageButton = new JoystickButton(leftJoystick, 10);
+    Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
     Trigger hexAndRollerOutButton = new JoystickButton(leftJoystick, 4);
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
@@ -124,7 +127,11 @@ public class RobotContainer {
 
     // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
+    Trigger intakeUpButton = new JoystickButton(rightJoystick, 11);
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
+    intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
+    upShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(0.3)));
+    downShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
     hexAndRollerInButton.whileTrue(new ParallelCommandGroup(
@@ -258,6 +265,8 @@ public class RobotContainer {
             m_vectorWheelSubsystem,
             m_actuatorSubsystem,
             true)));
+
+    shootButton.whileFalse(new InstantCommand(()->m_shooterSubsystem.setDeltaShooterVoltage(0)));
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {
