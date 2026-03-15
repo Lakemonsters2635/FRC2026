@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class IntakeAngleSubsystem extends SubsystemBase {
   /** Creates a new IntakeAngleSubsystem. */
@@ -24,11 +25,15 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     intakeAngleMotor.setVoltage(0.5); // +
   }
 
+  public void intakeBarelyUp(){
+    intakeAngleMotor.setVoltage(RobotContainer.leftJoystick.getThrottle()*2);
+  }
+
    public void intakeAngleUp() {
     // not tested
-    intakeAngleMotor.setVoltage(-2); // +
+    intakeAngleMotor.setVoltage(-2.5); // +
   }
-  
+
   public void intakeAngleDownHard() {
     // not tested
     intakeAngleMotor.setVoltage(1); // +
@@ -39,7 +44,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   }
 
   public void intakeAngleFeedForward() {
-    intakeAngleMotor.setVoltage(-1.5); // working, but change for better results
+    intakeAngleMotor.setVoltage(-.25); // working, but change for better results
   }
 
   public void intakeAngleStop() {

@@ -155,9 +155,6 @@ public class PidAutoCommand extends Command {
 
     }
 
-  
-   
-
 
     double pid_c = Math.hypot(pid_x, pid_y);
     double x_clamp = pid_c > speed_clamp ? (speed_clamp * (Math.abs(pid_x) / pid_c)) : speed_clamp;
@@ -166,9 +163,10 @@ public class PidAutoCommand extends Command {
     // Clamps for safety and allows the fadeInDistance to ramp up speed instead of instantly
     // accelerating too fast
     double m_fb_x = MathUtil.clamp(pid_x, -x_clamp, x_clamp);
-    double m_fb_y = MathUtil.clamp(pid_y, -y_clamp, y_clamp);
+    double m_fb_y = MathUtil.clamp(pid_y, -y_clamp, y_clamp); 
     double m_fb_rot =
         MathUtil.clamp(pid_rot, -PURE_VISION_MAX_RAD_PER_SEC, PURE_VISION_MAX_RAD_PER_SEC);
+    m_fb_rot = 0;
 
     m_dts.drive(m_fb_x, m_fb_y, m_fb_rot, true);
   }
@@ -195,8 +193,8 @@ public class PidAutoCommand extends Command {
 
     // If conditions are met
     return Math.abs(m_x_target - x) < 0.05
-        && Math.abs(m_y_target - y) < 0.05
-        && Math.abs((m_rot_target - rot)) < 5;
+        && Math.abs(m_y_target - y) < 0.05;
+        // && Math.abs((m_rot_target - rot)) < 5;
     //  && Math.abs(m_dts.getYawGyroValue()) < 10;
   }
 

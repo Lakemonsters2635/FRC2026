@@ -15,7 +15,7 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ActuatorSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeAngleSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+// import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 import frc.robot.subsystems.RollerSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -34,7 +34,7 @@ public class Autos extends Command {
   ShooterSubsystem m_shooterSubsystem;
   TurretSubsystem m_turretSubsystem;
   IntakeAngleSubsystem m_intakeAngleSubsystem;
-  IntakeSubsystem m_IntakeSubsystem;
+  // IntakeSubsystem m_IntakeSubsystem;
   ActuatorSubsystem m_actuatorSubsystem;
 
   /** Creates a new Autos. */

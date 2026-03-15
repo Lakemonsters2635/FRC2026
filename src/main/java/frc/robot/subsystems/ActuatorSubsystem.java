@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +57,9 @@ public class ActuatorSubsystem extends SubsystemBase {
 
   public double getDesiredPose() {
     Pose2d target = m_obj.getNearestAprilTagDistShooter();
+    // if(target == new Pose2d(0,0, new Rotation2d())){
+
+    // }
     SmartDashboard.putNumber("targetX: ", target.getX());
     SmartDashboard.putNumber("targetY: ", target.getY());
 

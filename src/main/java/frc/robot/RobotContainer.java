@@ -78,7 +78,7 @@ public class RobotContainer {
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
   private static IntakeCommand m_intakeCommand =
       new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
-  private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem);
+  private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
   private static IntakeAngleCommand m_intakeAngleCommand =
       new IntakeAngleCommand(m_intakeAngleSubsystem);
