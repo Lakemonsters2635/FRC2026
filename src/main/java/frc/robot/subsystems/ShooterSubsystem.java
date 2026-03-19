@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -22,6 +24,9 @@ public class ShooterSubsystem extends SubsystemBase {
   TalonFX m_shooterMotorRight;
   VoltageConfigs m_leftConfig;
   VoltageConfigs m_rightConfig;
+
+  TalonFX motor = new TalonFX(1);
+VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
   Joystick joystick = new Joystick(0);
   double power = 7;
@@ -41,7 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotorLeft.getConfigurator().apply(m_leftConfig);
     m_shooterMotorRight.getConfigurator().apply(m_rightConfig);
 
-
+     setPID(Constants.SHOOTER_P, Constants.SHOOTER_I, Constants.SHOOTER_D);
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
@@ -82,8 +87,9 @@ public class ShooterSubsystem extends SubsystemBase {
       if(magnitude > 2.8){
         savePower = ((power) + (magnitude / 4.35));
         m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.35))
+            ((power) + (magnitude / 4.35)) 
                 * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+                m_shooterMotorLeft.setc
         m_shooterMotorLeft.setVoltage(
             ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
         SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
@@ -123,7 +129,18 @@ public class ShooterSubsystem extends SubsystemBase {
       
     }
   }
+
+  public void setPID(double p, double i, double d) {
+    slot0Configs.kP = p;
+    slot0Configs.kI = i;
+    slot0Configs.kD = d;
+    outTakeMotor.getConfigurator().apply(slot0Configs);
+  }
+
   
+  public void velocityController() {
+    motor.setControl(velocityRequest.withVelocity(50));
+  }
 
   public void shootFar() {
     m_shooterMotorRight.setVoltage(
@@ -146,3 +163,4 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 }
+

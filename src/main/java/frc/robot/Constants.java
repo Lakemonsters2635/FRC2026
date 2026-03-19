@@ -124,7 +124,7 @@ public class Constants {
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id
-  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
+  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios-
   public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
   public static final double TURRET_POWER = 2; // TODO: Change
   public static final double TURRET_ANGLE_RANGE =
