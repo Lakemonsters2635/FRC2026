@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,7 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
   VoltageConfigs m_rightConfig;
 
   TalonFX motor = new TalonFX(1);
-VelocityVoltage velocityRequest = new VelocityVoltage(0);
+  VelocityVoltage velocityRequest = new VelocityVoltage(0);
+  Slot0Configs slot0Configs = new Slot0Configs();
 
   Joystick joystick = new Joystick(0);
   double power = 7;
@@ -46,6 +48,7 @@ VelocityVoltage velocityRequest = new VelocityVoltage(0);
     m_shooterMotorLeft.getConfigurator().apply(m_leftConfig);
     m_shooterMotorRight.getConfigurator().apply(m_rightConfig);
 
+    slot0Configs.kG = 0;
      setPID(Constants.SHOOTER_P, Constants.SHOOTER_I, Constants.SHOOTER_D);
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
@@ -89,7 +92,7 @@ VelocityVoltage velocityRequest = new VelocityVoltage(0);
         m_shooterMotorRight.setVoltage(
             ((power) + (magnitude / 4.35)) 
                 * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-                m_shooterMotorLeft.setc
+                
         m_shooterMotorLeft.setVoltage(
             ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
         SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
@@ -134,12 +137,15 @@ VelocityVoltage velocityRequest = new VelocityVoltage(0);
     slot0Configs.kP = p;
     slot0Configs.kI = i;
     slot0Configs.kD = d;
-    outTakeMotor.getConfigurator().apply(slot0Configs);
+    m_shooterMotorLeft.getConfigurator().apply(slot0Configs);
+    m_shooterMotorRight.getConfigurator().apply(slot0Configs);
   }
 
   
-  public void velocityController() {
-    motor.setControl(velocityRequest.withVelocity(50));
+  public void velocityController(double velocity) { // in revolutions/sec
+    m_shooterMotorLeft.setControl(velocityRequest.withVelocity(velocity));
+    m_shooterMotorRight.setControl(velocityRequest.withVelocity(velocity));
+
   }
 
   public void shootFar() {
