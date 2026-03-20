@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -49,7 +50,15 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotorRight.getConfigurator().apply(m_rightConfig);
 
     slot0Configs.kG = 0;
-     setPID(Constants.SHOOTER_P, Constants.SHOOTER_I, Constants.SHOOTER_D);
+    SmartDashboard.putNumber("Shooter P", 0.2);
+    SmartDashboard.putNumber("Shooter I", 0);
+    SmartDashboard.putNumber("Shooter D", 0);
+    SmartDashboard.putNumber("Shooter S", 0);
+    SmartDashboard.putNumber("Shooter V", 0.115);
+
+    SmartDashboard.putNumber("velocity shooter rps", 1);
+    setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
@@ -57,35 +66,35 @@ public class ShooterSubsystem extends SubsystemBase {
     Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistShooter();
 
     magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
-    // if (magnitude != 0) {
-    //   double c = magnitude < 2 ? -0.2 : 0;
-    //   savePower = ((power) + (magnitude / 4.35));
+    if (magnitude != 0) {
+      double c = magnitude < 2 ? -0.2 : 0;
+      savePower = ((power) + (magnitude / 4.35));
     
-    //   m_shooterMotorRight.setVoltage(
-    //       ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)) 
-    //           * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-    //   m_shooterMotorLeft.setVoltage(
-    //       ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)));  // SmartDashboard.getNumber("Shooter Power", 8);
-    //   SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
-    // }
-    // else{
-    //   m_shooterMotorRight.setVoltage(savePower* -1); 
-    //   m_shooterMotorLeft.setVoltage(savePower);
-    // }
+      m_shooterMotorRight.setVoltage(
+          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)) 
+              * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+      m_shooterMotorLeft.setVoltage(
+          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)));  // SmartDashboard.getNumber("Shooter Power", 8);
+      SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+    }
+    else{
+      m_shooterMotorRight.setVoltage(savePower* -1); 
+      m_shooterMotorLeft.setVoltage(savePower);
+    }
 
-    //  if (magnitude != 0) {
-    //   savePower = ((power) + (magnitude / 4.35));
-    //   m_shooterMotorRight.setVoltage(
-    //       ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2))) 
-    //           * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-    //   m_shooterMotorLeft.setVoltage(
-    //       ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
-    //   SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
-    // }
-    // else{
-    //   m_shooterMotorRight.setVoltage(savePower* -1); 
-    //   m_shooterMotorLeft.setVoltage(savePower);
-    // }
+     if (magnitude != 0) {
+      savePower = ((power) + (magnitude / 4.35));
+      m_shooterMotorRight.setVoltage(
+          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2))) 
+              * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
+      m_shooterMotorLeft.setVoltage(
+          ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
+      SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+    }
+    else{
+      m_shooterMotorRight.setVoltage(savePower* -1); 
+      m_shooterMotorLeft.setVoltage(savePower);
+    }
     if (magnitude != 0) {
       if(magnitude > 2.8){
         savePower = ((power) + (magnitude / 4.35));
@@ -133,18 +142,23 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void setPID(double p, double i, double d) {
+  public void setPIDSV(double p, double i, double d, double s, double v) {
     slot0Configs.kP = p;
     slot0Configs.kI = i;
     slot0Configs.kD = d;
+    slot0Configs.kS = s;
+    slot0Configs.kV = v;
+
+
     m_shooterMotorLeft.getConfigurator().apply(slot0Configs);
     m_shooterMotorRight.getConfigurator().apply(slot0Configs);
   }
 
   
   public void velocityController(double velocity) { // in revolutions/sec
-    m_shooterMotorLeft.setControl(velocityRequest.withVelocity(velocity));
-    m_shooterMotorRight.setControl(velocityRequest.withVelocity(velocity));
+    double tempVelocity =  SmartDashboard.getNumber("velocity shooter rps", 1);
+    m_shooterMotorLeft.setControl(velocityRequest.withVelocity(tempVelocity));
+    m_shooterMotorRight.setControl(velocityRequest.withVelocity(-tempVelocity));
 
   }
 
@@ -163,8 +177,19 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    // shoot();
+    setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    // velocityController(SmartDashboard.getNumber("velocity shooter rps", 0));
+    SmartDashboard.getNumber("Shooter I", 0);
+    SmartDashboard.getNumber("Shooter D", 0);
+    SmartDashboard.getNumber("Shooter V", 0.115);
+
+
+    SmartDashboard.putNumber("getShooterVelocityLeft", m_shooterMotorLeft.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("getShooterVelocityRight", m_shooterMotorLeft.getVelocity().getValueAsDouble());
+
     SmartDashboard.putNumber("mag of dist center camera to center hub", magnitude);
+
     // power = (joystick.getThrottle() + 1) * 5;
     // This method will be called once per scheduler run
   }

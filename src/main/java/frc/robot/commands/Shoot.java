@@ -48,6 +48,7 @@ public class Shoot extends Command {
     SmartDashboard.putBoolean("m_aimingAtAprilTag", m_aimingAprilTag);
     if (m_aimingAprilTag) {
       m_ss.shoot();
+      // m_ss.velocityController(0);
     } else {
       m_ss.shootFar();
       m_as.setPosition(0.6);
@@ -64,7 +65,7 @@ public class Shoot extends Command {
         > Constants.SHAKE_INTERVAL_MS) {
       m_rs.setRollersForward();
     } else {
-      m_rs.setRollersBackward();
+      //m_rs.setRollersBackward();
     }
   }
 
