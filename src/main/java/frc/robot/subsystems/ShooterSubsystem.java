@@ -68,7 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     if (magnitude != 0) {
-      desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude * magnitude -13.711 * magnitude + 65.43;
+      desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude * magnitude -13.711 * magnitude + 65.43 + 1;
     }
     velocityController(desiredVelocity);
   }
@@ -109,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // shoot();
-    setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
     // velocityController(SmartDashboard.getNumber("velocity shooter rps", 0));
     SmartDashboard.getNumber("Shooter I", 0);
     SmartDashboard.getNumber("Shooter D", 0);

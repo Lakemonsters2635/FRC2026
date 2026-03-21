@@ -27,6 +27,7 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.PidAutoCommand;
 import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootUptakeVector;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UptakeCommand;
 import frc.robot.commands.UptakeReverseCommand;
@@ -248,16 +249,65 @@ public class RobotContainer {
             new InstantCommand(() -> m_turretSubsystem.setAutoControl(false)),
             new InstantCommand(() -> m_turretSubsystem.setTurretTarget(0))));
     lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setAutoControl(true)));
-
+    double antiJamTimeout = 0.2;
+    double shootingTimeout = 1.8;
     shootButton.whileTrue(
-        new SequentialCommandGroup(
+      new SequentialCommandGroup(
         new Shoot(
-            m_uptakeSubsystem,
-            m_rollerSubsystem,
-            m_shooterSubsystem,
-            m_vectorWheelSubsystem,
-            m_actuatorSubsystem,
-            true)));
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(0.1),
+        new ShootUptakeVector(
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(shootingTimeout),
+        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        new ShootUptakeVector(
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(shootingTimeout),
+        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        new ShootUptakeVector(
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(shootingTimeout),
+        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        new ShootUptakeVector(
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(shootingTimeout),
+        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        new ShootUptakeVector(
+          m_uptakeSubsystem,
+          m_rollerSubsystem,
+          m_shooterSubsystem,
+          m_vectorWheelSubsystem,
+          m_actuatorSubsystem,
+          true
+        ).withTimeout(shootingTimeout),
+        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout)
+      )
+    );
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {

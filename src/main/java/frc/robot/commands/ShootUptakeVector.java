@@ -17,7 +17,7 @@ import frc.robot.subsystems.UptakeSubsystem;
 import frc.robot.subsystems.VectorWheelSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Shoot extends Command {
+public class ShootUptakeVector extends Command {
   /** Creates a new Shoot. */
   UptakeSubsystem m_us;
 
@@ -27,7 +27,7 @@ public class Shoot extends Command {
   ActuatorSubsystem m_as;
   boolean m_aimingAprilTag; // If we are aiming at the apriltag(auto angle ajust)
 
-  public Shoot(
+  public ShootUptakeVector(
       UptakeSubsystem us,
       RollerSubsystem rs,
       ShooterSubsystem ss,
@@ -56,8 +56,8 @@ public class Shoot extends Command {
     //   // m_as.setPosition(0.6);
     // }
     m_ss.shoot();
-    // m_us.uptake();
-    // m_vws.setVectorWheelsIn();
+    m_us.uptake();
+    m_vws.setVectorWheelsIn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
