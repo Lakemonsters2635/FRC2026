@@ -35,6 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
   double power = 7;
   double savePower;
   double magnitude;
+  double desiredVelocity;
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();
@@ -67,79 +68,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     if (magnitude != 0) {
-      double c = magnitude < 2 ? -0.2 : 0;
-      savePower = ((power) + (magnitude / 4.35));
-    
-      m_shooterMotorRight.setVoltage(
-          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)) 
-              * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-      m_shooterMotorLeft.setVoltage(
-          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2)+c)));  // SmartDashboard.getNumber("Shooter Power", 8);
-      SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
+      desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude * magnitude -13.711 * magnitude + 65.43;
     }
-    else{
-      m_shooterMotorRight.setVoltage(savePower* -1); 
-      m_shooterMotorLeft.setVoltage(savePower);
-    }
-
-     if (magnitude != 0) {
-      savePower = ((power) + (magnitude / 4.35));
-      m_shooterMotorRight.setVoltage(
-          ((power) + (magnitude / 4.35 * SmartDashboard.getNumber("a", 1.1)-SmartDashboard.getNumber("b", 0.2))) 
-              * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-      m_shooterMotorLeft.setVoltage(
-          ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
-      SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
-    }
-    else{
-      m_shooterMotorRight.setVoltage(savePower* -1); 
-      m_shooterMotorLeft.setVoltage(savePower);
-    }
-    if (magnitude != 0) {
-      if(magnitude > 2.8){
-        savePower = ((power) + (magnitude / 4.35));
-        m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.35)) 
-                * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-                
-        m_shooterMotorLeft.setVoltage(
-            ((power) + (magnitude / 4.35)));  // SmartDashboard.getNumber("Shooter Power", 8);
-        SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.35)));
-        SmartDashboard.putNumber("shootNum", 1.1);
-      }
-      else if(magnitude > 1.3){
-        savePower = ((power) + (magnitude / 4.65));
-        m_shooterMotorRight.setVoltage(
-            ((power) + (magnitude / 4.60))
-                * -1); // SmartDashboard.getNumber("Shooter Power", 8) * -1);
-        m_shooterMotorLeft.setVoltage(
-            ((power) + (magnitude / 4.60)));  // SmartDashboard.getNumber("Shooter Power", 8);
-        SmartDashboard.putNumber("Shooter Volt", (power + (magnitude / 4.6)));
-        SmartDashboard.putNumber("shootNum", 1.2);
-
-      }
-      else{
-        m_shooterMotorLeft.setVoltage(6.5);
-        m_shooterMotorRight.setVoltage(-6.5);
-        SmartDashboard.putNumber("shootNum", 1.3);
-
-      }
-    }
-    else{
-      if(savePower!= 0){
-        m_shooterMotorRight.setVoltage(savePower* -1); 
-        m_shooterMotorLeft.setVoltage(savePower);
-        SmartDashboard.putNumber("shootNum", 2.1);
-
-      }
-      else{
-        m_shooterMotorLeft.setVoltage(6.5);
-        m_shooterMotorRight.setVoltage(-6.5);        
-        SmartDashboard.putNumber("shootNum", 2.2);
-
-      }
-      
-    }
+    velocityController(desiredVelocity);
   }
 
   public void setPIDSV(double p, double i, double d, double s, double v) {
@@ -156,7 +87,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   
   public void velocityController(double velocity) { // in revolutions/sec
-    double tempVelocity =  SmartDashboard.getNumber("velocity shooter rps", 1);
+    double tempVelocity =  velocity;//SmartDashboard.getNumber("velocity shooter rps", 1);
     m_shooterMotorLeft.setControl(velocityRequest.withVelocity(tempVelocity));
     m_shooterMotorRight.setControl(velocityRequest.withVelocity(-tempVelocity));
 
