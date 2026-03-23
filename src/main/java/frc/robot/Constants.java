@@ -123,7 +123,7 @@ public class Constants {
   public static final int AGITATOR_MOTOR_TOP_ID = 13; // TODO: change to correct id
   public static final int AGITATOR_MOTOR_BOTTOM_ID = 12; // TODO: change to correct id
   public static final int UPTAKE_MOTOR_ID = 0; // TODO: change to correct id
-  public static final int SHAKE_INTERVAL_MS = 500;
+  public static final int SHAKE_INTERVAL_MS = 1000;
 
   // April Tags
   public static final int[] APRIL_TAGS_HUB = {9, 10, 11, 2, 8, 5, 24, 21, 25, 26, 27, 18};

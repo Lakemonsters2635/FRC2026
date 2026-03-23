@@ -267,52 +267,53 @@ public class RobotContainer {
           m_vectorWheelSubsystem,
           m_actuatorSubsystem,
           true
-        ).withTimeout(0.1),
-        new ShootUptakeVector(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        ).withTimeout(shootingTimeout),
-        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        new ShootUptakeVector(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        ).withTimeout(shootingTimeout),
-        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        new ShootUptakeVector(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        ).withTimeout(shootingTimeout),
-        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        new ShootUptakeVector(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        ).withTimeout(shootingTimeout),
-        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        new ShootUptakeVector(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        ).withTimeout(shootingTimeout),
-        new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout)
+        )
+        // .withTimeout(0.1),
+        // new ShootUptakeVector(
+        //   m_uptakeSubsystem,
+        //   m_rollerSubsystem,
+        //   m_shooterSubsystem,
+        //   m_vectorWheelSubsystem,
+        //   m_actuatorSubsystem,
+        //   true
+        // ).withTimeout(shootingTimeout),
+        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        // new ShootUptakeVector(
+        //   m_uptakeSubsystem,
+        //   m_rollerSubsystem,
+        //   m_shooterSubsystem,
+        //   m_vectorWheelSubsystem,
+        //   m_actuatorSubsystem,
+        //   true
+        // ).withTimeout(shootingTimeout),
+        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        // new ShootUptakeVector(
+        //   m_uptakeSubsystem,
+        //   m_rollerSubsystem,
+        //   m_shooterSubsystem,
+        //   m_vectorWheelSubsystem,
+        //   m_actuatorSubsystem,
+        //   true
+        // ).withTimeout(shootingTimeout),
+        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        // new ShootUptakeVector(
+        //   m_uptakeSubsystem,
+        //   m_rollerSubsystem,
+        //   m_shooterSubsystem,
+        //   m_vectorWheelSubsystem,
+        //   m_actuatorSubsystem,
+        //   true
+        // ).withTimeout(shootingTimeout),
+        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
+        // new ShootUptakeVector(
+        //   m_uptakeSubsystem,
+        //   m_rollerSubsystem,
+        //   m_shooterSubsystem,
+        //   m_vectorWheelSubsystem,
+        //   m_actuatorSubsystem,
+        //   true
+        // ).withTimeout(shootingTimeout),
+        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout)
       )
     );
     // shootButton.whileTrue(

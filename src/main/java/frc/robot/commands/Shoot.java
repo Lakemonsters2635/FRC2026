@@ -56,18 +56,18 @@ public class Shoot extends Command {
     //   // m_as.setPosition(0.6);
     // }
     m_ss.shoot();
-    // m_us.uptake();
-    // m_vws.setVectorWheelsIn();
+    m_us.uptake();
+    m_vws.setVectorWheelsIn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (System.currentTimeMillis() % (Constants.SHAKE_INTERVAL_MS * 1.5)
-        > Constants.SHAKE_INTERVAL_MS) {
+    if (System.currentTimeMillis() % (Constants.SHAKE_INTERVAL_MS)
+        < (Constants.SHAKE_INTERVAL_MS/2 + 400)) {
       m_rs.setRollersForward();
     } else {
-      //m_rs.setRollersBackward();
+      m_rs.setRollersBackward();
     }
   }
 
