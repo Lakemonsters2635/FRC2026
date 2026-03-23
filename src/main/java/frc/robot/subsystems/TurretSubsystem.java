@@ -94,6 +94,7 @@ public class TurretSubsystem extends SubsystemBase {
     //         tag);
     aprilTagX = -aprilTagVector.getX();
     aprilTagY = -aprilTagVector.getY();
+    SmartDashboard.putNumber("tur: finalAngleCalculation", aprilTagVector.getRotation().getDegrees());
     double pose_target = 0;
     if (!aprilTagVector.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
       aprilTagDeltaRot = Units.radiansToDegrees(Math.atan2(aprilTagY, aprilTagX) - Math.PI / 2);

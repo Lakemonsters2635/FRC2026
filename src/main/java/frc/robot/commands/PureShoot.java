@@ -6,52 +6,41 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeAngleSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeAngleUpCommand extends Command {
-  /** Creates a new IntakeAngleCommand. */
-  IntakeAngleSubsystem m_intakeAngleSubsystem;
-
-  Timer m_timer;
-  boolean feedForwardApplied;
-
-  public IntakeAngleUpCommand(IntakeAngleSubsystem intakeAngleSubsystem) {
+public class PureShoot extends Command {
+  /** Creates a new PureShoot. */
+  ShooterSubsystem m_ss;
+  Timer timer = new Timer();
+  public PureShoot(ShooterSubsystem ss) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_intakeAngleSubsystem = intakeAngleSubsystem;
-    // m_timer = new Timer();
-    addRequirements(m_intakeAngleSubsystem);
+    m_ss = ss;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_timer.reset();
-    // m_timer.start();
-    // feedForwardApplied = false;
-    m_intakeAngleSubsystem.chagePidMode(true);
-    m_intakeAngleSubsystem.setTargetPos(90);
-    // m_intakeAngleSubsystem.intakeAngleUp();
+    m_ss.shoot();
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    // m_intakeAngleSubsystem.intakeAngleDown();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    // m_intakeAngleSubsystem.intakeAngleFeedForward();
+        m_ss.shooterStop();
+        timer.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // if (m_timer.get() > 1) {
-    //   return true;
-    // }
-    return true;
+    if(timer.get()>.2) return true;
+    return false;
   }
 }

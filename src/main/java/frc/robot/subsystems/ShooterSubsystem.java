@@ -59,7 +59,8 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter V", 0.115);
 
     SmartDashboard.putNumber("velocity shooter rps", 1);
-    setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    // setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
 
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
@@ -117,7 +118,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // shoot();
-    setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    // setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+
     // velocityController(SmartDashboard.getNumber("velocity shooter rps", 0));
     SmartDashboard.getNumber("Shooter I", 0);
     SmartDashboard.getNumber("Shooter D", 0);

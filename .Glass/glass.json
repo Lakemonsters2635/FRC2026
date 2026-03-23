@@ -1,8 +1,24 @@
 {
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Mode": "String Chooser",
+      "/SmartDashboard/PathPlanner": "Alerts"
+    }
+  },
   "NetworkTables Info": {
     "Connections": {
       "open": true
     },
     "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "2635"
   }
 }

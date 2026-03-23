@@ -66,6 +66,8 @@ public class ActuatorSubsystem extends SubsystemBase {
     double magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     SmartDashboard.putNumber("targetMag: ", magnitude);
 
+    SmartDashboard.putNumber("distMagnitude", magnitude);
+    
     if (magnitude != 0) {
       desiredPose = -0.000244799 * magnitude * magnitude + 0.0787634 * magnitude + 0.134677;
     }

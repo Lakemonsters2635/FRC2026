@@ -26,9 +26,9 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.ManualTurret;
 import frc.robot.commands.PidAutoCommand;
+import frc.robot.commands.PureShoot;
 import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.Shoot;
-import frc.robot.commands.ShootUptakeVector;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UptakeCommand;
 import frc.robot.commands.UptakeReverseCommand;
@@ -114,7 +114,7 @@ public class RobotContainer {
     // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     Trigger intakeAngleDown = new JoystickButton(leftJoystick, 11);
     Trigger upShooterVoltageButton = new JoystickButton(leftJoystick, 10);
-    Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
+    // Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
     Trigger hexAndRollerOutButton = new JoystickButton(leftJoystick, 4);
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
@@ -132,7 +132,7 @@ public class RobotContainer {
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
     intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
     upShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(0.3)));
-    downShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
+    // downShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
     hexAndRollerInButton.whileTrue(new ParallelCommandGroup(
@@ -260,6 +260,7 @@ public class RobotContainer {
     double shootingTimeout = 1.8;
     shootButton.whileTrue(
       new SequentialCommandGroup(
+        new PureShoot(m_shooterSubsystem).withTimeout(.2),
         new Shoot(
           m_uptakeSubsystem,
           m_rollerSubsystem,
@@ -268,54 +269,10 @@ public class RobotContainer {
           m_actuatorSubsystem,
           true
         )
-        // .withTimeout(0.1),
-        // new ShootUptakeVector(
-        //   m_uptakeSubsystem,
-        //   m_rollerSubsystem,
-        //   m_shooterSubsystem,
-        //   m_vectorWheelSubsystem,
-        //   m_actuatorSubsystem,
-        //   true
-        // ).withTimeout(shootingTimeout),
-        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        // new ShootUptakeVector(
-        //   m_uptakeSubsystem,
-        //   m_rollerSubsystem,
-        //   m_shooterSubsystem,
-        //   m_vectorWheelSubsystem,
-        //   m_actuatorSubsystem,
-        //   true
-        // ).withTimeout(shootingTimeout),
-        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        // new ShootUptakeVector(
-        //   m_uptakeSubsystem,
-        //   m_rollerSubsystem,
-        //   m_shooterSubsystem,
-        //   m_vectorWheelSubsystem,
-        //   m_actuatorSubsystem,
-        //   true
-        // ).withTimeout(shootingTimeout),
-        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        // new ShootUptakeVector(
-        //   m_uptakeSubsystem,
-        //   m_rollerSubsystem,
-        //   m_shooterSubsystem,
-        //   m_vectorWheelSubsystem,
-        //   m_actuatorSubsystem,
-        //   true
-        // ).withTimeout(shootingTimeout),
-        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout),
-        // new ShootUptakeVector(
-        //   m_uptakeSubsystem,
-        //   m_rollerSubsystem,
-        //   m_shooterSubsystem,
-        //   m_vectorWheelSubsystem,
-        //   m_actuatorSubsystem,
-        //   true
-        // ).withTimeout(shootingTimeout),
-        // new InstantCommand(() -> m_rollerSubsystem.setRollersBackward()).withTimeout(antiJamTimeout)
       )
     );
+
+    
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {
