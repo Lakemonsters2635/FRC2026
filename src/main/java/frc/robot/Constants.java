@@ -107,6 +107,12 @@ public class Constants {
   public static final double MOTOR_STOP = 0.0;
   public static final double SHOOTER_FAR_POWER = 8;
   public static final double EIGHT_BALL_TIME = 18;
+// TODO:  set pid values
+  public static final double SHOOTER_P = 0;
+  public static final double SHOOTER_I = 0;
+  public static final double SHOOTER_D = 0;
+
+
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;
   public static final int IN_VOLTAGE = 6;
@@ -124,7 +130,7 @@ public class Constants {
 
   // Turret Constants
   public static final int TURRET_MOTOR_ID = 21; // TODO: find id
-  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios
+  public static final int RATIO_SPARKMAX_ROTATION_TO_TURRET = 30; // 3 x 10 gear ratios-
   public static final int ENCODER_TICS_PER_SPARKMAX_REVOLUTION = 42;
   public static final double TURRET_POWER = 2; // TODO: Change
   public static final double TURRET_ANGLE_RANGE =
