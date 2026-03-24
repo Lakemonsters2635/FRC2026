@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -17,12 +18,12 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   TalonFX m_intakeMotor;
+  private VoltageConfigs m_voltageConfig = new VoltageConfigs();
   
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-
-
+    m_intakeMotor.getConfigurator().apply(m_voltageConfig);
   }
 
   public void intakeIn() {
