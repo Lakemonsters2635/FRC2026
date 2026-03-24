@@ -287,9 +287,9 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     // detection = m_ots.
 
-    // double visionYa = -detection.ya;
+    double visionYa = -detection.ya;
 
-    double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
+    // double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
         xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
     double z_vt =
@@ -651,19 +651,19 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
           || id == 2) {
         return getDistVector(
             0,
-            Units.metersToInches(0.75), // -/+   .6m
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             id);
       } else if (id == 25 || id == 27 || id == 9 || id == 11) {
         return getDistVector(
-            Units.metersToInches(0.25),
-            Units.metersToInches(0.6), // -/+   .6m
+            Units.metersToInches(0.35),
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             id);
       } else if (id == 24 || id == 8) {
         return getDistVector(
-            Units.metersToInches(-0.25),
-            Units.metersToInches(0.6), // -/+   .6m
+            Units.metersToInches(-0.35),
+            Units.metersToInches(0.7), // -/+   .6m
             0,
             id);
       }
@@ -676,8 +676,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     double sumX = 0, sumY = 0;
     int count = 0;
 
-    for (Detection detection : aprilTags) {
-      Pose2d currAprilTag = getSpecificAprilTagDist(Integer.parseInt(detection.objectLabel.substring(10)));
+    for(int i = 1; i<=32; i++) {
+      Pose2d currAprilTag = getSpecificAprilTagDist(i);
       if(currAprilTag.equals(new Pose2d(0,0, new Rotation2d()))) continue;
       sumX += currAprilTag.getX();
       sumY += currAprilTag.getY();

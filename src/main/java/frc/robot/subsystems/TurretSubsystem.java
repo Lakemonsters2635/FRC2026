@@ -62,8 +62,8 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.getEncoder().setPosition(0);
     m_turretController =
         new PIDController(
-            0.10, 0.,
-            0.01); // Having a kd of 0.01 does induce some jitter but greatly reduces overshoot
+            0.08, 0.01,
+            0.01); // Having a kd of 0.015 does induce some jitter but greatly reduces overshoot
     m_timer = new Timer();
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
@@ -81,6 +81,8 @@ public class TurretSubsystem extends SubsystemBase {
     m_objectTrackerSubsystem.data();
 
     Pose2d aprilTagVector = m_objectTrackerSubsystem.getNearestAprilTagDistTurret();
+    // Pose2d aprilTagVector = m_objectTrackerSubsystem.getAvgAprilTagDist();
+
     //     m_objectTrackerSubsystem.getDistVector(
     //         0,
     //         Units.metersToInches(0.8), // -/+   .6m
@@ -227,7 +229,7 @@ public class TurretSubsystem extends SubsystemBase {
           m_timer.reset();
           m_timer.start();
         }
-        if (m_timer.get() > 1) {
+        if (m_timer.get() > 2) {
           isAutoControl = false;
         }
       }
@@ -250,6 +252,8 @@ public class TurretSubsystem extends SubsystemBase {
     //           m_turretController.calculate(getDegrees(), m_poseTarget),
     //           -Constants.TURRET_POWER,
     //           Constants.TURRET_POWER);
+
+
     if (getDegrees() > -30 && getDegrees() < 17) {
       feedForward = 0;
     } else if (getDegrees() > 17) {
@@ -258,10 +262,17 @@ public class TurretSubsystem extends SubsystemBase {
       feedForward = -0.7 * (getDegrees() + 30) / (Constants.MIN_LIMIT_ROTATION + 30);
     }
 
+    // feedForward = 0;
+
     if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      turretPower(fb + feedForward);
+      if(Math.abs(m_poseTarget - getDegrees()) < 2){
+        turretPower(feedForward);
+      }
+      else{
+        turretPower(fb + feedForward);
+      }
       // turretPower(0);
     }
     SmartDashboard.putNumber("Feed Forward Turret", feedForward);
