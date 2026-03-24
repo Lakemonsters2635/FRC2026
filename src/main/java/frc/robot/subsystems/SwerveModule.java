@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
@@ -48,8 +49,16 @@ public class SwerveModule {
       double turningMotorOffsetRadians,
       double driveMotorGain) {
 
+    VoltageConfigs m_voltageConfigDrive= new VoltageConfigs();
+    m_voltageConfigDrive.SupplyVoltageTimeConstant = 10;
+    VoltageConfigs m_voltageConfigTurning= new VoltageConfigs();
+    m_voltageConfigTurning.SupplyVoltageTimeConstant = 10;
+
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
+
+    m_driveMotor.getConfigurator().apply(m_voltageConfigDrive);
+    m_turningMotor.getConfigurator().apply(m_voltageConfigTurning);
 
     m_driveMotor.setNeutralMode(NeutralModeValue.Brake);
     m_turningMotor.setNeutralMode(NeutralModeValue.Brake);
