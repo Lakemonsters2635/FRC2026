@@ -62,7 +62,7 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.getEncoder().setPosition(0);
     m_turretController =
         new PIDController(
-            0.08, 0.01,
+            0.08, 0.0,
             0.01); // Having a kd of 0.015 does induce some jitter but greatly reduces overshoot
     m_timer = new Timer();
     m_objectTrackerSubsystem = objectTrackerSubsystem;

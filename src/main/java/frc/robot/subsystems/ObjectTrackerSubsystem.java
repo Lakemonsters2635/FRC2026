@@ -79,6 +79,12 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   public DetectionList yoloObjects;
   public DetectionList aprilTags;
+  // private double ya1=0;
+  // private double ya2=0;
+  // private double ya3=0;
+  // private double ya4=0;
+  // private double ya5=0;
+  private double[][] yaWeights= new double[33][5];
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
@@ -286,8 +292,21 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
+    
+    yaWeights[tagId][4] = yaWeights[tagId][3];    
+    yaWeights[tagId][3] = yaWeights[tagId][2];    
+    yaWeights[tagId][2] = yaWeights[tagId][1];    
+    yaWeights[tagId][1] = yaWeights[tagId][0];   
+    yaWeights[tagId][0] = -detection.ya;
+    // ya5=ya4;
+    // ya4=ya3;
+    // ya3=ya2;
+    // ya2=ya1;
+    // ya1=-detection.ya;
+    double[] currYa = yaWeights[tagId];
 
-    double visionYa = -detection.ya;
+    // double visionYa = -detection.ya;
+    double visionYa = (currYa[0] * 5 + currYa[1] *4 + currYa[2]*3 + currYa[3]*2+ currYa[4]) / 15;
 
     // double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
