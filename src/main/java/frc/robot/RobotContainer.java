@@ -105,30 +105,31 @@ public class RobotContainer {
   private void configureBindings() {
     // left joystick buttons
     Trigger shootButton = new JoystickButton(leftJoystick, 1);
-    Trigger lockTurret = new JoystickButton(leftJoystick, 5);
-    
     Trigger shootFromMidButton = new JoystickButton(leftJoystick, 3);
+    Trigger hexAndRollerOutButton = new JoystickButton(leftJoystick, 4);
+    Trigger lockTurret = new JoystickButton(leftJoystick, 5);
+    Trigger upShooterVoltageButton = new JoystickButton(leftJoystick, 10);
+    Trigger intakeAngleDown = new JoystickButton(leftJoystick, 11);
+    
     // Trigger throttleControl = new JoystickButton(leftJoystick, 4);
     // Trigger moveTurretLeft = new JoystickButton(leftJoystick, 11);
     // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
-    Trigger intakeAngleDown = new JoystickButton(leftJoystick, 11);
-    Trigger upShooterVoltageButton = new JoystickButton(leftJoystick, 10);
     // Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
-    Trigger hexAndRollerOutButton = new JoystickButton(leftJoystick, 4);
+
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
-    Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
-    Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
     Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
+    Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
+    Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
+    Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
+    Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
+    Trigger intakeUpButton = new JoystickButton(rightJoystick, 11);
 
     // Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 8);
-    Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
     // Trigger rollerOutButton = new JoystickButton(rightJoystick, 3);
 
     // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
-    Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
-    Trigger intakeUpButton = new JoystickButton(rightJoystick, 11);
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
     intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
     upShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(0.3)));

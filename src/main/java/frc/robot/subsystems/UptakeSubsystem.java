@@ -11,25 +11,25 @@ import frc.robot.Constants;
 
 public class UptakeSubsystem extends SubsystemBase {
   /** Creates a new UptakeSubsystem. */
-  TalonFX uptakeMotor;
+  TalonFX m_uptakeMotor;
   private VoltageConfigs m_voltageConfig = new VoltageConfigs();
 
   public UptakeSubsystem() {
-    uptakeMotor = new TalonFX(Constants.UPTAKE_MOTOR_ID);
-    uptakeMotor.getConfigurator().apply(m_voltageConfig);
+    m_uptakeMotor = new TalonFX(Constants.UPTAKE_MOTOR_ID);
+    m_uptakeMotor.getConfigurator().apply(m_voltageConfig);
   }
 
   public void uptake() {
     // not tested
-    uptakeMotor.setVoltage(-4);
+    m_uptakeMotor.setVoltage(-4);
   }
 
   public void reverseUptake() {
-    uptakeMotor.setVoltage(4);
+    m_uptakeMotor.setVoltage(4);
   }
 
   public void stopUptake() {
-    uptakeMotor.setVoltage(0);
+    m_uptakeMotor.setVoltage(0);
   }
 
   @Override

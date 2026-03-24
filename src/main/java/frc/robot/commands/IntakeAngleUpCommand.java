@@ -17,41 +17,29 @@ public class IntakeAngleUpCommand extends Command {
   boolean feedForwardApplied;
 
   public IntakeAngleUpCommand(IntakeAngleSubsystem intakeAngleSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
     m_intakeAngleSubsystem = intakeAngleSubsystem;
-    // m_timer = new Timer();
     addRequirements(m_intakeAngleSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_timer.reset();
-    // m_timer.start();
     // feedForwardApplied = false;
     m_intakeAngleSubsystem.chagePidMode(true);
     m_intakeAngleSubsystem.setTargetPos(90);
-    // m_intakeAngleSubsystem.intakeAngleUp();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    // m_intakeAngleSubsystem.intakeAngleDown();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // m_intakeAngleSubsystem.intakeAngleFeedForward();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // if (m_timer.get() > 1) {
-    //   return true;
-    // }
     return true;
   }
 }

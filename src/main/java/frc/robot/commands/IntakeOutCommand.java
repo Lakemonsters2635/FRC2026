@@ -10,15 +10,16 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeOutCommand extends Command {
-  /** Creates a new IntakeOutCommand. */
   IntakeSubsystem m_intakeSubsystem;
   IntakeAngleSubsystem m_intakeAngleSubsystem;
 
   public IntakeOutCommand(IntakeSubsystem m_intakeOutSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
     m_intakeSubsystem = m_intakeOutSubsystem;
     m_intakeAngleSubsystem = intakeAngleSubsystem;
+    
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsystem);
+    addRequirements(m_intakeAngleSubsystem);
   }
 
   // Called when the command is initially scheduled.

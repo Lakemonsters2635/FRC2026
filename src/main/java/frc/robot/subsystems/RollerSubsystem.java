@@ -13,27 +13,27 @@ import frc.robot.Constants;
 
 public class RollerSubsystem extends SubsystemBase {
   /** Creates a new RollerSubsystem. */
-  TalonFX agitatorMotorBottom;
+  TalonFX m_rollerMotor;
   private VoltageConfigs m_voltageConfig = new VoltageConfigs();
 
   public RollerSubsystem() {
     m_voltageConfig.SupplyVoltageTimeConstant = 10;
-    agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
-    agitatorMotorBottom.getConfigurator().apply(m_voltageConfig);
-    agitatorMotorBottom.getConfigurator().apply(m_voltageConfig);
+    m_rollerMotor = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
+    m_rollerMotor.getConfigurator().apply(m_voltageConfig);
+    m_rollerMotor.getConfigurator().apply(m_voltageConfig);
     SmartDashboard.putNumber("rollerPower", 2);
   }
 
   public void setRollersBackward() {
-    agitatorMotorBottom.setVoltage(-2);
+    m_rollerMotor.setVoltage(-2);
   }
 
   public void setRollersForward() {
-    agitatorMotorBottom.setVoltage(2);
+    m_rollerMotor.setVoltage(2);
   }
 
   public void stopRollers() {
-    agitatorMotorBottom.setVoltage(0);
+    m_rollerMotor.setVoltage(0);
   }
 
   @Override

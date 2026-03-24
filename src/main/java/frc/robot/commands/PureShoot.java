@@ -10,11 +10,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PureShoot extends Command {
-  /** Creates a new PureShoot. */
   ShooterSubsystem m_ss;
   Timer timer = new Timer();
   public PureShoot(ShooterSubsystem ss) {
-    // Use addRequirements() here to declare subsystem dependencies.
     m_ss = ss;
   }
 
@@ -33,8 +31,8 @@ public class PureShoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        m_ss.shooterStop();
-        timer.stop();
+    m_ss.shooterStop();
+    timer.stop();
   }
 
   // Returns true when the command should end.
