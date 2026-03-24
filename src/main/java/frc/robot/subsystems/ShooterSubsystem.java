@@ -35,7 +35,7 @@ public class ShooterSubsystem extends SubsystemBase {
   double power = 7;
   double savePower;
   double magnitude;
-  double desiredVelocity;
+  double desiredVelocity=60;
   double joystickDeltaPower = 0;
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_leftConfig = new VoltageConfigs();
@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
     joystickDeltaPower = voltage;
   }
   public void shoot() {
-    Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistShooter();
+    Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistTurret();
 
     magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     if (magnitude != 0) {
