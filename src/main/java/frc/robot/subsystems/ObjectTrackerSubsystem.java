@@ -640,6 +640,56 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     }
     return new Pose2d(0, 0, new Rotation2d(0));
   }
+  public Pose2d getSpecificAprilTagDist(int id) {
+    SmartDashboard.putNumber("id", id);
+    if (id != -1) {
+      if (id == 21
+          || id == 26
+          || id == 18
+          || id == 10
+          || id == 5
+          || id == 2) {
+        return getDistVector(
+            0,
+            Units.metersToInches(0.75), // -/+   .6m
+            0,
+            id);
+      } else if (id == 25 || id == 27 || id == 9 || id == 11) {
+        return getDistVector(
+            Units.metersToInches(0.25),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            id);
+      } else if (id == 24 || id == 8) {
+        return getDistVector(
+            Units.metersToInches(-0.25),
+            Units.metersToInches(0.6), // -/+   .6m
+            0,
+            id);
+      }
+    }
+    return new Pose2d(0, 0, new Rotation2d(0));
+  }
+
+  public Pose2d getAvgAprilTagDist(){
+    Pose2d avgPose2d = new Pose2d();
+    double sumX = 0, sumY = 0;
+    int count = 0;
+
+    for (Detection detection : aprilTags) {
+      Pose2d currAprilTag = getSpecificAprilTagDist(Integer.parseInt(detection.objectLabel.substring(10)));
+      if(currAprilTag.equals(new Pose2d(0,0, new Rotation2d()))) continue;
+      sumX += currAprilTag.getX();
+      sumY += currAprilTag.getY();
+      count++;
+    }
+
+    if (count > 0) {
+      avgPose2d = new Pose2d(sumX / count, sumY / count, new Rotation2d(0));
+    }
+
+    return avgPose2d;
+  }
 
   public Detection getSpecificAprilTag(int id) {
     Detection currentAprilTag;
