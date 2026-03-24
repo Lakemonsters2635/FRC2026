@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,11 +14,12 @@ import frc.robot.Constants;
 public class RollerSubsystem extends SubsystemBase {
   /** Creates a new RollerSubsystem. */
   TalonFX agitatorMotorBottom;
-  VoltageConfigs m_voltageConfig = new VoltageConfigs();
+  private VoltageConfigs m_voltageConfig = new VoltageConfigs();
 
   public RollerSubsystem() {
     m_voltageConfig.SupplyVoltageTimeConstant = 10;
     agitatorMotorBottom = new TalonFX(Constants.AGITATOR_MOTOR_BOTTOM_ID); // white
+    agitatorMotorBottom.getConfigurator().apply(m_voltageConfig);
     agitatorMotorBottom.getConfigurator().apply(m_voltageConfig);
     SmartDashboard.putNumber("rollerPower", 2);
   }
