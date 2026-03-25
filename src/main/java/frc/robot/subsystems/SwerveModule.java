@@ -49,9 +49,9 @@ public class SwerveModule {
       double turningMotorOffsetRadians,
       double driveMotorGain) {
 
-    VoltageConfigs m_voltageConfigDrive= new VoltageConfigs();
+    VoltageConfigs m_voltageConfigDrive = new VoltageConfigs();
     m_voltageConfigDrive.SupplyVoltageTimeConstant = 10;
-    VoltageConfigs m_voltageConfigTurning= new VoltageConfigs();
+    VoltageConfigs m_voltageConfigTurning = new VoltageConfigs();
     m_voltageConfigTurning.SupplyVoltageTimeConstant = 10;
 
     m_driveMotor = new TalonFX(driveMotorChannel);

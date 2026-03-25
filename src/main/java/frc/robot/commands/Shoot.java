@@ -28,7 +28,7 @@ public class Shoot extends Command {
       UptakeSubsystem us,
       RollerSubsystem rs,
       ShooterSubsystem ss,
-      VectorWheelSubsystem vws, 
+      VectorWheelSubsystem vws,
       ActuatorSubsystem as,
       Boolean aimingAprilTag) { // this is for if we are shooting far or close
     m_us = us;
@@ -61,7 +61,7 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     if (System.currentTimeMillis() % (Constants.SHAKE_INTERVAL_MS)
-        < (Constants.SHAKE_INTERVAL_MS/2 + 400)) {
+        < (Constants.SHAKE_INTERVAL_MS / 2 + 400)) {
       m_rs.setRollersForward();
     } else {
       m_rs.setRollersBackward();

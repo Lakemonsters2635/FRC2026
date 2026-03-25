@@ -107,11 +107,10 @@ public class Constants {
   public static final double MOTOR_STOP = 0.0;
   public static final double SHOOTER_FAR_POWER = 8;
   public static final double EIGHT_BALL_TIME = 18;
-// TODO:  set pid values
+  // TODO:  set pid values
   public static final double SHOOTER_P = 0;
   public static final double SHOOTER_I = 0;
   public static final double SHOOTER_D = 0;
-
 
   // Intake Constants
   public static final int INTAKE_MOTOR_ID = 22;

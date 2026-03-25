@@ -16,12 +16,14 @@ import frc.robot.subsystems.VectorWheelSubsystem;
 public class ShooterTimerCommand extends Command {
   /** Creates a new ShooterCommand. */
   UptakeSubsystem m_us;
+
   RollerSubsystem m_rs;
   ShooterSubsystem m_ss;
   VectorWheelSubsystem m_vws;
   boolean m_aimingAprilTag; // If we are aiming at the apriltag(auto angle ajust)
   Timer m_timer;
   double m_timeRun;
+
   public ShooterTimerCommand(
       UptakeSubsystem us,
       RollerSubsystem rs,

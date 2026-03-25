@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -81,49 +80,47 @@ public class Autos extends Command {
         new InstantCommand(() -> m_dts.resetAngle(-90)), // reset the angle to 180 deg
         new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
         new ParallelCommandGroup(
-          new IntakeAngleCommand(m_intakeAngleSubsystem),
-          new UptakeReverseCommand(m_uptakeSubsystem).withTimeout(1)
-        ),
+            new IntakeAngleCommand(m_intakeAngleSubsystem),
+            new UptakeReverseCommand(m_uptakeSubsystem).withTimeout(1)),
         new WaitCommand(0.5), // wait 0.5s
         new Shoot(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true).withTimeout(Constants.EIGHT_BALL_TIME)
-        );
+                m_uptakeSubsystem,
+                m_rollerSubsystem,
+                m_shooterSubsystem,
+                m_vectorWheelSubsystem,
+                m_actuatorSubsystem,
+                true)
+            .withTimeout(Constants.EIGHT_BALL_TIME));
   }
 
-   public Command leftShootRampAuto() {
+  public Command leftShootRampAuto() {
     // sequential does the commands one by one
     return new SequentialCommandGroup(
-      //leftShootAuto(),
-      new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0.5, 0, 0),
-      new WaitCommand(0.3),
-      new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 0, -90),
-      new WaitCommand(0.3),
-      new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 2, 0)
-    );
+        // leftShootAuto(),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0.5, 0, 0),
+        new WaitCommand(0.3),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 0, -90),
+        new WaitCommand(0.3),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 2, 0));
   }
+
   public Command rigthShootAuto() {
     // sequential does the commands one by one
     return new SequentialCommandGroup(
         new InstantCommand(() -> m_dts.resetAngle(90)), // reset the angle to 180 deg
         new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
         new ParallelCommandGroup(
-          new IntakeAngleCommand(m_intakeAngleSubsystem),
-          new UptakeReverseCommand(m_uptakeSubsystem).withTimeout(1)
-        ),
+            new IntakeAngleCommand(m_intakeAngleSubsystem),
+            new UptakeReverseCommand(m_uptakeSubsystem).withTimeout(1)),
         new WaitCommand(0.5), // wait 0.5s
         new Shoot(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true).withTimeout(Constants.EIGHT_BALL_TIME)
-        );
+                m_uptakeSubsystem,
+                m_rollerSubsystem,
+                m_shooterSubsystem,
+                m_vectorWheelSubsystem,
+                m_actuatorSubsystem,
+                true)
+            .withTimeout(Constants.EIGHT_BALL_TIME));
   }
 
   // robot starts to the right of the hub, moves away from it 1.98m and shoots at -45 deg angle
@@ -152,19 +149,17 @@ public class Autos extends Command {
         new InstantCommand(() -> m_dts.zeroOdometry()), // zero the odometry
         new IntakeAngleCommand(m_intakeAngleSubsystem),
         new ParallelRaceGroup(
-        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1, 0),
-        new UptakeReverseCommand(m_uptakeSubsystem)
-        ),
-        new WaitCommand(1)
-        ,new Shoot(
-            m_uptakeSubsystem,
-            m_rollerSubsystem,
-            m_shooterSubsystem,
-            m_vectorWheelSubsystem,
-            m_actuatorSubsystem,
-            true
-          ).withTimeout(Constants.EIGHT_BALL_TIME)
-      );
+            new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1, 0),
+            new UptakeReverseCommand(m_uptakeSubsystem)),
+        new WaitCommand(1),
+        new Shoot(
+                m_uptakeSubsystem,
+                m_rollerSubsystem,
+                m_shooterSubsystem,
+                m_vectorWheelSubsystem,
+                m_actuatorSubsystem,
+                true)
+            .withTimeout(Constants.EIGHT_BALL_TIME));
   }
 
   public Command rightScoreAuto() {

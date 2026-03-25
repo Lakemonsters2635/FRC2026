@@ -12,6 +12,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class PureShoot extends Command {
   ShooterSubsystem m_ss;
   Timer timer = new Timer();
+
   public PureShoot(ShooterSubsystem ss) {
     m_ss = ss;
   }
@@ -38,7 +39,7 @@ public class PureShoot extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(timer.get()>.2) return true;
+    if (timer.get() > .2) return true;
     return false;
   }
 }

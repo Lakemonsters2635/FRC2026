@@ -13,7 +13,8 @@ import frc.robot.Constants;
 public class VectorWheelSubsystem extends SubsystemBase {
   /** Creates a new VectorWheelSubsystem. */
   TalonFX agitatorMotorTop;
-  private VoltageConfigs m_voltageConfig= new VoltageConfigs();
+
+  private VoltageConfigs m_voltageConfig = new VoltageConfigs();
 
   public VectorWheelSubsystem() {
     agitatorMotorTop = new TalonFX(Constants.AGITATOR_MOTOR_TOP_ID); // orange

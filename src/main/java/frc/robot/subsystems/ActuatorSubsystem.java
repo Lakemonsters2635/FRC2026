@@ -59,7 +59,7 @@ public class ActuatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("targetMag: ", magnitude);
 
     SmartDashboard.putNumber("distMagnitude", magnitude);
-    
+
     if (magnitude != 0) {
       desiredPose = -0.000244799 * magnitude * magnitude + 0.0787634 * magnitude + 0.134677;
     }
@@ -70,11 +70,10 @@ public class ActuatorSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("act: getPosActuatorLeft", getPosition());
     SmartDashboard.putNumber("act: getPosActuatorRight", m_linearActuatorRight.getPosition());
-    
+
     if (autoControl) {
       setPosition(getDesiredPose());
-    }
-    else{
+    } else {
       setPosition(0.6);
     }
     SmartDashboard.putNumber("act: desiredPose calc", getDesiredPose());

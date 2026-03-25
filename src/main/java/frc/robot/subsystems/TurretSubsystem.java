@@ -96,7 +96,8 @@ public class TurretSubsystem extends SubsystemBase {
     //         tag);
     aprilTagX = -aprilTagVector.getX();
     aprilTagY = -aprilTagVector.getY();
-    SmartDashboard.putNumber("tur: finalAngleCalculation", aprilTagVector.getRotation().getDegrees());
+    SmartDashboard.putNumber(
+        "tur: finalAngleCalculation", aprilTagVector.getRotation().getDegrees());
     double pose_target = 0;
     if (!aprilTagVector.equals(new Pose2d(0, 0, new Rotation2d(0)))) {
       aprilTagDeltaRot = Units.radiansToDegrees(Math.atan2(aprilTagY, aprilTagX) - Math.PI / 2);
@@ -253,7 +254,6 @@ public class TurretSubsystem extends SubsystemBase {
     //           -Constants.TURRET_POWER,
     //           Constants.TURRET_POWER);
 
-
     if (getDegrees() > -30 && getDegrees() < 17) {
       feedForward = 0;
     } else if (getDegrees() > 17) {
@@ -267,10 +267,9 @@ public class TurretSubsystem extends SubsystemBase {
     if (Math.abs(getDegrees()) > 50) {
       turretPower(0);
     } else {
-      if(Math.abs(m_poseTarget - getDegrees()) < 2){
+      if (Math.abs(m_poseTarget - getDegrees()) < 2) {
         turretPower(feedForward);
-      }
-      else{
+      } else {
         turretPower(fb + feedForward);
       }
       // turretPower(0);

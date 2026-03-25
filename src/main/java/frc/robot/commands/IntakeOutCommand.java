@@ -13,10 +13,11 @@ public class IntakeOutCommand extends Command {
   IntakeSubsystem m_intakeSubsystem;
   IntakeAngleSubsystem m_intakeAngleSubsystem;
 
-  public IntakeOutCommand(IntakeSubsystem m_intakeOutSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
+  public IntakeOutCommand(
+      IntakeSubsystem m_intakeOutSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
     m_intakeSubsystem = m_intakeOutSubsystem;
     m_intakeAngleSubsystem = intakeAngleSubsystem;
-    
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_intakeSubsystem);
     addRequirements(m_intakeAngleSubsystem);
@@ -26,7 +27,6 @@ public class IntakeOutCommand extends Command {
   @Override
   public void initialize() {
     m_intakeSubsystem.intakeOut();
-    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

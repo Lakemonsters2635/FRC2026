@@ -12,6 +12,7 @@ import frc.robot.Constants;
 public class UptakeSubsystem extends SubsystemBase {
   /** Creates a new UptakeSubsystem. */
   TalonFX m_uptakeMotor;
+
   private VoltageConfigs m_voltageConfig = new VoltageConfigs();
 
   public UptakeSubsystem() {

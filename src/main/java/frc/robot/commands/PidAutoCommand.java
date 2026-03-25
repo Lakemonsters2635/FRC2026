@@ -122,39 +122,33 @@ public class PidAutoCommand extends Command {
             PURE_VISION_MAX_M_PER_SEC);
 
     m_visionSwerveController_rot.enableContinuousInput(-180, 180);
-    if(!(Math.abs(m_x_target - x_pose) < 0.05)){
-        pid_x = m_visionSwerveController_x.calculate(x_pose, m_x_target);
-        SmartDashboard.putBoolean("xFinished", false);
-    }
-    else{
+    if (!(Math.abs(m_x_target - x_pose) < 0.05)) {
+      pid_x = m_visionSwerveController_x.calculate(x_pose, m_x_target);
+      SmartDashboard.putBoolean("xFinished", false);
+    } else {
       pid_x = 0;
       SmartDashboard.putBoolean("xFinished", true);
     }
 
-     if(!(Math.abs(m_y_target - y_pose) < 0.05)){
-        pid_y = m_visionSwerveController_y.calculate(y_pose, m_y_target);
-        SmartDashboard.putBoolean("yFinished", false);
+    if (!(Math.abs(m_y_target - y_pose) < 0.05)) {
+      pid_y = m_visionSwerveController_y.calculate(y_pose, m_y_target);
+      SmartDashboard.putBoolean("yFinished", false);
 
-    }
-    else{
+    } else {
       pid_y = 0;
       SmartDashboard.putBoolean("yFinished", true);
-
     }
 
-    if(!(Math.abs(m_rot_target - rot_pose) < 5)){
+    if (!(Math.abs(m_rot_target - rot_pose) < 5)) {
       pid_rot =
-              -m_visionSwerveController_rot.calculate(
-                  Math.toRadians(rot_pose), Math.toRadians(m_rot_target)); 
+          -m_visionSwerveController_rot.calculate(
+              Math.toRadians(rot_pose), Math.toRadians(m_rot_target));
       SmartDashboard.putBoolean("rotFinished", false);
-   
-    }
-    else{
+
+    } else {
       pid_rot = 0;
       SmartDashboard.putBoolean("rotFinished", true);
-
     }
-
 
     double pid_c = Math.hypot(pid_x, pid_y);
     double x_clamp = pid_c > speed_clamp ? (speed_clamp * (Math.abs(pid_x) / pid_c)) : speed_clamp;
@@ -163,7 +157,7 @@ public class PidAutoCommand extends Command {
     // Clamps for safety and allows the fadeInDistance to ramp up speed instead of instantly
     // accelerating too fast
     double m_fb_x = MathUtil.clamp(pid_x, -x_clamp, x_clamp);
-    double m_fb_y = MathUtil.clamp(pid_y, -y_clamp, y_clamp); 
+    double m_fb_y = MathUtil.clamp(pid_y, -y_clamp, y_clamp);
     double m_fb_rot =
         MathUtil.clamp(pid_rot, -PURE_VISION_MAX_RAD_PER_SEC, PURE_VISION_MAX_RAD_PER_SEC);
     m_fb_rot = 0;
@@ -185,16 +179,14 @@ public class PidAutoCommand extends Command {
     double y = m_dts.getPose().getY();
     double rot = m_dts.getPose().getRotation().getDegrees();
 
-    
     // Manual Stop by Driver
     if (cancelTeleAuto.getAsBoolean()) {
       return true;
     }
 
     // If conditions are met
-    return Math.abs(m_x_target - x) < 0.05
-        && Math.abs(m_y_target - y) < 0.05;
-        // && Math.abs((m_rot_target - rot)) < 5;
+    return Math.abs(m_x_target - x) < 0.05 && Math.abs(m_y_target - y) < 0.05;
+    // && Math.abs((m_rot_target - rot)) < 5;
     //  && Math.abs(m_dts.getYawGyroValue()) < 10;
   }
 

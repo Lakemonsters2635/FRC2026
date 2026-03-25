@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,9 +23,7 @@ import frc.robot.commands.IntakeAngleUpCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeOutCommand;
 import frc.robot.commands.ManualTurret;
-import frc.robot.commands.PidAutoCommand;
 import frc.robot.commands.PureShoot;
-import frc.robot.commands.SetLinearPoseCommand;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.ShooterCommand;
 import frc.robot.commands.UptakeCommand;
@@ -79,26 +75,35 @@ public class RobotContainer {
   private static ShooterCommand m_shooterCommand = new ShooterCommand(m_shooterSubsystem);
   private static IntakeCommand m_intakeCommand =
       new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
-  private static IntakeOutCommand m_intakeOutCommand = new IntakeOutCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
+  private static IntakeOutCommand m_intakeOutCommand =
+      new IntakeOutCommand(m_intakeSubsystem, m_intakeAngleSubsystem);
   private static ManualTurret m_manualTurret = new ManualTurret(m_turretSubsystem);
   private static IntakeAngleCommand m_intakeAngleCommand =
       new IntakeAngleCommand(m_intakeAngleSubsystem);
-  private static Autos m_autos = new Autos(m_drivetrainSubsystem, m_objectTrackerSubsystem, m_rollerSubsystem, m_uptakeSubsystem, m_vectorWheelSubsystem, m_shooterSubsystem, m_turretSubsystem, m_intakeAngleSubsystem, m_actuatorSubsystem);
+  private static Autos m_autos =
+      new Autos(
+          m_drivetrainSubsystem,
+          m_objectTrackerSubsystem,
+          m_rollerSubsystem,
+          m_uptakeSubsystem,
+          m_vectorWheelSubsystem,
+          m_shooterSubsystem,
+          m_turretSubsystem,
+          m_intakeAngleSubsystem,
+          m_actuatorSubsystem);
 
   public RobotContainer() {
     // autoChooser.setDefaultOption(
     //     "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     // autoChooser.addOption(
     //     "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
-    autoChooser.addOption(
-        "LeftShoot", m_autos.leftShootAuto());
-    autoChooser.addOption(
-        "RightShoot", m_autos.rightShootAuto());
+    autoChooser.addOption("LeftShoot", m_autos.leftShootAuto());
+    autoChooser.addOption("RightShoot", m_autos.rightShootAuto());
     // autoChooser.addOption(
     //     "LeftShootRamp", m_autos.leftShootRampAuto());
     autoChooser.setDefaultOption("midAuto", m_autos.middleScoreAuto());
     SmartDashboard.putData("Auto Mode", autoChooser);
-  
+
     configureBindings();
   }
 
@@ -110,7 +115,7 @@ public class RobotContainer {
     Trigger lockTurret = new JoystickButton(leftJoystick, 5);
     Trigger upShooterVoltageButton = new JoystickButton(leftJoystick, 10);
     Trigger intakeAngleDown = new JoystickButton(leftJoystick, 11);
-    
+
     // Trigger throttleControl = new JoystickButton(leftJoystick, 4);
     // Trigger moveTurretLeft = new JoystickButton(leftJoystick, 11);
     // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
@@ -132,55 +137,54 @@ public class RobotContainer {
     // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
     intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
-    upShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(0.3)));
-    // downShooterVoltageButton.onTrue(new InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
+    upShooterVoltageButton.onTrue(
+        new InstantCommand(() -> m_shooterSubsystem.deltaShooterVoltage(0.3)));
+    // downShooterVoltageButton.onTrue(new
+    // InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
 
     uptakeReverseButton.whileTrue(m_uptakeReverseCommand);
-    hexAndRollerInButton.whileTrue(new ParallelCommandGroup(
-      new StartEndCommand(
-            () -> m_vectorWheelSubsystem.setVectorWheelsIn(),
-            () -> m_vectorWheelSubsystem.stopVectorWheels(),
-            m_vectorWheelSubsystem),
-       new StartEndCommand(
-            () -> m_rollerSubsystem.setRollersForward(),
-            () -> m_rollerSubsystem.stopRollers(),
-            m_rollerSubsystem)));
+    hexAndRollerInButton.whileTrue(
+        new ParallelCommandGroup(
+            new StartEndCommand(
+                () -> m_vectorWheelSubsystem.setVectorWheelsIn(),
+                () -> m_vectorWheelSubsystem.stopVectorWheels(),
+                m_vectorWheelSubsystem),
+            new StartEndCommand(
+                () -> m_rollerSubsystem.setRollersForward(),
+                () -> m_rollerSubsystem.stopRollers(),
+                m_rollerSubsystem)));
 
+    hexAndRollerOutButton.whileTrue(
+        new ParallelCommandGroup(
+            new StartEndCommand(
+                () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
+                () -> m_vectorWheelSubsystem.stopVectorWheels(),
+                m_vectorWheelSubsystem),
+            new StartEndCommand(
+                () -> m_rollerSubsystem.setRollersBackward(),
+                () -> m_rollerSubsystem.stopRollers(),
+                m_rollerSubsystem)));
 
-     hexAndRollerOutButton.whileTrue(new ParallelCommandGroup(
-      new StartEndCommand(
-            () -> m_vectorWheelSubsystem.setVectorWheelsOut(),
-            () -> m_vectorWheelSubsystem.stopVectorWheels(),
-            m_vectorWheelSubsystem),
-       new StartEndCommand(
-            () -> m_rollerSubsystem.setRollersBackward(),
-            () -> m_rollerSubsystem.stopRollers(),
-            m_rollerSubsystem)));
-      
     shootFromMidButton.whileFalse(
-      new SequentialCommandGroup(
-        new InstantCommand(()-> aimingAprilTag=true).withTimeout(.01),
-        new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(true)).withTimeout(.01),
-        new InstantCommand(() -> m_turretSubsystem.setMidMode(false)).withTimeout(.01)
-      )
-    );
+        new SequentialCommandGroup(
+            new InstantCommand(() -> aimingAprilTag = true).withTimeout(.01),
+            new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(true)).withTimeout(.01),
+            new InstantCommand(() -> m_turretSubsystem.setMidMode(false)).withTimeout(.01)));
 
     shootFromMidButton.whileTrue(
-      new SequentialCommandGroup(
-        new InstantCommand(()-> aimingAprilTag=false).withTimeout(.01),
-        new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
-        new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
-        new ParallelCommandGroup(
-        new InstantCommand(()->m_actuatorSubsystem.setPosition(0.6)),
-        new Shoot(
-            m_uptakeSubsystem,
-            m_rollerSubsystem,
-            m_shooterSubsystem,
-            m_vectorWheelSubsystem,
-            m_actuatorSubsystem,
-            false))
-      )
-    );
+        new SequentialCommandGroup(
+            new InstantCommand(() -> aimingAprilTag = false).withTimeout(.01),
+            new InstantCommand(() -> m_actuatorSubsystem.setAutoControl(false)).withTimeout(.01),
+            new InstantCommand(() -> m_turretSubsystem.setMidMode(true)).withTimeout(.01),
+            new ParallelCommandGroup(
+                new InstantCommand(() -> m_actuatorSubsystem.setPosition(0.6)),
+                new Shoot(
+                    m_uptakeSubsystem,
+                    m_rollerSubsystem,
+                    m_shooterSubsystem,
+                    m_vectorWheelSubsystem,
+                    m_actuatorSubsystem,
+                    false))));
 
     // shootFromMidButton.whileTrue(
     //     new SequentialCommandGroup(
@@ -260,20 +264,16 @@ public class RobotContainer {
     double antiJamTimeout = 0.2;
     double shootingTimeout = 1.8;
     shootButton.whileTrue(
-      new SequentialCommandGroup(
-        new PureShoot(m_shooterSubsystem).withTimeout(.2),
-        new Shoot(
-          m_uptakeSubsystem,
-          m_rollerSubsystem,
-          m_shooterSubsystem,
-          m_vectorWheelSubsystem,
-          m_actuatorSubsystem,
-          true
-        )
-      )
-    );
+        new SequentialCommandGroup(
+            new PureShoot(m_shooterSubsystem).withTimeout(.2),
+            new Shoot(
+                m_uptakeSubsystem,
+                m_rollerSubsystem,
+                m_shooterSubsystem,
+                m_vectorWheelSubsystem,
+                m_actuatorSubsystem,
+                true)));
 
-    
     // shootButton.whileTrue(
     //     new RunCommand(
     //             () -> {

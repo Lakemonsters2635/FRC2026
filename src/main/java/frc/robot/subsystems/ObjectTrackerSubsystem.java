@@ -84,7 +84,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   // private double ya3=0;
   // private double ya4=0;
   // private double ya5=0;
-  private double[][] yaWeights= new double[33][5];
+  private double[][] yaWeights = new double[33][5];
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
@@ -292,11 +292,11 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
-    
-    yaWeights[tagId][4] = yaWeights[tagId][3];    
-    yaWeights[tagId][3] = yaWeights[tagId][2];    
-    yaWeights[tagId][2] = yaWeights[tagId][1];    
-    yaWeights[tagId][1] = yaWeights[tagId][0];   
+
+    yaWeights[tagId][4] = yaWeights[tagId][3];
+    yaWeights[tagId][3] = yaWeights[tagId][2];
+    yaWeights[tagId][2] = yaWeights[tagId][1];
+    yaWeights[tagId][1] = yaWeights[tagId][0];
     yaWeights[tagId][0] = -detection.ya;
     // ya5=ya4;
     // ya4=ya3;
@@ -306,7 +306,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     double[] currYa = yaWeights[tagId];
 
     // double visionYa = -detection.ya;
-    double visionYa = (currYa[0] * 5 + currYa[1] *4 + currYa[2]*3 + currYa[3]*2+ currYa[4]) / 15;
+    double visionYa =
+        (currYa[0] * 5 + currYa[1] * 4 + currYa[2] * 3 + currYa[3] * 2 + currYa[4]) / 15;
 
     // double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
@@ -605,7 +606,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
           || nearestTag == 10
           || nearestTag == 5
           || nearestTag == 2) {
-      
+
         return getDistVector(
             0,
             Units.metersToInches(0.6), // -/+   .6m
@@ -659,15 +660,11 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     }
     return new Pose2d(0, 0, new Rotation2d(0));
   }
+
   public Pose2d getSpecificAprilTagDist(int id) {
     SmartDashboard.putNumber("id", id);
     if (id != -1) {
-      if (id == 21
-          || id == 26
-          || id == 18
-          || id == 10
-          || id == 5
-          || id == 2) {
+      if (id == 21 || id == 26 || id == 18 || id == 10 || id == 5 || id == 2) {
         return getDistVector(
             0,
             Units.metersToInches(0.7), // -/+   .6m
@@ -690,14 +687,14 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return new Pose2d(0, 0, new Rotation2d(0));
   }
 
-  public Pose2d getAvgAprilTagDist(){
+  public Pose2d getAvgAprilTagDist() {
     Pose2d avgPose2d = new Pose2d();
     double sumX = 0, sumY = 0;
     int count = 0;
 
-    for(int i = 1; i<=32; i++) {
+    for (int i = 1; i <= 32; i++) {
       Pose2d currAprilTag = getSpecificAprilTagDist(i);
-      if(currAprilTag.equals(new Pose2d(0,0, new Rotation2d()))) continue;
+      if (currAprilTag.equals(new Pose2d(0, 0, new Rotation2d()))) continue;
       sumX += currAprilTag.getX();
       sumY += currAprilTag.getY();
       count++;

@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,10 +16,10 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   TalonFX m_intakeAngleMotor;
   VoltageConfigs m_config;
   double m_targetPos;
-  PIDController m_pidController = new PIDController(0.02,0.001,0);
+  PIDController m_pidController = new PIDController(0.02, 0.001, 0);
   double ff = 0;
   double initialPos;
-  boolean pidMode= false;
+  boolean pidMode = false;
 
   public IntakeAngleSubsystem() {
     m_intakeAngleMotor = new TalonFX(11);
@@ -34,13 +33,16 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     m_targetPos = getAngle();
   }
 
-  public void chagePidMode(boolean newMode){
+  public void chagePidMode(boolean newMode) {
     pidMode = newMode;
   }
 
-  public double getAngle(){
+  public double getAngle() {
     // Range should be 0 to 90 apprx
-    return -1 * (m_intakeAngleMotor.getPosition().getValueAsDouble() - initialPos) / (6.578128) * 360;
+    return -1
+        * (m_intakeAngleMotor.getPosition().getValueAsDouble() - initialPos)
+        / (6.578128)
+        * 360;
   }
 
   public void intakeAngleDown() {
@@ -48,11 +50,11 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     m_intakeAngleMotor.setVoltage(0.5); // +
   }
 
-  public void intakeBarelyUp(){
-    m_intakeAngleMotor.setVoltage(RobotContainer.leftJoystick.getThrottle()*2);
+  public void intakeBarelyUp() {
+    m_intakeAngleMotor.setVoltage(RobotContainer.leftJoystick.getThrottle() * 2);
   }
 
-   public void intakeAngleUp() {
+  public void intakeAngleUp() {
     // not tested
     m_intakeAngleMotor.setVoltage(-2.5); // +
   }
@@ -74,7 +76,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     m_intakeAngleMotor.setVoltage(0); // -
   }
 
-  public void setTargetPos(double target){
+  public void setTargetPos(double target) {
     m_targetPos = target;
   }
 
@@ -82,11 +84,11 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("InAngle: curr angle", getAngle());
 
-    if(pidMode){
+    if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);
-      ff = -2.5;//-2.36;
+      ff = -2.5; // -2.36;
       // setVolts(ff * Math.cos(getAngle() * Math.PI/180));
-      setVolts(ff * Math.cos(getAngle() * Math.PI/180) - fb);
+      setVolts(ff * Math.cos(getAngle() * Math.PI / 180) - fb);
     }
   }
 }

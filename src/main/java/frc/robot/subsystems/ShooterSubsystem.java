@@ -6,15 +6,13 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 
 public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
@@ -22,7 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   boolean isMidMode = false;
   TalonFX m_shooterMotorLeft;
-  
+
   TalonFX m_shooterMotorRight;
   VoltageConfigs m_leftConfig;
   VoltageConfigs m_rightConfig;
@@ -35,14 +33,14 @@ public class ShooterSubsystem extends SubsystemBase {
   double power = 7;
   double savePower;
   double magnitude;
-  double desiredVelocity=60;
+  double desiredVelocity = 60;
   double joystickDeltaPower = 0;
+
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();
     m_rightConfig.SupplyVoltageTimeConstant = 10;
     m_leftConfig.SupplyVoltageTimeConstant = 10;
-
 
     m_objectTrackerSubsystem = objectTrackerSubsystem;
     m_shooterMotorLeft = new TalonFX(Constants.SHOOTER_MOTOR_ID_LEFT);
@@ -59,26 +57,39 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Shooter V", 0.115);
 
     SmartDashboard.putNumber("velocity shooter rps", 1);
-    // setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
-    setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    // setPIDSV(SmartDashboard.getNumber("Shooter P", 0.2), SmartDashboard.getNumber("Shooter I",
+    // 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0),
+    // SmartDashboard.getNumber("Shooter V", 0.115));
+    setPIDSV(
+        0.4,
+        SmartDashboard.getNumber("Shooter I", 0),
+        SmartDashboard.getNumber("Shooter D", 0),
+        SmartDashboard.getNumber("Shooter S", 0),
+        SmartDashboard.getNumber("Shooter V", 0.115));
 
     // SmartDashboard.putNumber("Shooter Power", 8);
   }
 
-  public void deltaShooterVoltage(double deltaPower){
+  public void deltaShooterVoltage(double deltaPower) {
     joystickDeltaPower += deltaPower;
   }
 
-  public void setDeltaShooterVoltage(double voltage){
+  public void setDeltaShooterVoltage(double voltage) {
     joystickDeltaPower = voltage;
   }
+
   public void shoot() {
     Pose2d target = m_objectTrackerSubsystem.getNearestAprilTagDistTurret();
 
     magnitude = Math.sqrt(target.getX() * target.getX() + target.getY() * target.getY());
     if (magnitude != 0) {
-      // desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude * magnitude -13.711 * magnitude + 65.43 + 1;
-      desiredVelocity = 0.139446 * magnitude * magnitude * magnitude + -2.62406 * magnitude * magnitude + 16.19286 * magnitude + 36.23951;
+      // desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude *
+      // magnitude -13.711 * magnitude + 65.43 + 1;
+      desiredVelocity =
+          0.139446 * magnitude * magnitude * magnitude
+              + -2.62406 * magnitude * magnitude
+              + 16.19286 * magnitude
+              + 36.23951;
     }
     // desiredVelocity = SmartDashboard.getNumber("velocity shooter rps", 1);
     velocityController(desiredVelocity);
@@ -91,17 +102,14 @@ public class ShooterSubsystem extends SubsystemBase {
     slot0Configs.kS = s;
     slot0Configs.kV = v;
 
-
     m_shooterMotorLeft.getConfigurator().apply(slot0Configs);
     m_shooterMotorRight.getConfigurator().apply(slot0Configs);
   }
 
-  
   public void velocityController(double velocity) { // in revolutions/sec
-    double tempVelocity =  velocity;//SmartDashboard.getNumber("velocity shooter rps", 1);
+    double tempVelocity = velocity; // SmartDashboard.getNumber("velocity shooter rps", 1);
     m_shooterMotorLeft.setControl(velocityRequest.withVelocity(tempVelocity));
     m_shooterMotorRight.setControl(velocityRequest.withVelocity(-tempVelocity));
-
   }
 
   public void shootFar() {
@@ -120,17 +128,19 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // shoot();
-    // setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D", 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
+    // setPIDSV(0.4, SmartDashboard.getNumber("Shooter I", 0), SmartDashboard.getNumber("Shooter D",
+    // 0), SmartDashboard.getNumber("Shooter S", 0), SmartDashboard.getNumber("Shooter V", 0.115));
 
     // velocityController(SmartDashboard.getNumber("velocity shooter rps", 0));
     SmartDashboard.getNumber("Shooter I", 0);
     SmartDashboard.getNumber("Shooter D", 0);
     SmartDashboard.getNumber("Shooter V", 0.115);
-     SmartDashboard.getNumber("velocity shooter rps", 1);
+    SmartDashboard.getNumber("velocity shooter rps", 1);
 
-
-    SmartDashboard.putNumber("getShooterVelocityLeft", m_shooterMotorLeft.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("getShooterVelocityRight", m_shooterMotorLeft.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "getShooterVelocityLeft", m_shooterMotorLeft.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "getShooterVelocityRight", m_shooterMotorLeft.getVelocity().getValueAsDouble());
 
     SmartDashboard.putNumber("mag of dist center camera to center hub", magnitude);
 
@@ -138,4 +148,3 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 }
-
