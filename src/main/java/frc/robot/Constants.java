@@ -106,7 +106,7 @@ public class Constants {
   public static final double SHOOT = 8; // Can go up to 10 volts
   public static final double MOTOR_STOP = 0.0;
   public static final double SHOOTER_FAR_POWER = 8;
-  public static final double EIGHT_BALL_TIME = 18;
+  public static final double EIGHT_BALL_TIME = 5;
   // TODO:  set pid values
   public static final double SHOOTER_P = 0;
   public static final double SHOOTER_I = 0;

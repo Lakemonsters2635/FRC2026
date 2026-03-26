@@ -18,18 +18,20 @@ public class IntakeCommand extends Command {
   public IntakeCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     m_intakeAngleSubsystem = intakeAngleSubsystem;
-    addRequirements(m_intakeSubsystem);
-    addRequirements(m_intakeAngleSubsystem);
+    addRequirements(m_intakeSubsystem, intakeAngleSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeSubsystem.intakeIn();
+    m_intakeAngleSubsystem.chagePidMode(false);
     m_intakeAngleSubsystem.setVolts(1);
+
+    m_intakeSubsystem.intakeIn();
   }
 
+  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}

@@ -26,8 +26,8 @@ public class IntakeAngleCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // m_timer.reset();
-    // m_timer.start();
+    m_timer.reset();
+    m_timer.start();
     // feedForwardApplied = false;
     m_intakeAngleSubsystem.chagePidMode(false);
     m_intakeAngleSubsystem.intakeAngleDownHard();
@@ -37,18 +37,25 @@ public class IntakeAngleCommand extends Command {
   @Override
   public void execute() {
     // m_intakeAngleSubsystem.intakeAngleDown();
+    if (m_timer.get() > 0.7) {
+      m_intakeAngleSubsystem.intakeBarelyUp();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeAngleSubsystem.intakeAngleStop();
+   
+    // if (m_timer.get() > 2) {
+      m_intakeAngleSubsystem.setInitialPos();
+      m_intakeAngleSubsystem.intakeAngleStop();
+    // }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_timer.get() > 0.5) { // TODO: maybe decrease, too much
+    if (m_timer.get() > 2) { // TODO: maybe decrease, too much
       return true;
     }
     return false;

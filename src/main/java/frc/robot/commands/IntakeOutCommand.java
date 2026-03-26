@@ -19,8 +19,7 @@ public class IntakeOutCommand extends Command {
     m_intakeAngleSubsystem = intakeAngleSubsystem;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_intakeSubsystem);
-    addRequirements(m_intakeAngleSubsystem);
+    addRequirements(m_intakeSubsystem, intakeAngleSubsystem);
   }
 
   // Called when the command is initially scheduled.

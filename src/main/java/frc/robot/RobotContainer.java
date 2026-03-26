@@ -90,7 +90,8 @@ public class RobotContainer {
           m_shooterSubsystem,
           m_turretSubsystem,
           m_intakeAngleSubsystem,
-          m_actuatorSubsystem);
+          m_actuatorSubsystem,
+          m_intakeSubsystem);
 
   public RobotContainer() {
     // autoChooser.setDefaultOption(
@@ -126,6 +127,7 @@ public class RobotContainer {
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
     Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
     Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
+
     Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
@@ -344,6 +346,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return m_autos.leftDepoAuto();
   }
 }

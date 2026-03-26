@@ -14,7 +14,7 @@ import frc.robot.subsystems.Detection;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 
-public class PidAutoCommand extends Command {
+public class PidRotationAutoCommand extends Command {
 
   private final DrivetrainSubsystem dts;
   private final ObjectTrackerSubsystem ots;
@@ -30,7 +30,7 @@ public class PidAutoCommand extends Command {
 
   private final PIDController pidX = new PIDController(4.5, 0, 0.1);
   private final PIDController pidY = new PIDController(4.5, 0, 0.1);
-  private final PIDController pidRot = new PIDController(2, 0, 1);
+  private final PIDController pidRot = new PIDController(2, 0, 0.2);
 
   private static final double MAX_SPEED = 3.5;
   private static final double MAX_ROT_SPEED = Math.PI;
@@ -38,7 +38,7 @@ public class PidAutoCommand extends Command {
   private final Trigger cancelTrigger =
       new JoystickButton(RobotContainer.rightJoystick, 6);
 
-  public PidAutoCommand(
+  public PidRotationAutoCommand(
       DrivetrainSubsystem dts,
       ObjectTrackerSubsystem ots,
       int tagId,
@@ -64,7 +64,7 @@ public class PidAutoCommand extends Command {
   }
 
   // Manual constructor (no vision)
-  public PidAutoCommand(
+  public PidRotationAutoCommand(
       DrivetrainSubsystem dts,
       ObjectTrackerSubsystem ots,
       double xTarget,
@@ -141,7 +141,7 @@ public class PidAutoCommand extends Command {
 
     return Math.abs(targetX - x) < 0.05
         && Math.abs(targetY - y) < 0.05
-        && Math.abs(targetRotDeg - rot) < 3;
+        && Math.abs(targetRotDeg - rot) < 2;
   }
 
   private Pose2d computeVisionTarget(

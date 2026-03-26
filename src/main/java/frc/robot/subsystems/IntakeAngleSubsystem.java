@@ -45,13 +45,21 @@ public class IntakeAngleSubsystem extends SubsystemBase {
         * 360;
   }
 
+  public void resetEncoder() {
+    m_intakeAngleMotor.setPosition(0);
+  }
+
+  public void setInitialPos() {
+    initialPos = m_intakeAngleMotor.getPosition().getValueAsDouble();
+  }
+
   public void intakeAngleDown() {
     // not tested
     m_intakeAngleMotor.setVoltage(0.5); // +
   }
 
   public void intakeBarelyUp() {
-    m_intakeAngleMotor.setVoltage(RobotContainer.leftJoystick.getThrottle() * 2);
+    m_intakeAngleMotor.setVoltage(-2);
   }
 
   public void intakeAngleUp() {
@@ -83,12 +91,16 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("InAngle: curr angle", getAngle());
+    SmartDashboard.putNumber("InAngle initialPos", initialPos);
+    SmartDashboard.putNumber("InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
+    
 
     if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);
-      ff = -2.5; // -2.36;
+      SmartDashboard.putNumber("inAngle fb", fb);
+      ff = -2.3; // -2.36;
       // setVolts(ff * Math.cos(getAngle() * Math.PI/180));
-      setVolts(ff * Math.cos(getAngle() * Math.PI / 180) - fb);
+      setVolts(ff * Math.abs(Math.cos(getAngle() * Math.PI / 180)) - fb);
     }
   }
 }
