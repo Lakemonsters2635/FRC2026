@@ -35,8 +35,7 @@ public class PidRotationAutoCommand extends Command {
   private static final double MAX_SPEED = 3.5;
   private static final double MAX_ROT_SPEED = Math.PI;
 
-  private final Trigger cancelTrigger =
-      new JoystickButton(RobotContainer.rightJoystick, 6);
+  private final Trigger cancelTrigger = new JoystickButton(RobotContainer.rightJoystick, 6);
 
   public PidRotationAutoCommand(
       DrivetrainSubsystem dts,
@@ -53,8 +52,7 @@ public class PidRotationAutoCommand extends Command {
     this.useVision = useVision;
 
     Pose2d targetPose =
-        useVision ? computeVisionTarget(xPrime, zPrime, finalYa, tagId)
-                  : dts.getPose();
+        useVision ? computeVisionTarget(xPrime, zPrime, finalYa, tagId) : dts.getPose();
 
     targetX = targetPose.getX();
     targetY = targetPose.getY();
@@ -103,22 +101,18 @@ public class PidRotationAutoCommand extends Command {
     double vx = Math.abs(targetX - x) > 0.03 ? pidX.calculate(x, targetX) : 0;
     double vy = Math.abs(targetY - y) > 0.03 ? pidY.calculate(y, targetY) : 0;
 
-    double vRot =
-        Math.abs(targetRotDeg - rotDeg) > 2
-            ? -pidRot.calculate(rotDeg, targetRotDeg)
-            : 0;
+    double vRot = Math.abs(targetRotDeg - rotDeg) > 2 ? -pidRot.calculate(rotDeg, targetRotDeg) : 0;
 
     // Clamp speeds
     double mag = Math.hypot(vx, vy);
     if (mag > MAX_SPEED) {
-        vx = vx / mag * MAX_SPEED;
-        vy = vy / mag * MAX_SPEED;
+      vx = vx / mag * MAX_SPEED;
+      vy = vy / mag * MAX_SPEED;
     }
 
     vRot = MathUtil.clamp(vRot, -MAX_ROT_SPEED, MAX_ROT_SPEED);
 
     dts.drive(vx, vy, vRot, true);
-
 
     updateDashboard(vx, vy, vRot);
   }
@@ -144,8 +138,7 @@ public class PidRotationAutoCommand extends Command {
         && Math.abs(targetRotDeg - rot) < 2;
   }
 
-  private Pose2d computeVisionTarget(
-      double xPrime, double zPrime, double finalYa, int tagId) {
+  private Pose2d computeVisionTarget(double xPrime, double zPrime, double finalYa, int tagId) {
 
     Detection det = ots.getSpecificAprilTag(tagId);
     if (det == null) return new Pose2d();
@@ -153,12 +146,10 @@ public class PidRotationAutoCommand extends Command {
     double visionYa = -det.ya;
 
     double x_vt =
-        xPrime * Math.cos(Math.toRadians(visionYa))
-            - zPrime * Math.sin(Math.toRadians(visionYa));
+        xPrime * Math.cos(Math.toRadians(visionYa)) - zPrime * Math.sin(Math.toRadians(visionYa));
 
     double z_vt =
-        xPrime * Math.sin(Math.toRadians(visionYa))
-            + zPrime * Math.cos(Math.toRadians(visionYa));
+        xPrime * Math.sin(Math.toRadians(visionYa)) + zPrime * Math.cos(Math.toRadians(visionYa));
 
     double deltaRobotX = -(det.x + x_vt - 5);
     double deltaRobotY = -(det.z + z_vt - 14);

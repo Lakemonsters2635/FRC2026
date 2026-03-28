@@ -31,7 +31,6 @@ public class IntakeCommand extends Command {
     m_intakeSubsystem.intakeIn();
   }
 
-  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}

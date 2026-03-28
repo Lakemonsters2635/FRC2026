@@ -260,9 +260,10 @@ public class RobotContainer {
 
     lockTurret.toggleOnTrue(
         new SequentialCommandGroup(
+            new InstantCommand(() -> m_turretSubsystem.setDriverControl(true)),
             new InstantCommand(() -> m_turretSubsystem.setAutoControl(false)),
             new InstantCommand(() -> m_turretSubsystem.setTurretTarget(0))));
-    lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setAutoControl(true)));
+    lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setDriverControl(false)));
     double antiJamTimeout = 0.2;
     double shootingTimeout = 1.8;
     shootButton.whileTrue(
@@ -347,5 +348,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return m_autos.leftDepoAuto();
+    // return m_autos.middleScoreAuto();
+    // return m_autos.rightShootAuto();
   }
 }

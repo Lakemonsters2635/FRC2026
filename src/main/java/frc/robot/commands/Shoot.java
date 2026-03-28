@@ -45,14 +45,13 @@ public class Shoot extends Command {
   public void initialize() {
     SmartDashboard.putBoolean("m_aimingAtAprilTag", m_aimingAprilTag);
     // Add back later
-    // if (m_aimingAprilTag) {
-    //   m_ss.shoot();
-    //   //m_ss.velocityController(0);
-    // } else {
-    //   // m_ss.shootFar();
-    //   // m_as.setPosition(0.6);
-    // }
-    m_ss.shoot();
+    if (m_aimingAprilTag) {
+      m_ss.shoot();
+      // m_ss.velocityController(0);
+    } else {
+      m_ss.shootFar();
+      // m_as.setPosition(0.6);
+    }
     m_us.uptake();
     m_vws.setVectorWheelsIn();
   }
