@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.ActuatorSubsystem;
@@ -43,7 +42,7 @@ public class Shoot extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("m_aimingAtAprilTag", m_aimingAprilTag);
+    // SmartDashboard.putBoolean("m_aimingAtAprilTag", m_aimingAprilTag);
     // Add back later
     if (m_aimingAprilTag) {
       m_ss.shoot();

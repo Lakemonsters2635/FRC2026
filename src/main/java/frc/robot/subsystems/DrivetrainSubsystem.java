@@ -258,10 +258,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
       boolean mirrorX,
       boolean centerOfRotationCamera) {
 
-    SmartDashboard.putBoolean("mirrorX", mirrorX);
-    SmartDashboard.putString(
-        "DriverStation.getAlliance().get()", DriverStation.getAlliance().get().name());
-    SmartDashboard.putString("DriverStation.Alliance.Red", DriverStation.Alliance.Red.name());
+    // SmartDashboard.putBoolean("mirrorX", mirrorX);
+    // SmartDashboard.putString(
+    //     "DriverStation.getAlliance().get()", DriverStation.getAlliance().get().name());
+    // SmartDashboard.putString("DriverStation.Alliance.Red", DriverStation.Alliance.Red.name());
 
     if (mirrorX) {
       // Default is Blue so if Red Alliance then negate the X value and Rotation converts to Red
@@ -526,20 +526,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Hat Power Overides for Trimming Position and Rotation
     // System.out.println("X: "+getPose().getX()+"\tY: "+getPose().getY()+"\tRot:
     // "+getPose().getRotation().getDegrees());
-    SmartDashboard.putNumber("gyro.pitch()", m_gyro.getPitch());
-    SmartDashboard.putNumber("gyro.roll()", m_gyro.getRoll());
+    // SmartDashboard.putNumber("gyro.pitch()", m_gyro.getPitch());
+    // SmartDashboard.putNumber("gyro.roll()", m_gyro.getRoll());
     // SmartDashboard.putBoolean("isTipping", isTipping());
 
-    SmartDashboard.putNumber("stashAngle", m_angleCache);
-    SmartDashboard.putNumber("BackRight turn", m_backRight.getTurningEncoderRadians());
-    SmartDashboard.putNumber("BackLeft turn", m_backLeft.getTurningEncoderRadians());
-    SmartDashboard.putNumber("FrontRight turn", m_frontRight.getTurningEncoderRadians());
-    SmartDashboard.putNumber("FrontLeft turn", m_frontLeft.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("stashAngle", m_angleCache);
+    // SmartDashboard.putNumber("BackRight turn", m_backRight.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("BackLeft turn", m_backLeft.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("FrontRight turn", m_frontRight.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("FrontLeft turn", m_frontLeft.getTurningEncoderRadians());
 
-    SmartDashboard.putNumber("BackRight pos", m_backRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("BackLeft pos", m_backLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("FrontRight pos", m_frontRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("FrontLeft pos", m_frontLeft.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("BackRight pos", m_backRight.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("BackLeft pos", m_backLeft.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("FrontRight pos", m_frontRight.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("FrontLeft pos", m_frontLeft.getPosition().distanceMeters);
     // To stop the wheels from moving when there is no input from the joysticks
     xPowerCommanded = 0;
     yPowerCommanded = 0;
@@ -588,8 +588,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //           new Translation2d(0, -Constants.DRIVETRAIN_WHEELBASE_LENGTH/2));
       // } else {
       xPowerCommanded *= -1;
-      SmartDashboard.putNumber("swerve: xCommanded", xPowerCommanded);
-      SmartDashboard.putNumber("swerve: yCommanded", yPowerCommanded);
+      // SmartDashboard.putNumber("swerve: xCommanded", xPowerCommanded);
+      // SmartDashboard.putNumber("swerve: yCommanded", yPowerCommanded);
       this.drive(
           xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
@@ -598,15 +598,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // this.drive(0, 0, 0, true);
     }
     // }
-    SmartDashboard.putNumber("m_gyro.getRotation2d()", m_gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("m_gyro.getRotation2d()", m_gyro.getRotation2d().getDegrees());
 
-    SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
-    SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("FR_pos", m_frontRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("BL_pos", m_backLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("BR_pos", m_backRight.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("m_gyro.getRawGyroZ", getYawGyroValue());
+    // SmartDashboard.putNumber("FL_pos", m_frontLeft.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("FR_pos", m_frontRight.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("BL_pos", m_backLeft.getPosition().distanceMeters);
+    // SmartDashboard.putNumber("BR_pos", m_backRight.getPosition().distanceMeters);
 
-    SmartDashboard.putNumber("rotCommanded", rotCommanded);
+    // SmartDashboard.putNumber("rotCommanded", rotCommanded);
 
     double loggingStateForAdvantageScope[] = { // Array for predicted values
       swerveModuleStates[Constants.FRONT_LEFT_MODULE_STATE_INDEX].angle.getDegrees()
@@ -633,9 +633,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
       m_backRight.getVelocity(),
     };
 
-    SmartDashboard.putNumberArray("loggingStateForAdvantageScope", loggingStateForAdvantageScope);
-    SmartDashboard.putNumberArray(
-        "loggingActualStateForAdvantageScope", loggingActualStateForAdvantageScope);
+    // SmartDashboard.putNumberArray("loggingStateForAdvantageScope",
+    // loggingStateForAdvantageScope);
+    // SmartDashboard.putNumberArray(
+    //     "loggingActualStateForAdvantageScope", loggingActualStateForAdvantageScope);
 
     updateOdometry();
 

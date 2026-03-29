@@ -5,7 +5,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -168,14 +167,14 @@ public class PidAutoCommand extends Command {
   }
 
   private void updateDashboard(double vx, double vy, double vRot) {
-    SmartDashboard.putNumber("PID Target X", targetX);
-    SmartDashboard.putNumber("PID Target Y", targetY);
-    SmartDashboard.putNumber("PID Target Rot", targetRotDeg);
+    // SmartDashboard.putNumber("PID Target X", targetX);
+    // SmartDashboard.putNumber("PID Target Y", targetY);
+    // SmartDashboard.putNumber("PID Target Rot", targetRotDeg);
 
-    SmartDashboard.putNumber("PID Out X", vx);
-    SmartDashboard.putNumber("PID Out Y", vy);
-    SmartDashboard.putNumber("PID Out Rot", vRot);
+    // SmartDashboard.putNumber("PID Out X", vx);
+    // SmartDashboard.putNumber("PID Out Y", vy);
+    // SmartDashboard.putNumber("PID Out Rot", vRot);
 
-    SmartDashboard.putBoolean("Using Vision", useVision);
+    // SmartDashboard.putBoolean("Using Vision", useVision);
   }
 }

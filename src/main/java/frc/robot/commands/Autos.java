@@ -188,7 +188,7 @@ public class Autos extends Command {
         new ParallelRaceGroup(
             new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1, 0),
             new UptakeReverseCommand(m_uptakeSubsystem)),
-            new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem),
+        new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem),
         new WaitCommand(1),
         new ParallelRaceGroup(
             new Shoot(

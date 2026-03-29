@@ -98,6 +98,7 @@ public class RobotContainer {
     //     "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     // autoChooser.addOption(
     //     "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
+    // NOT USED!!!!!
     autoChooser.addOption("LeftShoot", m_autos.leftShootAuto());
     autoChooser.addOption("RightShoot", m_autos.rightShootAuto());
     // autoChooser.addOption(

@@ -70,7 +70,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     m_turretController = new PIDController(0.04, 0, 0.01);
     m_manualTurretController = new PIDController(0.08, 0, 0.01);
-     // Having a kd of
+    // Having a kd of
     m_timer = new Timer();
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
@@ -139,13 +139,14 @@ public class TurretSubsystem extends SubsystemBase {
     // TODO: Refactor everything to make coordinates aligned
 
     setTurretTarget(pose_target);
-    SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
-    SmartDashboard.putNumber("tur: vision targety", aprilTagY);
-    SmartDashboard.putNumber(
-        "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY * aprilTagY)));
-    SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
-    SmartDashboard.putNumber("tur: getDegrees", getDegrees());
-    SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
+    // SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
+    // SmartDashboard.putNumber("tur: vision targety", aprilTagY);
+    // SmartDashboard.putNumber(
+    //     "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY *
+    // aprilTagY)));
+    // SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
+    // SmartDashboard.putNumber("tur: getDegrees", getDegrees());
+    // SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
 
     // setTurretTarget(
     //     MathUtil.clamp(
@@ -227,10 +228,9 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
     m_poseTarget = MathUtil.clamp(m_poseTarget, -60, 60);
-    if(!driverControl){
+    if (!driverControl) {
       fb = MathUtil.clamp(m_turretController.calculate(getDegrees(), m_poseTarget), -5, 5);
-    }
-    else{
+    } else {
       fb = MathUtil.clamp(m_manualTurretController.calculate(getDegrees(), m_poseTarget), -5, 5);
     }
     SmartDashboard.putNumber("Fee d Back", fb);

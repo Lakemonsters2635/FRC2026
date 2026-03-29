@@ -177,20 +177,20 @@ public class MyClass {
 
     help.updateDetections(jsonTestString, gson);
 
-    System.out.println("Tag Size: " + help.aprilTags.size());
-    System.out.println("Yolo Size: " + help.yoloObjects.size());
+    // System.out.println("Tag Size: " + help.aprilTags.size());
+    // System.out.println("Yolo Size: " + help.yoloObjects.size());
 
     for (Detection i : help.aprilTags) {
-      System.out.println(i.objectLabel);
+      // System.out.println(i.objectLabel);
     }
     for (Detection i : help.yoloObjects) {
-      System.out.println(i.objectLabel);
+      // System.out.println(i.objectLabel);
     }
 
-    System.out.println(help.getNearestAprilTag().objectLabel);
-    System.out.println(help.getNearestYoloDetection().objectLabel);
+    // System.out.println(help.getNearestAprilTag().objectLabel);
+    // System.out.println(help.getNearestYoloDetection().objectLabel);
 
-    System.out.println(help.getRadius(help.getNearestAprilTag()));
+    // System.out.println(help.getRadius(help.getNearestAprilTag()));
 
     // output values
 

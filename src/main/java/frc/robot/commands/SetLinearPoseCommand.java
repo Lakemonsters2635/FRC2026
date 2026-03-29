@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ActuatorSubsystem;
 
@@ -16,7 +15,7 @@ public class SetLinearPoseCommand extends Command {
   double m_pose;
 
   public SetLinearPoseCommand(ActuatorSubsystem actuatorSubsystem, double pos) {
-    SmartDashboard.putString("Command: ", "No Start");
+    // SmartDashboard.putString("Command: ", "No Start");
     m_actuatorSubsystem = actuatorSubsystem;
     m_pose = pos;
     addRequirements(m_actuatorSubsystem);
@@ -26,7 +25,7 @@ public class SetLinearPoseCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putString("Command: ", "Start");
+    // SmartDashboard.putString("Command: ", "Start");
     m_actuatorSubsystem.setPosition(m_pose);
   }
 
@@ -43,7 +42,7 @@ public class SetLinearPoseCommand extends Command {
   public boolean isFinished() {
     if (m_actuatorSubsystem.atTarget(m_pose)) {
 
-      SmartDashboard.putString("Command: ", "Done");
+      // SmartDashboard.putString("Command: ", "Done");
       return true;
     }
     return false;
