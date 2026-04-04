@@ -123,7 +123,6 @@ public class RobotContainer {
     // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     // Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
-
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
     Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
