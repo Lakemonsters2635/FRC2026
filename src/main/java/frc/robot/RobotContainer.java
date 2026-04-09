@@ -70,7 +70,8 @@ public class RobotContainer {
 
   // Cmmands
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
-  private static IntakeAgitatorCommand m_intakeAgitatorCommand = new IntakeAgitatorCommand(m_intakeAngleSubsystem);
+  private static IntakeAgitatorCommand m_intakeAgitatorCommand =
+      new IntakeAgitatorCommand(m_intakeAngleSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_uptakeSubsystem);
   private static UptakeReverseCommand m_uptakeReverseCommand =
       new UptakeReverseCommand(m_uptakeSubsystem);
@@ -142,10 +143,8 @@ public class RobotContainer {
 
     // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
-    intakeBoostButton.onTrue(
-        new InstantCommand(()-> m_intakeSubsystem.setBoolHighPower(true)));
-    intakeBoostButton.onFalse(
-        new InstantCommand(()-> m_intakeSubsystem.setBoolHighPower(false)));
+    intakeBoostButton.onTrue(new InstantCommand(() -> m_intakeSubsystem.setBoolHighPower(true)));
+    intakeBoostButton.onFalse(new InstantCommand(() -> m_intakeSubsystem.setBoolHighPower(false)));
     intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
     upShooterVoltageButton.onTrue(
         new InstantCommand(() -> m_shooterSubsystem.deltaShooterVoltage(0.3)));

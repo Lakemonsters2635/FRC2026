@@ -6,22 +6,17 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeAngleSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeAgitatorCommand extends Command {
   /** Creates a new IntakeAgitatorCommand. */
-
   IntakeAngleSubsystem m_ias;
-
 
   public IntakeAgitatorCommand(IntakeAngleSubsystem m_intakeAngleSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_ias = m_intakeAngleSubsystem;
     addRequirements(m_ias);
-
   }
 
   // Called when the command is initially scheduled.
@@ -35,12 +30,11 @@ public class IntakeAgitatorCommand extends Command {
   public void execute() {
     // double timeMS = Math.abs(RobotContainer.rightJoystick.getThrottle()*2000);
     double timeMS = 330;
-    SmartDashboard.putNumber("timeMS",timeMS);
-    if(System.currentTimeMillis()%timeMS<timeMS/2){
+    SmartDashboard.putNumber("timeMS", timeMS);
+    if (System.currentTimeMillis() % timeMS < timeMS / 2) {
       // m_ias.setTargetPos(30);
       m_ias.setVolts(-3.5);
-    }
-    else{
+    } else {
       // m_ias.setTargetPos(0);
       m_ias.setVolts(0.4);
     }

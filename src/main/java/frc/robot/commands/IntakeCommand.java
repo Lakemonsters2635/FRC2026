@@ -27,7 +27,6 @@ public class IntakeCommand extends Command {
   public void initialize() {
     m_intakeAngleSubsystem.chagePidMode(false);
     m_intakeAngleSubsystem.setVolts(1);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

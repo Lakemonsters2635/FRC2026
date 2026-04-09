@@ -6,11 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -26,14 +24,14 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeIn() {
-    if(highPower){
+    if (highPower) {
       m_intakeMotor.setVoltage(12);
-    }
-    else{
+    } else {
       m_intakeMotor.setVoltage(6);
     }
   }
-  public void setBoolHighPower(boolean isHighPower){
+
+  public void setBoolHighPower(boolean isHighPower) {
     highPower = isHighPower;
     SmartDashboard.putNumber("throttle val", RobotContainer.leftJoystick.getThrottle() * 3);
   }

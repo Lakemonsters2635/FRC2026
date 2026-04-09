@@ -5,13 +5,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
-import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.IntegerArrayEntry;
 import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringEntry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CameraNetworkTablesSubsystem extends SubsystemBase {
@@ -21,15 +17,18 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
   private NetworkTable table;
   int listenerHandle;
 
-
   private DoubleArrayEntry xEntry;
   private DoubleArrayEntry yEntry;
   private DoubleArrayEntry zEntry;
   private IntegerArrayEntry aprilTagIdEntry;
-  public CameraNetworkTablesSubsystem() {ntinst = NetworkTableInstance.getDefault();
-    ntinst.setServer("..."); //find out server // We are running network tables on the same computer as the robot code to avoid bandwidth issues during comp
+
+  public CameraNetworkTablesSubsystem() {
+    ntinst = NetworkTableInstance.getDefault();
+    ntinst.setServer(
+        "..."); // find out server // We are running network tables on the same computer as the
+    // robot code to avoid bandwidth issues during comp
     // ntinst.setServer("127.0.0.1");
-    table = ntinst.getTable("..."); //find out key
+    table = ntinst.getTable("..."); // find out key
     ntinst.removeListener(0);
 
     // button0Entry = table.getBooleanTopic("0").getEntry(false);
@@ -38,20 +37,19 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
     getEntries();
   }
 
-  private void getEntries(){
+  private void getEntries() {
     xEntry = table.getDoubleArrayTopic("x").getEntry(null);
     xEntry = table.getDoubleArrayTopic("y").getEntry(null);
     xEntry = table.getDoubleArrayTopic("z").getEntry(null);
     aprilTagIdEntry = table.getIntegerArrayTopic("aprilTagId").getEntry(null);
   }
 
-   public long[] getAprilTagEntry(){
+  public long[] getAprilTagEntry() {
     long[] aprilTagIds = aprilTagIdEntry.get();
-    try{
+    try {
       // SmartDashboard.putNumberArray("Streamdeck_elevState", aprilTagIds);
-    }
-    catch(Exception e){
-      
+    } catch (Exception e) {
+
     }
     return aprilTagIds;
   }
@@ -63,7 +61,7 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
   //     SmartDashboard.putString("StreamDeck_autoEntry", autoVal);
   //   }
   //   catch(Exception e){
-      
+
   //   }
   //   return autoVal;
   // }
