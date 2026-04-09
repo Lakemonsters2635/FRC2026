@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
@@ -55,6 +56,15 @@ public class SwerveModule {
 
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
+
+    CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
+                  .withStatorCurrentLimit(60)
+                  .withStatorCurrentLimitEnable(true)
+                  .withSupplyCurrentLimit(60)
+                  .withSupplyCurrentLimitEnable(true);
+    
+    m_driveMotor.getConfigurator().apply(currentLimits);
+    m_turningMotor.getConfigurator().apply(currentLimits);
 
     // m_driveMotor.getConfigurator().apply(m_voltageConfigDrive);
     // m_turningMotor.getConfigurator().apply(m_voltageConfigTurning);
