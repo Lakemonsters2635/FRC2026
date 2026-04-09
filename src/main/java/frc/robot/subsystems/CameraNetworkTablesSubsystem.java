@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.DoubleArrayTopic;
+import edu.wpi.first.networktables.IntegerArrayEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -35,8 +36,6 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
     // selectedProgramEntry = table.getStringTopic("SelectedProgramString2").getEntry("");
 
     getEntries();
-
-    clear();
   }
 
   private void getEntries(){
@@ -46,10 +45,10 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
     aprilTagIdEntry = table.getIntegerArrayTopic("aprilTagId").getEntry(null);
   }
 
-   public Integer[] getAprilTagEntry(){
-    Integer[] aprilTagIds = aprilTagIdEntry.get();
+   public long[] getAprilTagEntry(){
+    long[] aprilTagIds = aprilTagIdEntry.get();
     try{
-      SmartDashboard.putString("Streamdeck_elevState", aprilTagIds);
+      // SmartDashboard.putNumberArray("Streamdeck_elevState", aprilTagIds);
     }
     catch(Exception e){
       
@@ -57,25 +56,25 @@ public class CameraNetworkTablesSubsystem extends SubsystemBase {
     return aprilTagIds;
   }
 
-  public String getAutoEntry(){
-    String autoVal = autoEntry.get();
+  // public String getAutoEntry(){
+  //   String autoVal = autoEntry.get();
 
-    try{
-      SmartDashboard.putString("StreamDeck_autoEntry", autoVal);
-    }
-    catch(Exception e){
+  //   try{
+  //     SmartDashboard.putString("StreamDeck_autoEntry", autoVal);
+  //   }
+  //   catch(Exception e){
       
-    }
-    return autoVal;
-  }
+  //   }
+  //   return autoVal;
+  // }
 
-  public void clear(){
-    for(String index: table.getKeys()){
-      NetworkTableEntry entry = table.getEntry(index);
-      entry.clearPersistent();
-      entry.setDefaultValue(false);
-    }
-  }
+  // public void clear(){
+  //   for(String index: table.getKeys()){
+  //     NetworkTableEntry entry = table.getEntry(index);
+  //     entry.clearPersistent();
+  //     entry.setDefaultValue(false);
+  //   }
+  // }
 
   @Override
   public void periodic() {
