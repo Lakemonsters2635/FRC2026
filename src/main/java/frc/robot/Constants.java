@@ -7,7 +7,7 @@ public class Constants {
   public static final double kPModuleDriveController = 0; // added random value for test
   public static final double kDriveEncoderDistancePerPulse =
       0.0001 / 0.002706682950506; // TODO: Need to TEST
-  public static final double kMaxSpeedMetersPerSecond = 8.0; // TODO: Need to Test 6
+  public static final double kMaxSpeedMetersPerSecond = 6.0; // TODO: Need to Test 6
 
   // joystick channels
   public static final int RIGHT_JOYSTICK_CHANNEL = 1;

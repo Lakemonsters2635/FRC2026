@@ -594,6 +594,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
           xPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
           MathUtil.applyDeadband(rotCommanded * this.kMaxAngularSpeed, 0.2) * -1,
+          // 0,
+          // 0,
+          // 0,
           true);
       // this.drive(0, 0, 0, true);
     }
@@ -653,6 +656,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    *     function is based off of the center of the robot.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    // drive(0, 0, 0, fieldRelative);
     drive(xSpeed, ySpeed, rot, fieldRelative, new Translation2d(0, 0));
   }
 

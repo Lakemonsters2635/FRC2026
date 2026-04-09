@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.AgitateCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.IntakeAgitatorCommand;
 import frc.robot.commands.IntakeAngleCommand;
 import frc.robot.commands.IntakeAngleUpCommand;
 import frc.robot.commands.IntakeCommand;
@@ -69,6 +70,7 @@ public class RobotContainer {
 
   // Cmmands
   private static AgitateCommand m_agitateCommand = new AgitateCommand(m_vectorWheelSubsystem);
+  private static IntakeAgitatorCommand m_intakeAgitatorCommand = new IntakeAgitatorCommand(m_intakeAngleSubsystem);
   private static UptakeCommand m_uptakeCommand = new UptakeCommand(m_uptakeSubsystem);
   private static UptakeReverseCommand m_uptakeReverseCommand =
       new UptakeReverseCommand(m_uptakeSubsystem);
@@ -125,7 +127,9 @@ public class RobotContainer {
 
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
-    Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 3);
+    Trigger intakeAgitatorButton = new JoystickButton(rightJoystick, 2);
+    Trigger intakeBoostButton = new JoystickButton(rightJoystick, 3);
+    Trigger hexAndRollerInButton = new JoystickButton(rightJoystick, 14);
     Trigger intakeOutward = new JoystickButton(rightJoystick, 4);
 
     Trigger uptakeReverseButton = new JoystickButton(rightJoystick, 6);
@@ -138,9 +142,14 @@ public class RobotContainer {
 
     // Trigger rollerInButton = new JoystickButton(rightJoystick, 5);
     // Trigger vectorWheelOutButton = new JoystickButton(rightJoystick, 2);
+    intakeBoostButton.onTrue(
+        new InstantCommand(()-> m_intakeSubsystem.setBoolHighPower(true)));
+    intakeBoostButton.onFalse(
+        new InstantCommand(()-> m_intakeSubsystem.setBoolHighPower(false)));
     intakeUpButton.onTrue(new IntakeAngleUpCommand(m_intakeAngleSubsystem));
     upShooterVoltageButton.onTrue(
         new InstantCommand(() -> m_shooterSubsystem.deltaShooterVoltage(0.3)));
+    intakeAgitatorButton.whileTrue(m_intakeAgitatorCommand);
     // downShooterVoltageButton.onTrue(new
     // InstantCommand(()->m_shooterSubsystem.deltaShooterVoltage(-0.3)));
 

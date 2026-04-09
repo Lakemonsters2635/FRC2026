@@ -4,44 +4,53 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeAngleSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {
-  /** Creates a new IntakeCommand. */
-  IntakeSubsystem m_intakeSubsystem;
+public class IntakeAgitatorCommand extends Command {
+  /** Creates a new IntakeAgitatorCommand. */
 
-  IntakeAngleSubsystem m_intakeAngleSubsystem;
+  IntakeAngleSubsystem m_ias;
 
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
-    m_intakeSubsystem = intakeSubsystem;
-    m_intakeAngleSubsystem = intakeAngleSubsystem;
-    addRequirements(m_intakeSubsystem, intakeAngleSubsystem);
+
+  public IntakeAgitatorCommand(IntakeAngleSubsystem m_intakeAngleSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_ias = m_intakeAngleSubsystem;
+    addRequirements(m_ias);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeAngleSubsystem.chagePidMode(false);
-    m_intakeAngleSubsystem.setVolts(1);
-
+    // m_ias.chagePidMode(true);
   }
 
-  
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSubsystem.intakeIn();
+    // double timeMS = Math.abs(RobotContainer.rightJoystick.getThrottle()*2000);
+    double timeMS = 330;
+    SmartDashboard.putNumber("timeMS",timeMS);
+    if(System.currentTimeMillis()%timeMS<timeMS/2){
+      // m_ias.setTargetPos(30);
+      m_ias.setVolts(-3.5);
+    }
+    else{
+      // m_ias.setTargetPos(0);
+      m_ias.setVolts(0.4);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intakeSubsystem.intakeStop();
-    m_intakeAngleSubsystem.setVolts(0);
+    // m_ias.chagePidMode(false);
+    m_ias.intakeAngleStop();
   }
 
   // Returns true when the command should end.
