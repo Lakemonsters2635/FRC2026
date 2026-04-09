@@ -100,6 +100,7 @@ public class RobotContainer {
     //     "Leave", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     // autoChooser.addOption(
     //     "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
+    // NOT USED!!!!!
     autoChooser.addOption("LeftShoot", m_autos.leftShootAuto());
     autoChooser.addOption("RightShoot", m_autos.rightShootAuto());
     // autoChooser.addOption(
@@ -124,7 +125,6 @@ public class RobotContainer {
     // Trigger moveTurretRight = new JoystickButton(leftJoystick, 6);
     // Trigger aimTurretAtAprilTag = new JoystickButton(leftJoystick, 7);
     // Trigger downShooterVoltageButton = new JoystickButton(leftJoystick, 12);
-
     // right joystick button
     Trigger intakeInward = new JoystickButton(rightJoystick, 1);
     Trigger intakeAgitatorButton = new JoystickButton(rightJoystick, 2);
@@ -269,9 +269,10 @@ public class RobotContainer {
 
     lockTurret.toggleOnTrue(
         new SequentialCommandGroup(
+            new InstantCommand(() -> m_turretSubsystem.setDriverControl(true)),
             new InstantCommand(() -> m_turretSubsystem.setAutoControl(false)),
             new InstantCommand(() -> m_turretSubsystem.setTurretTarget(0))));
-    lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setAutoControl(true)));
+    lockTurret.toggleOnFalse(new InstantCommand(() -> m_turretSubsystem.setDriverControl(false)));
     double antiJamTimeout = 0.2;
     double shootingTimeout = 1.8;
     shootButton.whileTrue(
@@ -356,5 +357,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return m_autos.leftDepoAuto();
+    // return m_autos.middleScoreAuto();
+    // return m_autos.rightShootAuto();
   }
 }

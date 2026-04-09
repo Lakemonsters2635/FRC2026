@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -127,7 +126,7 @@ public class VisionAutoCommand extends Command {
       } else {
         tempTargetPose = visionAutoData(m_xPrime, m_zPrime, m_finalYa, m_tagID);
       }
-      SmartDashboard.putBoolean("isNull", tempTargetPose == null);
+      // SmartDashboard.putBoolean("isNull", tempTargetPose == null);
       // This if statement will run only if we are able to see the april tag
       if (tempTargetPose != null) {
         targetPose = tempTargetPose;
@@ -144,7 +143,7 @@ public class VisionAutoCommand extends Command {
         targetPose = new Pose2d(0, 0, new Rotation2d(0));
       }
     } catch (Exception e) {
-      System.out.println(e);
+      // System.out.println(e);
     }
 
     double x_pose = m_dts.getPose().getX();
@@ -160,11 +159,11 @@ public class VisionAutoCommand extends Command {
      * x_pose_last_check = last robot position when able to see apriltag
      */
 
-    SmartDashboard.putNumber("deltaPosePosex", x_pose - x_pose_last_check);
-    SmartDashboard.putNumber("deltaPosePosey", y_pose - y_pose_last_check);
+    // SmartDashboard.putNumber("deltaPosePosex", x_pose - x_pose_last_check);
+    // SmartDashboard.putNumber("deltaPosePosey", y_pose - y_pose_last_check);
 
-    SmartDashboard.putNumber("m_y_target", m_y_target);
-    SmartDashboard.putNumber("x_last_check", x_pose_last_check);
+    // SmartDashboard.putNumber("m_y_target", m_y_target);
+    // SmartDashboard.putNumber("x_last_check", x_pose_last_check);
     // TODO: Use cameraAngleOffset and a rotation matrix for conversions
     // Note the negatives in the equations below change this to a -90deg rotation
     // .calculate(measurement, setpoint)
@@ -184,22 +183,23 @@ public class VisionAutoCommand extends Command {
     if (Math.abs(Math.toDegrees(m_visionSwerveController_rot.getError())) < 3) {
       isReachRot = true;
     }
-    SmartDashboard.putNumber("rot_error", Math.toDegrees(m_visionSwerveController_rot.getError()));
-    SmartDashboard.putNumber("m_rot_target", m_rot_target);
-    SmartDashboard.putNumber("rot_pose_last_check", rot_pose_last_check);
-    SmartDashboard.putNumber("transformedTargetPoseY", transformedTargetPose.getY());
-    SmartDashboard.putNumber("transformedTargetPoseX", transformedTargetPose.getX());
+    // SmartDashboard.putNumber("rot_error",
+    // Math.toDegrees(m_visionSwerveController_rot.getError()));
+    // SmartDashboard.putNumber("m_rot_target", m_rot_target);
+    // SmartDashboard.putNumber("rot_pose_last_check", rot_pose_last_check);
+    // SmartDashboard.putNumber("transformedTargetPoseY", transformedTargetPose.getY());
+    // SmartDashboard.putNumber("transformedTargetPoseX", transformedTargetPose.getX());
 
-    SmartDashboard.putNumber(
-        "deltaposetargetx",
-        m_visionSwerveController_x.getError()); // -x_pose-(m_y_target - x_pose_last_check)
-    SmartDashboard.putNumber("deltaposetargety", m_visionSwerveController_y.getError());
-    SmartDashboard.putNumber("pidxtarget", m_y_target - x_pose_last_check);
-    SmartDashboard.putNumber("pidytarget", -m_x_target + y_pose_last_check);
+    // SmartDashboard.putNumber(
+    //     "deltaposetargetx",
+    //     m_visionSwerveController_x.getError()); // -x_pose-(m_y_target - x_pose_last_check)
+    // SmartDashboard.putNumber("deltaposetargety", m_visionSwerveController_y.getError());
+    // SmartDashboard.putNumber("pidxtarget", m_y_target - x_pose_last_check);
+    // SmartDashboard.putNumber("pidytarget", -m_x_target + y_pose_last_check);
 
-    SmartDashboard.putBoolean("isReachRot", isReachRot);
-    SmartDashboard.putBoolean("isReachX", isReachX);
-    SmartDashboard.putBoolean("isReachY", isReachY);
+    // SmartDashboard.putBoolean("isReachRot", isReachRot);
+    // SmartDashboard.putBoolean("isReachX", isReachX);
+    // SmartDashboard.putBoolean("isReachY", isReachY);
 
     pid_rot = isReachRot ? 0 : pid_rot;
     if (isReachRot && isReachX) {
@@ -210,8 +210,8 @@ public class VisionAutoCommand extends Command {
     }
     double pid_c = Math.hypot(pid_x, pid_y);
 
-    SmartDashboard.putNumber("deltaposetargetRot", m_visionSwerveController_rot.getError());
-    SmartDashboard.putNumber("deltaposetargetx", m_visionSwerveController_x.getError());
+    // SmartDashboard.putNumber("deltaposetargetRot", m_visionSwerveController_rot.getError());
+    // SmartDashboard.putNumber("deltaposetargetx", m_visionSwerveController_x.getError());
     // double pid_c_clamp =
     // double x_clamp = pid_c > speed_clamp ? (speed_clamp * (Math.abs(pid_x) / pid_c)) :
     // speed_clamp;
@@ -229,11 +229,11 @@ public class VisionAutoCommand extends Command {
     double m_fb_y = MathUtil.clamp(pid_y / pid_c * 1.5, -1.5, 1.5);
     double m_fb_rot = MathUtil.clamp(pid_rot / 2, -Math.PI / 2, Math.PI / 2);
 
-    SmartDashboard.putNumber("pid_x", pid_x);
-    SmartDashboard.putNumber("pid_y", pid_y);
+    // SmartDashboard.putNumber("pid_x", pid_x);
+    // SmartDashboard.putNumber("pid_y", pid_y);
 
-    SmartDashboard.putNumber("m_fb_x", m_fb_x);
-    SmartDashboard.putNumber("m_fb_y", m_fb_y);
+    // SmartDashboard.putNumber("m_fb_x", m_fb_x);
+    // SmartDashboard.putNumber("m_fb_y", m_fb_y);
     m_dts.drive(m_fb_x, m_fb_y, m_fb_rot, true);
     updateDashboard();
     // m_dts.drive(m_fb_x, m_fb_y, m_fb_rot, true);
@@ -276,15 +276,15 @@ public class VisionAutoCommand extends Command {
         detection = m_ots.getSpecificAprilTag(tagId);
         break;
       } catch (Exception e) {
-        System.out.println("Failed vision attempt " + i);
+        // System.out.println("Failed vision attempt " + i);
       }
     }
     if (detection == null) {
-      SmartDashboard.putBoolean("ableToSeeAT", false);
+      // SmartDashboard.putBoolean("ableToSeeAT", false);
       return null;
     }
 
-    SmartDashboard.putBoolean("ableToSeeAT", true);
+    // SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
 
@@ -319,15 +319,15 @@ public class VisionAutoCommand extends Command {
         detection = m_ots.getNearestAprilTagDetection();
         break;
       } catch (Exception e) {
-        System.out.println("Failed vision attempt " + i);
+        // System.out.println("Failed vision attempt " + i);
       }
     }
     if (detection == null) {
-      SmartDashboard.putBoolean("ableToSeeAT", false);
+      // SmartDashboard.putBoolean("ableToSeeAT", false);
       return null;
     }
 
-    SmartDashboard.putBoolean("ableToSeeAT", true);
+    // SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
 
@@ -375,16 +375,16 @@ public class VisionAutoCommand extends Command {
   }
 
   private void updateDashboard() {
-    SmartDashboard.putNumber("xPidTargetVision", m_x_target);
-    SmartDashboard.putNumber("yPidTargetVision", m_y_target);
-    SmartDashboard.putNumber("rotPidTargetVision", m_rot_target);
-    SmartDashboard.putNumber("xPrime", m_xPrime);
-    SmartDashboard.putNumber("zPrime", m_zPrime);
-    SmartDashboard.putNumber("finalYa", m_finalYa);
-    SmartDashboard.putNumber("m_tagId", m_tagID);
-    SmartDashboard.putNumber("xPidStart", m_x_start);
-    SmartDashboard.putNumber("yPidStart", m_y_start);
-    SmartDashboard.putNumber("rotPidStart", m_rot_start);
+    // SmartDashboard.putNumber("xPidTargetVision", m_x_target);
+    // SmartDashboard.putNumber("yPidTargetVision", m_y_target);
+    // SmartDashboard.putNumber("rotPidTargetVision", m_rot_target);
+    // SmartDashboard.putNumber("xPrime", m_xPrime);
+    // SmartDashboard.putNumber("zPrime", m_zPrime);
+    // SmartDashboard.putNumber("finalYa", m_finalYa);
+    // SmartDashboard.putNumber("m_tagId", m_tagID);
+    // SmartDashboard.putNumber("xPidStart", m_x_start);
+    // SmartDashboard.putNumber("yPidStart", m_y_start);
+    // SmartDashboard.putNumber("rotPidStart", m_rot_start);
     // SmartDashboard.putBoolean("isVisionAuto", isVisionAuto);
   }
 }

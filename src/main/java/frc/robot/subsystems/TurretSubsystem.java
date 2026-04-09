@@ -34,6 +34,7 @@ public class TurretSubsystem extends SubsystemBase {
   private final SparkMax m_turretSparkMax;
   private final SparkMaxConfig m_turretConfig;
   PIDController m_turretController;
+  PIDController m_manualTurretController;
   double pid;
   public double m_poseTarget;
   private boolean isAutoControl = true;
@@ -47,9 +48,11 @@ public class TurretSubsystem extends SubsystemBase {
   private double feedForward = 0;
   private double savePose = 0;
   Timer m_timer;
+  double fb = 0;
   private double waitTime = 25; // each increment by 1 is an additional 20 mileseconds
   private double time = 0;
   boolean isMidMode = false;
+  boolean driverControl = false;
 
   public TurretSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
     m_turretSparkMax = new SparkMax(Constants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -60,10 +63,14 @@ public class TurretSubsystem extends SubsystemBase {
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turretSparkMax.getEncoder().setPosition(0);
-    m_turretController =
-        new PIDController(
-            0.08, 0.0,
-            0.01); // Having a kd of 0.015 does induce some jitter but greatly reduces overshoot
+    // m_turretController =
+    //     new PIDController(
+    //         0.08, 0.0,
+    //         0.01); // Having a kd of 0.015 does induce some jitter but greatly reduces overshoot
+
+    m_turretController = new PIDController(0.04, 0, 0.01);
+    m_manualTurretController = new PIDController(0.08, 0, 0.01);
+    // Having a kd of
     m_timer = new Timer();
     m_objectTrackerSubsystem = objectTrackerSubsystem;
   }
@@ -80,8 +87,8 @@ public class TurretSubsystem extends SubsystemBase {
   public void aimAtTarget() {
     m_objectTrackerSubsystem.data();
 
-    Pose2d aprilTagVector = m_objectTrackerSubsystem.getNearestAprilTagDistTurret();
-    // Pose2d aprilTagVector = m_objectTrackerSubsystem.getAvgAprilTagDist();
+    // Pose2d aprilTagVector = m_objectTrackerSubsystem.getNearestAprilTagDistTurret();
+    Pose2d aprilTagVector = m_objectTrackerSubsystem.getAvgAprilTagDist();
 
     //     m_objectTrackerSubsystem.getDistVector(
     //         0,
@@ -132,13 +139,14 @@ public class TurretSubsystem extends SubsystemBase {
     // TODO: Refactor everything to make coordinates aligned
 
     setTurretTarget(pose_target);
-    SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
-    SmartDashboard.putNumber("tur: vision targety", aprilTagY);
-    SmartDashboard.putNumber(
-        "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY * aprilTagY)));
-    SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
-    SmartDashboard.putNumber("tur: getDegrees", getDegrees());
-    SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
+    // SmartDashboard.putNumber("tur: vision targetx", aprilTagX);
+    // SmartDashboard.putNumber("tur: vision targety", aprilTagY);
+    // SmartDashboard.putNumber(
+    //     "tur: vision dist to target", Math.sqrt((aprilTagX * aprilTagX + aprilTagY *
+    // aprilTagY)));
+    // SmartDashboard.putNumber("tur: deltaRotTurret", aprilTagDeltaRot);
+    // SmartDashboard.putNumber("tur: getDegrees", getDegrees());
+    // SmartDashboard.putNumber("tur: current", m_turretSparkMax.getOutputCurrent());
 
     // setTurretTarget(
     //     MathUtil.clamp(
@@ -171,6 +179,10 @@ public class TurretSubsystem extends SubsystemBase {
             //     / Constants.ENCODER_TICS_PER_SPARKMAX_REVOLUTION))
             * 90;
     return deg;
+  }
+
+  public void setDriverControl(boolean driverControl) {
+    this.driverControl = driverControl;
   }
 
   public boolean isTurretAtTarget() {
@@ -216,7 +228,11 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Turret Encoder Counts", getEncoder());
     SmartDashboard.putNumber("Turret Degrees", getDegrees());
     m_poseTarget = MathUtil.clamp(m_poseTarget, -60, 60);
-    double fb = MathUtil.clamp(m_turretController.calculate(getDegrees(), m_poseTarget), -5, 5);
+    if (!driverControl) {
+      fb = MathUtil.clamp(m_turretController.calculate(getDegrees(), m_poseTarget), -5, 5);
+    } else {
+      fb = MathUtil.clamp(m_manualTurretController.calculate(getDegrees(), m_poseTarget), -5, 5);
+    }
     SmartDashboard.putNumber("Fee d Back", fb);
     SmartDashboard.putNumber("Pose Target", m_poseTarget);
     SmartDashboard.putNumber("April tag x turret", aprilTagX);
@@ -234,7 +250,7 @@ public class TurretSubsystem extends SubsystemBase {
           isAutoControl = false;
         }
       }
-      if (checkIsAutoControlValid()) {
+      if (checkIsAutoControlValid() && !driverControl) {
         m_timer.stop();
 
         isAutoControl = true;

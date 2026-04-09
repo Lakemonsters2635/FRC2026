@@ -10,7 +10,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 
 public class IntakeAngleSubsystem extends SubsystemBase {
   TalonFX m_intakeAngleMotor;
@@ -59,7 +58,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   }
 
   public void intakeBarelyUp() {
-    m_intakeAngleMotor.setVoltage(-2);
+    m_intakeAngleMotor.setVoltage(-1.50);
   }
 
   public void intakeAngleUp() {
@@ -92,8 +91,8 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("InAngle: curr angle", getAngle());
     SmartDashboard.putNumber("InAngle initialPos", initialPos);
-    SmartDashboard.putNumber("InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
-    
+    SmartDashboard.putNumber(
+        "InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
 
     if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);

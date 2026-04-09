@@ -84,7 +84,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   // private double ya3=0;
   // private double ya4=0;
   // private double ya5=0;
-  private double[][] yaWeights = new double[33][5];
+  private double[][] yaWeights = new double[33][10];
 
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
@@ -281,18 +281,22 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         detection = getSpecificAprilTag(tagId);
         break;
       } catch (Exception e) {
-        System.out.println("Failed vision attempt " + i);
+        // System.out.println("Failed vision attempt " + i);
       }
     }
     if (detection == null) {
-      SmartDashboard.putBoolean("ableToSeeAT", false);
+      // SmartDashboard.putBoolean("ableToSeeAT", false);
       return new Pose2d(0, 0, new Rotation2d(0));
     }
 
-    SmartDashboard.putBoolean("ableToSeeAT", true);
+    // SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
-
+    yaWeights[tagId][9] = yaWeights[tagId][8];
+    yaWeights[tagId][8] = yaWeights[tagId][7];
+    yaWeights[tagId][7] = yaWeights[tagId][6];
+    yaWeights[tagId][6] = yaWeights[tagId][5];
+    yaWeights[tagId][5] = yaWeights[tagId][4];
     yaWeights[tagId][4] = yaWeights[tagId][3];
     yaWeights[tagId][3] = yaWeights[tagId][2];
     yaWeights[tagId][2] = yaWeights[tagId][1];
@@ -306,8 +310,27 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     double[] currYa = yaWeights[tagId];
 
     // double visionYa = -detection.ya;
+    // double visionYa = 0;
+    // double total = 0;
+    // for(int i = 0; i < 10; i++){
+    //   int temp = 10;
+    //   temp-=i;
+    //   total += temp;
+    //   visionYa += currYa[0] * temp;
+    // }
+
     double visionYa =
-        (currYa[0] * 5 + currYa[1] * 4 + currYa[2] * 3 + currYa[3] * 2 + currYa[4]) / 15;
+        (currYa[0] * 10
+                + currYa[1] * 9
+                + currYa[2] * 8
+                + currYa[3] * 7
+                + currYa[4] * 6
+                + currYa[5] * 5
+                + currYa[6] * 4
+                + currYa[7] * 3
+                + currYa[8] * 2
+                + currYa[9] * 1)
+            / 55;
 
     // double visionYa = Math.atan(detection.z / (detection.x + 0.00001));
     double x_vt =
@@ -334,15 +357,15 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         detection = getSpecificAprilTag(tagId);
         break;
       } catch (Exception e) {
-        System.out.println("Failed vision attempt " + i);
+        // System.out.println("Failed vision attempt " + i);
       }
     }
     if (detection == null) {
-      SmartDashboard.putBoolean("ableToSeeAT", false);
+      // SmartDashboard.putBoolean("ableToSeeAT", false);
       return null;
     }
 
-    SmartDashboard.putBoolean("ableToSeeAT", true);
+    // SmartDashboard.putBoolean("ableToSeeAT", true);
 
     // detection = m_ots.
 
@@ -437,11 +460,11 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         Math.atan(
             (-y) / z); // angle in camera coordinate system from center of camera to detected object
     // (fraction of the field view)
-    SmartDashboard.putNumber("applyPitchCorrection.alpha", alpha);
+    // SmartDashboard.putNumber("applyPitchCorrection.alpha", alpha);
     // double adjustedZ = (z * Math.cos(Math.toRadians(pitchDegrees) + alpha)) / Math.cos(alpha);
     double hyp = Math.hypot(z, y);
     double adjustedZ = hyp * Math.cos(Math.toRadians(pitchDegrees) + alpha);
-    SmartDashboard.putNumber("applyPitchCorrection.adjustedZ", adjustedZ);
+    // SmartDashboard.putNumber("applyPitchCorrection.adjustedZ", adjustedZ);
     return adjustedZ;
   }
 
@@ -631,7 +654,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   public Pose2d getNearestAprilTagDistTurret() {
     int nearestTag = getNearestAprilTag();
-    SmartDashboard.putNumber("nearestTag", nearestTag);
+    // SmartDashboard.putNumber("nearestTag", nearestTag);
     if (nearestTag != -1) {
       if (nearestTag == 21
           || nearestTag == 26
@@ -662,7 +685,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   }
 
   public Pose2d getSpecificAprilTagDist(int id) {
-    SmartDashboard.putNumber("id", id);
+    // SmartDashboard.putNumber("id", id);
     if (id != -1) {
       if (id == 21 || id == 26 || id == 18 || id == 10 || id == 5 || id == 2) {
         return getDistVector(
@@ -714,7 +737,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       currentAprilTag = aprilTags.get(i);
       // The .substring(10) is for this specific aprilTag family which is "tag36h11: "
       if (currentAprilTag.objectLabel.substring(10).equals("" + id)) {
-        SmartDashboard.putString(currentAprilTag.objectLabel, ("get specific apriltag " + id));
+        // SmartDashboard.putString(currentAprilTag.objectLabel, ("get specific apriltag " + id));
         return currentAprilTag;
       }
     }
@@ -876,7 +899,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     //     return ;
     // }
 
-    SmartDashboard.putNumber("CameraFPS", fps);
+    // SmartDashboard.putNumber("CameraFPS", fps);
     aprilTags.clear();
     yoloObjects.clear();
 

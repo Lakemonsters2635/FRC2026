@@ -45,10 +45,10 @@ public class IntakeAngleCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-   
+
     // if (m_timer.get() > 2) {
-      m_intakeAngleSubsystem.setInitialPos();
-      m_intakeAngleSubsystem.intakeAngleStop();
+    m_intakeAngleSubsystem.setInitialPos();
+    m_intakeAngleSubsystem.intakeAngleStop();
     // }
   }
 
