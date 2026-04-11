@@ -106,11 +106,22 @@ public class Autos extends Command {
     middleScoreAuto().withTimeout(6),
     new PidAutoCommand(m_dts, m_objectTrackerSubsystem, -Units.inchesToMeters(75.93), 0, 0),
     new ParallelRaceGroup(
-    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1.4, 0),
+    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1.4, 0).withTimeout(2),
     new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem)
     ),
-    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0)
-    );
+    //new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0),
+    new WaitCommand(0.5), // wait 0.5s
+        new ParallelRaceGroup(
+            new Shoot(
+                    m_uptakeSubsystem,
+                    m_rollerSubsystem,
+                    m_shooterSubsystem,
+                    m_vectorWheelSubsystem,
+                    m_actuatorSubsystem,
+                    true)
+                .withTimeout(Constants.EIGHT_BALL_TIME),
+            new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
+    
     
   }
   public Command leftDepoAuto() {
@@ -199,8 +210,9 @@ public class Autos extends Command {
         // new IntakeAngleCommand(m_intakeAngleSubsystem),
         new ParallelRaceGroup(
             new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1, 0),
+            new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem),
             new UptakeReverseCommand(m_uptakeSubsystem)),
-        new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem),
+        //new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem).withTimeout(2.5),
         new WaitCommand(1),
         new ParallelRaceGroup(
             new Shoot(
