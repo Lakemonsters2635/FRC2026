@@ -55,7 +55,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public boolean stopPureVisionAuto = false;
 
   public static final double kMaxSpeed =
-      6; // 3.63 meters per second  Max Speed for Front, Back, Left, Right
+      3.63; // 3.63 meters per second  Max Speed for Front, Back, Left, Right
   public final double kMaxAngularSpeed =
       Math.PI; // 1/2 rotation per second   Max Speed for Rotation
   private SwerveModuleState[] swerveModuleStates;

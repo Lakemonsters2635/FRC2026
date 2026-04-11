@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -37,6 +38,12 @@ public class ShooterSubsystem extends SubsystemBase {
   double joystickDeltaPower = 0;
 
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
+    CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
+                  .withStatorCurrentLimit(60)
+                  .withStatorCurrentLimitEnable(true)
+                  .withSupplyCurrentLimit(60)
+                  .withSupplyCurrentLimitEnable(true);
+
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();
     m_rightConfig.SupplyVoltageTimeConstant = 10;
@@ -47,7 +54,9 @@ public class ShooterSubsystem extends SubsystemBase {
     m_shooterMotorRight = new TalonFX(Constants.SHOOTER_MOTOR_ID_RIGHT);
 
     m_shooterMotorLeft.getConfigurator().apply(m_leftConfig);
+    m_shooterMotorLeft.getConfigurator().apply(currentLimits);
     m_shooterMotorRight.getConfigurator().apply(m_rightConfig);
+    m_shooterMotorRight.getConfigurator().apply(currentLimits);
 
     slot0Configs.kG = 0;
     SmartDashboard.putNumber("Shooter P", 0.2);
