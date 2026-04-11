@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -100,7 +101,18 @@ public class Autos extends Command {
                 .withTimeout(Constants.EIGHT_BALL_TIME),
             new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
   }
-
+  public Command midToDepoAuto(){
+    return new SequentialCommandGroup(
+    middleScoreAuto().withTimeout(6),
+    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, -Units.inchesToMeters(75.93), 0, 0),
+    new ParallelRaceGroup(
+    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1.4, 0),
+    new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem)
+    ),
+    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0)
+    );
+    
+  }
   public Command leftDepoAuto() {
     // sequential does the commands one by one
     return new SequentialCommandGroup(
@@ -198,8 +210,8 @@ public class Autos extends Command {
                     m_vectorWheelSubsystem,
                     m_actuatorSubsystem,
                     true)
-                .withTimeout(Constants.EIGHT_BALL_TIME),
-            new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
+                .withTimeout(5),
+            new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)).withTimeout(5));
   }
 
   public Command rightScoreAuto() {

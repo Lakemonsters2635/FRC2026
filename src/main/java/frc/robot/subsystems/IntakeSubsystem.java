@@ -24,11 +24,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intakeIn() {
-    if (highPower) {
+    // if (highPower) {
       m_intakeMotor.setVoltage(12);
-    } else {
-      m_intakeMotor.setVoltage(6);
-    }
+    // } else {
+    //   m_intakeMotor.setVoltage(6);
+    // }
   }
 
   public void setBoolHighPower(boolean isHighPower) {
