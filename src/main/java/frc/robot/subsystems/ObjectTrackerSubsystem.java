@@ -111,6 +111,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   public void data() {
     NetworkTableEntry entry = monsterVision.getEntry("ObjectTracker-" + source);
     if (entry == null) {
+      SmartDashboard.putBoolean("Camera Connected", false);
+      SmartDashboard.putBoolean("Tag Visible", false);
       return;
     }
     // default to an empty list of detections if nothing is found:
@@ -119,6 +121,10 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       // TODO: call updateDetections with detectionsString = jsonString to populate yoloObjects and
       // aprilTags
       updateDetections(jsonString, gson);
+      SmartDashboard.putBoolean("Camera Connected", true);
+      boolean hasTarget = getNearestAprilTagDetection() != null;
+      SmartDashboard.putBoolean("Tag Visible", hasTarget);
+
       // use the getClosestAprilTag() to get the detection for the closest april tag
       // Use smart dashboarf to display the x, y, z and ya values
 

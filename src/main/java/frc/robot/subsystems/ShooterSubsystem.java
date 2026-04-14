@@ -38,11 +38,12 @@ public class ShooterSubsystem extends SubsystemBase {
   double joystickDeltaPower = 0;
 
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
-    CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
-                  .withStatorCurrentLimit(60)
-                  .withStatorCurrentLimitEnable(true)
-                  .withSupplyCurrentLimit(60)
-                  .withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimits =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(60)
+            .withSupplyCurrentLimitEnable(true);
 
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();
