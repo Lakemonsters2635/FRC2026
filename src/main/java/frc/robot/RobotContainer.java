@@ -102,11 +102,12 @@ public class RobotContainer {
     // autoChooser.addOption(
     //     "Shoot", new PidAutoCommand(m_drivetrainSubsystem, m_objectTrackerSubsystem, 0, 1, 0));
     // NOT USED!!!!!
-    autoChooser.addOption("LeftShoot", m_autos.leftShootAuto());
+    autoChooser.addOption("LeftDepo", m_autos.leftDepoAuto());
     autoChooser.addOption("RightShoot", m_autos.rightShootAuto());
     // autoChooser.addOption(
     //     "LeftShootRamp", m_autos.leftShootRampAuto());
-    autoChooser.setDefaultOption("midAuto", m_autos.middleScoreAuto());
+    autoChooser.setDefaultOption("Mid", m_autos.middleScoreAuto());
+    autoChooser.addOption("MidDepo", m_autos.midToDepoAuto());
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
@@ -356,7 +357,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return m_autos.leftDepoAuto();
-    return m_autos.midToDepoAuto();
+    return autoChooser.getSelected();
+    // return m_autos.midToDepoAuto();
     // return m_autos.middleScoreAuto();
     // return m_autos.rightShootAuto();
   }

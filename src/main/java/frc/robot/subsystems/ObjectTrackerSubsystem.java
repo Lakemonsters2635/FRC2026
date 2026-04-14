@@ -54,6 +54,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   //         return super.remove(index);
   //     }
   // }
+  double []fpsArr = new double[50];
 
   NetworkTable monsterVision;
   public VisionObject[] foundObjects;
@@ -111,8 +112,6 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   public void data() {
     NetworkTableEntry entry = monsterVision.getEntry("ObjectTracker-" + source);
     if (entry == null) {
-      SmartDashboard.putBoolean("Camera Connected", false);
-      SmartDashboard.putBoolean("Tag Visible", false);
       return;
     }
     // default to an empty list of detections if nothing is found:
@@ -121,7 +120,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       // TODO: call updateDetections with detectionsString = jsonString to populate yoloObjects and
       // aprilTags
       updateDetections(jsonString, gson);
-      SmartDashboard.putBoolean("Camera Connected", true);
+      // SmartDashboard.putBoolean("Camera Connected", true);
       boolean hasTarget = getNearestAprilTagDetection() != null;
       SmartDashboard.putBoolean("Tag Visible", hasTarget);
 
@@ -148,14 +147,42 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       // visionY = getSpecificAprilTag(Robot.m_toteChooser.getSelected()).y;
       // visionYa = getSpecificAprilTag(Robot.m_toteChooser.getSelected()).ya;
 
-      // String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("").substring(5);
-      // double fps = Double.valueOf(fpsString);
-      // SmartDashboard.putNumber("CameraFPS", fps);
+     
+ 
+      
+     
+      
+      
     } catch (Exception e) {
       // System.out.println(e);
     }
 
     return;
+  }
+
+  public void canSeeCamera(){
+     String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("-1").substring(5);
+     
+      double fps = Double.valueOf(fpsString);
+      fpsArr[0] = fps;
+      for(int i = 49; i >=1; i--){
+        fpsArr[i] = fpsArr[i-1];
+        System.out.println("fpsArr[" + i + "] = fpsArr[" + (i-1) + "]");
+      }
+      SmartDashboard.putNumberArray("fpsArr", fpsArr);
+      boolean isDiff = false;
+      for (int i = 1; i < fpsArr.length; i++) {
+        if (fpsArr[i] == fpsArr[0]){
+          SmartDashboard.putBoolean("Camera Connected", false);
+          SmartDashboard.putBoolean("Tag Visible", false);
+        }
+        else{
+          isDiff = true;
+        }
+      }
+      SmartDashboard.putBoolean("Camera Connected", isDiff);
+    
+      SmartDashboard.putNumber("CameraFPS", fps);
   }
 
   // GET VISION DATA FROM NEAREST TAG
@@ -955,6 +982,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     data();
+    canSeeCamera();
   }
 }
 
