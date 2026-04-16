@@ -161,13 +161,14 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   }
 
   public void canSeeCamera(){
-     String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("-1").substring(5);
+      try{
+      String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("-1").substring(5);
      
       double fps = Double.valueOf(fpsString);
       fpsArr[0] = fps;
       for(int i = 49; i >=1; i--){
         fpsArr[i] = fpsArr[i-1];
-        System.out.println("fpsArr[" + i + "] = fpsArr[" + (i-1) + "]");
+        // System.out.println("fpsArr[" + i + "] = fpsArr[" + (i-1) + "]");
       }
       SmartDashboard.putNumberArray("fpsArr", fpsArr);
       boolean isDiff = false;
@@ -183,6 +184,10 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       SmartDashboard.putBoolean("Camera Connected", isDiff);
     
       SmartDashboard.putNumber("CameraFPS", fps);
+    }
+    catch(Exception e){
+      
+    }
   }
 
   // GET VISION DATA FROM NEAREST TAG

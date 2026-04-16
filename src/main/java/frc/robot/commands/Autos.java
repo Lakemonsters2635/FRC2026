@@ -102,6 +102,11 @@ public class Autos extends Command {
             new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
   }
 
+  public Command test() {
+    return new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(68.93), -1, 0);
+
+  }
+
   public Command midToDepoAuto() {
     return new SequentialCommandGroup(
         middleScoreAuto().withTimeout(6),
@@ -112,6 +117,7 @@ public class Autos extends Command {
         // new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0),
         new WaitCommand(0.5), // wait 0.5s
         new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -.7, 0).withTimeout(.3),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(68.93), -1, 0).withTimeout(1),
         new ParallelRaceGroup(
             new Shoot(
                 m_uptakeSubsystem,
