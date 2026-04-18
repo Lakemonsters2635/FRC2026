@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeAngleSubsystem extends SubsystemBase {
   TalonFX m_intakeAngleMotor;
@@ -21,7 +22,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   boolean pidMode = false;
 
   public IntakeAngleSubsystem() {
-    m_intakeAngleMotor = new TalonFX(11);
+    m_intakeAngleMotor = new TalonFX(Constants.INTAKE_ANGLE_MOTOR);
     m_intakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
 
     m_config = new VoltageConfigs();
@@ -63,7 +64,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
 
   public void intakeAngleUp() {
     // not tested
-    m_intakeAngleMotor.setVoltage(-2.5); // +
+    m_intakeAngleMotor.setVoltage(-2.7); // +
   }
 
   public void intakeAngleDownHard() {
