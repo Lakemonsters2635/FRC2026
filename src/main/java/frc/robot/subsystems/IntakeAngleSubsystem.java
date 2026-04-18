@@ -64,7 +64,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
 
   public void intakeAngleUp() {
     // not tested
-    m_intakeAngleMotor.setVoltage(-2.7); // +
+    m_intakeAngleMotor.setVoltage(-2.9); // +
   }
 
   public void intakeAngleDownHard() {
