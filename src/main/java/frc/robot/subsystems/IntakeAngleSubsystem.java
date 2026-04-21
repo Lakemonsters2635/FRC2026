@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeAngleSubsystem extends SubsystemBase {
   TalonFX m_intakeAngleMotor;
@@ -21,12 +23,20 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   boolean pidMode = false;
 
   public IntakeAngleSubsystem() {
-    m_intakeAngleMotor = new TalonFX(11);
+    m_intakeAngleMotor = new TalonFX(Constants.INTAKE_ANGLE_MOTOR);
     m_intakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
+    CurrentLimitsConfigs currentLimits =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimitEnable(false)
+            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLimitEnable(false);
+
 
     m_config = new VoltageConfigs();
     m_config.SupplyVoltageTimeConstant = 10;
     m_intakeAngleMotor.getConfigurator().apply(m_config);
+    m_intakeAngleMotor.getConfigurator().apply(currentLimits);
 
     initialPos = m_intakeAngleMotor.getPosition().getValueAsDouble();
     m_targetPos = getAngle();
@@ -63,7 +73,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
 
   public void intakeAngleUp() {
     // not tested
-    m_intakeAngleMotor.setVoltage(-2.5); // +
+    m_intakeAngleMotor.setVoltage(-4); // +
   }
 
   public void intakeAngleDownHard() {
@@ -93,6 +103,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("InAngle initialPos", initialPos);
     SmartDashboard.putNumber(
         "InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Falcon (Intake Arm) Temp", m_intakeAngleMotor.getDeviceTemp().getValueAsDouble());
 
     if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);

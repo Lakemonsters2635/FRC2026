@@ -29,7 +29,13 @@ public class ShooterSubsystem extends SubsystemBase {
   TalonFX motor = new TalonFX(1);
   VelocityVoltage velocityRequest = new VelocityVoltage(0);
   Slot0Configs slot0Configs = new Slot0Configs();
-
+  CurrentLimitsConfigs currentLimits =
+    new CurrentLimitsConfigs()
+      .withStatorCurrentLimit(60)
+      .withStatorCurrentLimitEnable(true)
+      .withSupplyCurrentLimit(60)
+      .withSupplyCurrentLimitEnable(true);
+  
   Joystick joystick = new Joystick(0);
   double power = 7;
   double savePower;
@@ -38,11 +44,12 @@ public class ShooterSubsystem extends SubsystemBase {
   double joystickDeltaPower = 0;
 
   public ShooterSubsystem(ObjectTrackerSubsystem objectTrackerSubsystem) {
-    CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
-                  .withStatorCurrentLimit(60)
-                  .withStatorCurrentLimitEnable(true)
-                  .withSupplyCurrentLimit(60)
-                  .withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimits =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(60)
+            .withSupplyCurrentLimitEnable(true);
 
     m_leftConfig = new VoltageConfigs();
     m_rightConfig = new VoltageConfigs();

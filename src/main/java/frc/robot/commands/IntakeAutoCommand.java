@@ -15,8 +15,7 @@ public class IntakeAutoCommand extends Command {
 
   IntakeAngleSubsystem m_intakeAngleSubsystem;
 
-  public IntakeAutoCommand(
-      IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
+  public IntakeAutoCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     m_intakeAngleSubsystem = intakeAngleSubsystem;
     addRequirements(m_intakeSubsystem, intakeAngleSubsystem);
@@ -28,7 +27,6 @@ public class IntakeAutoCommand extends Command {
   public void initialize() {
     m_intakeAngleSubsystem.chagePidMode(false);
     m_intakeAngleSubsystem.setVolts(2);
-
     m_intakeSubsystem.intakeIn();
   }
 

@@ -101,30 +101,35 @@ public class Autos extends Command {
                 .withTimeout(Constants.EIGHT_BALL_TIME),
             new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
   }
-  public Command midToDepoAuto(){
+
+  public Command test() {
+    return new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(68.93), -1, 0);
+
+  }
+
+  public Command midToDepoAuto() {
     return new SequentialCommandGroup(
-    middleScoreAuto().withTimeout(6),
-    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, -Units.inchesToMeters(68.93), 0, 0),
-    new ParallelRaceGroup(
-    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1.58, 0).withTimeout(2),
-    new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem)
-    ),
-    //new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0),
-    new WaitCommand(0.5), // wait 0.5s
-    new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -.7, 0).withTimeout(.3),
+        middleScoreAuto().withTimeout(6),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, -Units.inchesToMeters(68.93), 0, 0),
+        new ParallelRaceGroup(
+            new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1.58, 0).withTimeout(2),
+            new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem)),
+        // new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(75.93), 0, 0),
+        new WaitCommand(0.5), // wait 0.5s
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, -.7, 0).withTimeout(.3),
+        new PidAutoCommand(m_dts, m_objectTrackerSubsystem, Units.inchesToMeters(68.93), -1, 0).withTimeout(1),
         new ParallelRaceGroup(
             new Shoot(
-                    m_uptakeSubsystem,
-                    m_rollerSubsystem,
-                    m_shooterSubsystem,
-                    m_vectorWheelSubsystem,
-                    m_actuatorSubsystem,
-                    true),
-                //.withTimeout(Constants.EIGHT_BALL_TIME),
+                m_uptakeSubsystem,
+                m_rollerSubsystem,
+                m_shooterSubsystem,
+                m_vectorWheelSubsystem,
+                m_actuatorSubsystem,
+                true),
+            // .withTimeout(Constants.EIGHT_BALL_TIME),
             new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)));
-    
-    
   }
+
   public Command leftDepoAuto() {
     // sequential does the commands one by one
     return new SequentialCommandGroup(
@@ -213,18 +218,19 @@ public class Autos extends Command {
             new PidAutoCommand(m_dts, m_objectTrackerSubsystem, 0, 1, 0),
             new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem),
             new UptakeReverseCommand(m_uptakeSubsystem)),
-        //new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem).withTimeout(2.5),
+        // new IntakeCommand(m_intakeSubsystem, m_intakeAngleSubsystem).withTimeout(2.5),
         new WaitCommand(.4),
         new ParallelRaceGroup(
-            new Shoot(
-                    m_uptakeSubsystem,
-                    m_rollerSubsystem,
-                    m_shooterSubsystem,
-                    m_vectorWheelSubsystem,
-                    m_actuatorSubsystem,
-                    true)
-                .withTimeout(5),
-            new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem)).withTimeout(5));
+                new Shoot(
+                        m_uptakeSubsystem,
+                        m_rollerSubsystem,
+                        m_shooterSubsystem,
+                        m_vectorWheelSubsystem,
+                        m_actuatorSubsystem,
+                        true)
+                    .withTimeout(5),
+                new IntakeAutoCommand(m_intakeSubsystem, m_intakeAngleSubsystem))
+            .withTimeout(5));
   }
 
   public Command rightScoreAuto() {
