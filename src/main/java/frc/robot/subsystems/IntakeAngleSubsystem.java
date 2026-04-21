@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -24,10 +25,18 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public IntakeAngleSubsystem() {
     m_intakeAngleMotor = new TalonFX(Constants.INTAKE_ANGLE_MOTOR);
     m_intakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
+    CurrentLimitsConfigs currentLimits =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimitEnable(false)
+            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLimitEnable(false);
+
 
     m_config = new VoltageConfigs();
     m_config.SupplyVoltageTimeConstant = 10;
     m_intakeAngleMotor.getConfigurator().apply(m_config);
+    m_intakeAngleMotor.getConfigurator().apply(currentLimits);
 
     initialPos = m_intakeAngleMotor.getPosition().getValueAsDouble();
     m_targetPos = getAngle();
@@ -64,7 +73,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
 
   public void intakeAngleUp() {
     // not tested
-    m_intakeAngleMotor.setVoltage(-2.9); // +
+    m_intakeAngleMotor.setVoltage(-4); // +
   }
 
   public void intakeAngleDownHard() {
@@ -94,6 +103,7 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("InAngle initialPos", initialPos);
     SmartDashboard.putNumber(
         "InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Falcon (Intake Arm) Temp", m_intakeAngleMotor.getDeviceTemp().getValueAsDouble());
 
     if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);
