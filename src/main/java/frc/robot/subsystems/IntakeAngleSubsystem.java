@@ -32,7 +32,6 @@ public class IntakeAngleSubsystem extends SubsystemBase {
             .withSupplyCurrentLimit(80)
             .withSupplyCurrentLimitEnable(false);
 
-
     m_config = new VoltageConfigs();
     m_config.SupplyVoltageTimeConstant = 10;
     m_intakeAngleMotor.getConfigurator().apply(m_config);
@@ -54,6 +53,13 @@ public class IntakeAngleSubsystem extends SubsystemBase {
         * 360;
   }
 
+  public double getRawEncoderPos(){
+    return m_intakeAngleMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getCommandedVoltage(){
+    return m_intakeAngleMotor.getMotorVoltage().getValueAsDouble();
+  }
   public void resetEncoder() {
     m_intakeAngleMotor.setPosition(0);
   }
@@ -101,9 +107,11 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("InAngle: curr angle", getAngle());
     SmartDashboard.putNumber("InAngle initialPos", initialPos);
+    SmartDashboard.putNumber("InAngle Commanded Voltage", m_intakeAngleMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber(
         "InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Falcon (Intake Arm) Temp", m_intakeAngleMotor.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "Falcon (Intake Arm) Temp", m_intakeAngleMotor.getDeviceTemp().getValueAsDouble());
 
     if (pidMode) {
       double fb = m_pidController.calculate(getAngle(), m_targetPos);

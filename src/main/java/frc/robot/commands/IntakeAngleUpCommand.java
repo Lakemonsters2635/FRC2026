@@ -12,6 +12,7 @@ import frc.robot.subsystems.IntakeAngleSubsystem;
 public class IntakeAngleUpCommand extends Command {
   /** Creates a new IntakeAngleCommand. */
   IntakeAngleSubsystem m_intakeAngleSubsystem;
+
   double initAngle = 0;
   Timer m_timer;
   boolean feedForwardApplied;
@@ -24,20 +25,24 @@ public class IntakeAngleUpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intakeAngleSubsystem.setInitialPos();
-    initAngle = m_intakeAngleSubsystem.getAngle();
-  
+    if(m_intakeAngleSubsystem.getRawEncoderPos() > -0.65){
+      m_intakeAngleSubsystem.setInitialPos();
+      initAngle = m_intakeAngleSubsystem.getAngle();
+
     // feedForwardApplied = false;
-    m_intakeAngleSubsystem.chagePidMode(true);
-    m_intakeAngleSubsystem.setTargetPos(120);
+      m_intakeAngleSubsystem.chagePidMode(true);
+      m_intakeAngleSubsystem.setTargetPos(120);
+    }
+   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(initAngle +  90 < m_intakeAngleSubsystem.getAngle()){
+    if (initAngle + 90 < m_intakeAngleSubsystem.getAngle()) {
       m_intakeAngleSubsystem.setVolts(-1);
     }
+    // m_intakeAngleSubsystem.setVolts(m_intakeAngleSubsystem.getCommandedVoltage()-0.3);
   }
 
   // Called once the command ends or is interrupted.

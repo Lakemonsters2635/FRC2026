@@ -30,12 +30,12 @@ public class ShooterSubsystem extends SubsystemBase {
   VelocityVoltage velocityRequest = new VelocityVoltage(0);
   Slot0Configs slot0Configs = new Slot0Configs();
   CurrentLimitsConfigs currentLimits =
-    new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(60)
-      .withStatorCurrentLimitEnable(true)
-      .withSupplyCurrentLimit(60)
-      .withSupplyCurrentLimitEnable(true);
-  
+      new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(60)
+          .withStatorCurrentLimitEnable(true)
+          .withSupplyCurrentLimit(60)
+          .withSupplyCurrentLimitEnable(true);
+
   Joystick joystick = new Joystick(0);
   double power = 7;
   double savePower;

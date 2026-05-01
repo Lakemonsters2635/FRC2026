@@ -54,7 +54,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
   //         return super.remove(index);
   //     }
   // }
-  double []fpsArr = new double[50];
+  double[] fpsArr = new double[50];
 
   NetworkTable monsterVision;
   public VisionObject[] foundObjects;
@@ -147,12 +147,6 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
       // visionY = getSpecificAprilTag(Robot.m_toteChooser.getSelected()).y;
       // visionYa = getSpecificAprilTag(Robot.m_toteChooser.getSelected()).ya;
 
-     
- 
-      
-     
-      
-      
     } catch (Exception e) {
       // System.out.println(e);
     }
@@ -160,33 +154,31 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     return;
   }
 
-  public void canSeeCamera(){
-      try{
+  public void canSeeCamera() {
+    try {
       String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("-1").substring(5);
-     
+
       double fps = Double.valueOf(fpsString);
       fpsArr[0] = fps;
-      for(int i = 49; i >=1; i--){
-        fpsArr[i] = fpsArr[i-1];
+      for (int i = 49; i >= 1; i--) {
+        fpsArr[i] = fpsArr[i - 1];
         // System.out.println("fpsArr[" + i + "] = fpsArr[" + (i-1) + "]");
       }
       SmartDashboard.putNumberArray("fpsArr", fpsArr);
       boolean isDiff = false;
       for (int i = 1; i < fpsArr.length; i++) {
-        if (fpsArr[i] == fpsArr[0]){
+        if (fpsArr[i] == fpsArr[0]) {
           SmartDashboard.putBoolean("Camera Connected", false);
           SmartDashboard.putBoolean("Tag Visible", false);
-        }
-        else{
+        } else {
           isDiff = true;
         }
       }
       SmartDashboard.putBoolean("Camera Connected", isDiff);
-    
+
       SmartDashboard.putNumber("CameraFPS", fps);
-    }
-    catch(Exception e){
-      
+    } catch (Exception e) {
+
     }
   }
 

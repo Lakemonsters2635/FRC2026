@@ -15,7 +15,8 @@ public class IntakeAutoCommand extends Command {
 
   IntakeAngleSubsystem m_intakeAngleSubsystem;
 
-  public IntakeAutoCommand(IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
+  public IntakeAutoCommand(
+      IntakeSubsystem intakeSubsystem, IntakeAngleSubsystem intakeAngleSubsystem) {
     m_intakeSubsystem = intakeSubsystem;
     m_intakeAngleSubsystem = intakeAngleSubsystem;
     addRequirements(m_intakeSubsystem, intakeAngleSubsystem);

@@ -357,10 +357,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return m_autos.leftDepoAuto();
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
     // return m_autos.midToDepoAuto();
+    return m_autos.leftShootAuto();
     // return m_autos.middleScoreAuto();
     // return m_autos.rightShootAuto();
-    //return m_autos.test();
+    // return m_autos.test();
   }
 }
