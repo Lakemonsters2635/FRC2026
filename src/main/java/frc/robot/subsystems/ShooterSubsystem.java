@@ -102,10 +102,11 @@ public class ShooterSubsystem extends SubsystemBase {
       // desiredVelocity = -0.658669 * magnitude * magnitude * magnitude + 6.08625 * magnitude *
       // magnitude -13.711 * magnitude + 65.43 + 1;
       desiredVelocity =
-          0.139446 * magnitude * magnitude * magnitude
-              + -2.62406 * magnitude * magnitude
-              + 16.19286 * magnitude
-              + 36.23951;
+          (0.139446 * magnitude * magnitude * magnitude
+            - 2.62406 * magnitude * magnitude
+            + 16.19286 * magnitude
+            + 36.23951)
+          * 0.75;
     }
     // desiredVelocity = SmartDashboard.getNumber("velocity shooter rps", 1);
     velocityController(desiredVelocity);
