@@ -57,12 +57,13 @@ public class SwerveModule {
     m_driveMotor = new TalonFX(driveMotorChannel);
     m_turningMotor = new TalonFX(turningMotorChannel);
 
-    CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
-                  .withStatorCurrentLimit(60)
-                  .withStatorCurrentLimitEnable(true)
-                  .withSupplyCurrentLimit(60)
-                  .withSupplyCurrentLimitEnable(true);
-    
+    CurrentLimitsConfigs currentLimits =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(60)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(60)
+            .withSupplyCurrentLimitEnable(true);
+
     m_driveMotor.getConfigurator().apply(currentLimits);
     m_turningMotor.getConfigurator().apply(currentLimits);
 

@@ -4,16 +4,11 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -142,6 +137,7 @@ public class RobotContainer {
     Trigger rollerShakeButton = new JoystickButton(rightJoystick, 7);
     Trigger swerveResetButton = new JoystickButton(rightJoystick, 9);
     Trigger intakeUpButton = new JoystickButton(rightJoystick, 11);
+    Trigger bettyShooter = new JoystickButton(rightJoystick, 12);
 
     // Trigger vectorWheelInButton = new JoystickButton(rightJoystick, 8);
     // Trigger rollerOutButton = new JoystickButton(rightJoystick, 3);
@@ -337,6 +333,10 @@ public class RobotContainer {
 
     intakeOutward.whileTrue(m_intakeOutCommand);
 
+
+    bettyShooter.whileTrue(
+        new SequentialCommandGroup(m_uptakeCommand, m_shooterCommand)
+    );
     // throttleControl.whileTrue(
     //     new InstantCommand(
     //         () ->
@@ -360,7 +360,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    //return m_autos.leftDepoAuto();
+    // return m_autos.leftDepoAuto();
     return m_autos.midToDepoAuto();
     // return m_autos.middleScoreAuto();
     // return m_autos.rightShootAuto();

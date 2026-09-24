@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intakeIn() {
     // if (highPower) {
-      m_intakeMotor.setVoltage(12);
+    m_intakeMotor.setVoltage(12);
     // } else {
     //   m_intakeMotor.setVoltage(6);
     // }
