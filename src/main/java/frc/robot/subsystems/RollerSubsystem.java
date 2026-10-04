@@ -24,12 +24,12 @@ public class RollerSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("rollerPower", 2);
   }
 
-  public void setRollersBackward() {
-    m_rollerMotor.setVoltage(-2);
+  public void setRollersForward() {
+    m_rollerMotor.setVoltage(-1.5);
   }
 
-  public void setRollersForward() {
-    m_rollerMotor.setVoltage(2);
+  public void setRollersBackward() {
+    m_rollerMotor.setVoltage(1.5);
   }
 
   public void stopRollers() {

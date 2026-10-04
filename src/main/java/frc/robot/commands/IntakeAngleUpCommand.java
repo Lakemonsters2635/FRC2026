@@ -25,15 +25,14 @@ public class IntakeAngleUpCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_intakeAngleSubsystem.getRawEncoderPos() > -0.65){
+    if (m_intakeAngleSubsystem.getRawEncoderPos() > -0.65) {
       m_intakeAngleSubsystem.setInitialPos();
       initAngle = m_intakeAngleSubsystem.getAngle();
 
-    // feedForwardApplied = false;
+      // feedForwardApplied = false;
       m_intakeAngleSubsystem.chagePidMode(true);
       m_intakeAngleSubsystem.setTargetPos(120);
     }
-   
   }
 
   // Called every time the scheduler runs while the command is scheduled.

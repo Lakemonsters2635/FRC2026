@@ -27,9 +27,9 @@ public class IntakeAngleSubsystem extends SubsystemBase {
     m_intakeAngleMotor.setNeutralMode(NeutralModeValue.Brake);
     CurrentLimitsConfigs currentLimits =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(120)
+            .withStatorCurrentLimit(40)
             .withStatorCurrentLimitEnable(false)
-            .withSupplyCurrentLimit(80)
+            .withSupplyCurrentLimit(30)
             .withSupplyCurrentLimitEnable(false);
 
     m_config = new VoltageConfigs();
@@ -53,13 +53,14 @@ public class IntakeAngleSubsystem extends SubsystemBase {
         * 360;
   }
 
-  public double getRawEncoderPos(){
+  public double getRawEncoderPos() {
     return m_intakeAngleMotor.getPosition().getValueAsDouble();
   }
 
-  public double getCommandedVoltage(){
+  public double getCommandedVoltage() {
     return m_intakeAngleMotor.getMotorVoltage().getValueAsDouble();
   }
+
   public void resetEncoder() {
     m_intakeAngleMotor.setPosition(0);
   }
@@ -107,7 +108,8 @@ public class IntakeAngleSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putNumber("InAngle: curr angle", getAngle());
     SmartDashboard.putNumber("InAngle initialPos", initialPos);
-    SmartDashboard.putNumber("InAngle Commanded Voltage", m_intakeAngleMotor.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber(
+        "InAngle Commanded Voltage", m_intakeAngleMotor.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber(
         "InAngle raw encoder", m_intakeAngleMotor.getPosition().getValueAsDouble());
     SmartDashboard.putNumber(

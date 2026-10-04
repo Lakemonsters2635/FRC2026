@@ -156,8 +156,9 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
   public void canSeeCamera() {
     try {
-      String fpsString = monsterVision.getEntry("ObjectTracker-fps").getString("-1").substring(5);
-
+      String fpsString =
+          monsterVision.getEntry("ObjectTracker-fps").getString("-1"); // .substring(5);
+      System.out.println(fpsString);
       double fps = Double.valueOf(fpsString);
       fpsArr[0] = fps;
       for (int i = 49; i >= 1; i--) {
@@ -178,7 +179,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
       SmartDashboard.putNumber("CameraFPS", fps);
     } catch (Exception e) {
-
+      System.out.println(e);
     }
   }
 

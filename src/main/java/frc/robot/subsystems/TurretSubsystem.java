@@ -62,7 +62,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     m_turretSparkMax.configure(
         m_turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_turretSparkMax.getEncoder().setPosition(0);
+    m_turretSparkMax.getEncoder().setPosition(-20);
     // m_turretController =
     //     new PIDController(
     //         0.08, 0.0,
@@ -78,9 +78,11 @@ public class TurretSubsystem extends SubsystemBase {
   public boolean checkIsAutoControlValid() {
     for (int i = 0; i < Constants.APRIL_TAGS_HUB.length; i++) {
       if (Constants.APRIL_TAGS_HUB[i] == m_objectTrackerSubsystem.getNearestAprilTag()) {
+        System.out.println("yay");
         return true;
       }
     }
+
     return false;
   }
 
@@ -250,7 +252,7 @@ public class TurretSubsystem extends SubsystemBase {
           isAutoControl = false;
         }
       }
-      if (checkIsAutoControlValid() && !driverControl) {
+      if (checkIsAutoControlValid() /*&& !driverControl */) {
         m_timer.stop();
 
         isAutoControl = true;
@@ -275,6 +277,7 @@ public class TurretSubsystem extends SubsystemBase {
     } else if (getDegrees() > 17) {
       feedForward = 0.7 * (getDegrees() - 17) / (Constants.MAX_LIMIT_ROTATION - 17);
     } else {
+
       feedForward = -0.7 * (getDegrees() + 30) / (Constants.MIN_LIMIT_ROTATION + 30);
     }
 
