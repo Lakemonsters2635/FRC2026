@@ -101,6 +101,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
           Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER,
+          Constants.DRIVETRAIN_BACK_LEFT_CANCODER,
           Constants.BACK_LEFT_ANGLE_OFFSET,
           1.0);
   public final SwerveModule m_backRight =

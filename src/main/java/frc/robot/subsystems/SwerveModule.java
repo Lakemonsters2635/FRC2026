@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,7 +23,11 @@ public class SwerveModule {
   private final TalonFX m_driveMotor;
   private final TalonFX m_turningMotor;
 
-  private final AnalogInput m_turningEncoderInput;
+  /** Pass as the CANcoder ID to use the analog encoder instead. */
+  public static final int kNoCANcoder = -1;
+
+  private final AnalogInput m_turningEncoderInput; // null when using a CANcoder
+  private final CANcoder m_canCoder; // null when using the analog encoder
 
   private double turningMotorOffsetRadians;
 
@@ -42,12 +49,38 @@ public class SwerveModule {
    *     module's zero position.
    * @param driveMotorGain Gain to apply to the drive motor output for tuning.
    */
-
-   
   public SwerveModule(
       int driveMotorChannel,
       int turningMotorChannel,
       int analogEncoderPort,
+      double turningMotorOffsetRadians,
+      double driveMotorGain) {
+    this(
+        driveMotorChannel,
+        turningMotorChannel,
+        analogEncoderPort,
+        kNoCANcoder,
+        turningMotorOffsetRadians,
+        driveMotorGain);
+  }
+
+  /**
+   * Constructs a SwerveModule that may use a CANcoder for the turning angle.
+   *
+   * @param driveMotorChannel ID for the drive motor.
+   * @param turningMotorChannel ID for the turning motor.
+   * @param analogEncoderPort Analog input port for the turning encoder (ignored if a CANcoder ID is
+   *     given).
+   * @param canCoderId CAN ID of the CANcoder, or {@link #kNoCANcoder} to use the analog encoder.
+   * @param turningMotorOffsetRadians Offset to add to the turning encoder reading to align with the
+   *     module's zero position.
+   * @param driveMotorGain Gain to apply to the drive motor output for tuning.
+   */
+  public SwerveModule(
+      int driveMotorChannel,
+      int turningMotorChannel,
+      int analogEncoderPort,
+      int canCoderId,
       double turningMotorOffsetRadians,
       double driveMotorGain) {
 
@@ -79,7 +112,18 @@ public class SwerveModule {
 
     m_driveMotorGain = driveMotorGain;
 
-    m_turningEncoderInput = new AnalogInput(analogEncoderPort);
+    if (canCoderId != kNoCANcoder) {
+      m_canCoder = new CANcoder(canCoderId);
+      m_turningEncoderInput = null;
+      CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
+      // TODO: verify on the robot. Rotate the module by hand and confirm the angle increases in
+      // the same direction as on the analog-encoder modules; if not, use Clockwise_Positive.
+      canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+      m_canCoder.getConfigurator().apply(canCoderConfig);
+    } else {
+      m_canCoder = null;
+      m_turningEncoderInput = new AnalogInput(analogEncoderPort);
+    }
 
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -91,11 +135,16 @@ public class SwerveModule {
   }
 
   public double getTurningEncoderRadians() {
-    double angle =
-        (1.0 - (m_turningEncoderInput.getVoltage() / RobotController.getVoltage5V()))
-                * 2.0
-                * Math.PI
-            + turningMotorOffsetRadians;
+    double raw;
+    if (m_canCoder != null) {
+      raw = m_canCoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI;
+    } else {
+      raw =
+          (1.0 - (m_turningEncoderInput.getVoltage() / RobotController.getVoltage5V()))
+              * 2.0
+              * Math.PI;
+    }
+    double angle = raw + turningMotorOffsetRadians;
     angle %= 2.0 * Math.PI;
     if (angle < 0.0) {
       angle += 2.0 * Math.PI;
@@ -105,7 +154,7 @@ public class SwerveModule {
   }
 
   public double getTurningEncoderVoltage() {
-    return m_turningEncoderInput.getVoltage();
+    return m_turningEncoderInput != null ? m_turningEncoderInput.getVoltage() : Double.NaN;
   }
 
   /**

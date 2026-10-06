@@ -1,0 +1,137 @@
+diff -ruN a/src/main/java/frc/robot/Constants.java b/src/main/java/frc/robot/Constants.java
+--- a/src/main/java/frc/robot/Constants.java	2026-10-04 18:19:43.198242111 +0000
++++ b/src/main/java/frc/robot/Constants.java	2026-10-04 18:24:01.147314119 +0000
+@@ -56,6 +56,7 @@
+   // BACK LEFT
+   public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 3; // 3
+   public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 0; // 3
++  public static final int DRIVETRAIN_BACK_LEFT_CANCODER = 14; // CAN ID, must be unique on bus
+   public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 4; // 10
+ 
+   // BACK RIGHT
+diff -ruN a/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java b/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java
+--- a/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java	2026-10-04 18:19:43.199808495 +0000
++++ b/src/main/java/frc/robot/subsystems/DrivetrainSubsystem.java	2026-10-04 18:24:01.148109701 +0000
+@@ -101,6 +101,7 @@
+           Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
+           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
+           Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER,
++          Constants.DRIVETRAIN_BACK_LEFT_CANCODER,
+           Constants.BACK_LEFT_ANGLE_OFFSET,
+           1.0;
+   public final SwerveModule m_backRight =
+diff -ruN a/src/main/java/frc/robot/subsystems/SwerveModule.java b/src/main/java/frc/robot/subsystems/SwerveModule.java
+--- a/src/main/java/frc/robot/subsystems/SwerveModule.java	2026-10-04 18:19:43.200292833 +0000
++++ b/src/main/java/frc/robot/subsystems/SwerveModule.java	2026-10-04 18:19:43.242410361 +0000
+@@ -4,9 +4,12 @@
+ 
+ package frc.robot.subsystems;
+ 
++import com.ctre.phoenix6.configs.CANcoderConfiguration;
+ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
++import com.ctre.phoenix6.hardware.CANcoder;
+ import com.ctre.phoenix6.hardware.TalonFX;
+ import com.ctre.phoenix6.signals.NeutralModeValue;
++import com.ctre.phoenix6.signals.SensorDirectionValue;
+ import edu.wpi.first.math.MathUtil;
+ import edu.wpi.first.math.controller.PIDController;
+ import edu.wpi.first.math.geometry.Rotation2d;
+@@ -20,7 +23,11 @@
+   private final TalonFX m_driveMotor;
+   private final TalonFX m_turningMotor;
+ 
+-  private final AnalogInput m_turningEncoderInput;
++  /** Pass as the CANcoder ID to use the analog encoder instead. */
++  public static final int kNoCANcoder = -1;
++
++  private final AnalogInput m_turningEncoderInput; // null when using a CANcoder
++  private final CANcoder m_canCoder; // null when using the analog encoder
+ 
+   private double turningMotorOffsetRadians;
+ 
+@@ -48,6 +55,34 @@
+       int analogEncoderPort,
+       double turningMotorOffsetRadians,
+       double driveMotorGain {
++    this(
++        driveMotorChannel,
++        turningMotorChannel,
++        analogEncoderPort,
++        kNoCANcoder,
++        turningMotorOffsetRadians,
++        driveMotorGain);
++  }
++
++  /**
++   * Constructs a SwerveModule that may use a CANcoder for the turning angle.
++   *
++   * @param driveMotorChannel ID for the drive motor.
++   * @param turningMotorChannel ID for the turning motor.
++   * @param analogEncoderPort Analog input port for the turning encoder (ignored if a CANcoder ID
++   *     is given).
++   * @param canCoderId CAN ID of the CANcoder, or {@link #kNoCANcoder} to use the analog encoder.
++   * @param turningMotorOffsetRadians Offset to add to the turning encoder reading to align with the
++   *     module's zero position.
++   * @param driveMotorGain Gain to apply to the drive motor output for tuning.
++   */
++  public SwerveModule(
++      int driveMotorChannel,
++      int turningMotorChannel,
++      int analogEncoderPort,
++      int canCoderId,
++      double turningMotorOffsetRadians,
++      double driveMotorGain) {
+ 
+     // VoltageConfigs m_voltageConfigDrive = new VoltageConfigs();
+     // m_voltageConfigDrive.SupplyVoltageTimeConstant = 1;
+@@ -77,7 +112,18 @@
+ 
+     m_driveMotorGain = driveMotorGain;
+ 
+-    m_turningEncoderInput = new AnalogInput(analogEncoderPort);
++    if (canCoderId != kNoCANcoder) {
++      m_canCoder = new CANcoder(canCoderId);
++      m_turningEncoderInput = null;
++      CANcoderConfiguration canCoderConfig = new CANcoderConfiguration();
++      // TODO: verify on the robot. Rotate the module by hand and confirm the angle increases in
++      // the same direction as on the analog-encoder modules; if not, use Clockwise_Positive.
++      canCoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
++      m_canCoder.getConfigurator().apply(canCoderConfig);
++    } else {
++      m_canCoder = null;
++      m_turningEncoderInput = new AnalogInput(analogEncoderPort);
++    }
+ 
+     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
+   }
+@@ -89,11 +135,16 @@
+   
+ 
+   public double getTurningEncoderRadians() 
+-    double angle =
+-        (1.0 - (m_turningEncoderInput.getVoltage() / RobotController.getVoltage5V()))
+-                * 2.0
+-                * Math.PI
+-            + turningMotorOffsetRadians;
++    double raw;
++    if (m_canCoder != null) {
++      raw = m_canCoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI;
++    } else {
++      raw =
++          (1.0 - (m_turningEncoderInput.getVoltage() / RobotController.getVoltage5V()))
++              * 2.0
++              * Math.PI;
++    }
++    double angle = raw + turningMotorOffsetRadians;
+     angle %= 2.0 * Math.PI;
+     if (angle < 0.0) {
+       angle += 2.0 * Math.PI;
+@@ -103,7 +154,7 @@
+   }
+ 
+   public double getTurningEncoderVoltage() {
+-    return m_turningEncoderInput.getVoltage();
++    return m_turningEncoderInput != null ? m_turningEncoderInput.getVoltage() : Double.NaN;
+   }
+ 
+   /**
