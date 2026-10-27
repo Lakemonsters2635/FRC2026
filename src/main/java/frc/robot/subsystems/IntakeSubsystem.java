@@ -21,15 +21,15 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_voltageConfig.SupplyVoltageTimeConstant = 10;
     m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR_ID);
-    CurrentLimitsConfigs currentLimits =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(40)
-            .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(30)
-            .withSupplyCurrentLimitEnable(true);
+    //CurrentLimitsConfigs currentLimits =
+        //new CurrentLimitsConfigs()
+            //.withStatorCurrentLimit(40)
+            //.withStatorCurrentLimitEnable(true)
+            //.withSupplyCurrentLimit(30)
+            //.withSupplyCurrentLimitEnable(true);
 
     m_intakeMotor.getConfigurator().apply(m_voltageConfig);
-    m_intakeMotor.getConfigurator().apply(currentLimits);
+    //m_intakeMotor.getConfigurator().apply(currentLimits);
   }
 
   public void intakeIn() {
